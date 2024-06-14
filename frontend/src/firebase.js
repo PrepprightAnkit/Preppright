@@ -3,14 +3,16 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyChGvwMdy0JCWghJi9ZxRmSoL3vVlwJq_A",
-    authDomain: "preppright.firebaseapp.com",
-    projectId: "preppright",
-    storageBucket: "preppright.appspot.com",
-    messagingSenderId: "135679769410",
-    appId: "1:135679769410:web:57d6f9f123372d6a29e6db",
-    measurementId: "G-GF73XTM9MZ"
+    apiKey: "AIzaSyDgLds0Q0wFT0ZnN2GlBcZIxqan46V7fl4",
+    authDomain: "prepright-ef54b.firebaseapp.com",
+    databaseURL: "https://prepright-ef54b-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "prepright-ef54b",
+    storageBucket: "prepright-ef54b.appspot.com",
+    messagingSenderId: "889921959980",
+    appId: "1:889921959980:web:44e260b3a9f8724bddb989",
+    measurementId: "G-6D2B8KMQ5X"
   };
+  
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
