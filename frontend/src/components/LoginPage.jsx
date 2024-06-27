@@ -1,15 +1,19 @@
 // Assuming you're using functional components with hooks (e.g., React 16.8+)
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from '../firebase'; // Adjust import based on your Firebase initialization
 import loginPa from '../assets/loginBg.jpg'
 import { Fade, Flip } from 'react-awesome-reveal';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import PhoneNumberContext from '../contexts/PhoneNumberContext';
 const LoginPage = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [otp, setOtp] = useState("");
     const [verificationId, setVerificationId] = useState("");
     const [message, setMessage] = useState("");
     const [done, setDone] = useState(false);
+    const navigate = useNavigate(); // Initialize useNavigate
+    const { phoneNumberG, setPhoneNumberG } = useContext(PhoneNumberContext);
 
 
     const setupRecaptcha = () => {
@@ -25,7 +29,7 @@ const LoginPage = () => {
         e.preventDefault();
         setupRecaptcha();
         const appVerifier = window.recaptchaVerifier;
-        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+        signInWithPhoneNumber(auth, phoneNumberG, appVerifier)
             .then((confirmationResult) => {
                 setVerificationId(confirmationResult.verificationId);
                 setMessage("OTP sent to your phone.");
@@ -44,6 +48,8 @@ const LoginPage = () => {
         confirmationResult.confirm(code).then((result) => {
             console.log(result);
             alert('User signed in successfully');
+            navigate('/reg'); // Navigate to Home page
+
             setDone(true);
         }).catch((error) => {
             // User couldn't sign in (bad verification code?)
@@ -52,6 +58,11 @@ const LoginPage = () => {
         });
 
     };
+    useEffect(
+        ()=>{
+            
+        }
+    )
 
     return (
         <div className='  bg-gradient-to-r from-blue-500 to-purple-100 '>
@@ -71,8 +82,8 @@ const LoginPage = () => {
                             <input
                                 type="text"
                                 placeholder="Phone number"
-                                value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                value={phoneNumberG}
+                                onChange={(e) => setPhoneNumberG(e.target.value)}
                                 className="mb-2 p-2 border rounded"
                             />
                             <div id="recaptcha-container"></div>
