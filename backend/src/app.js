@@ -12,7 +12,7 @@ app.use(cors(
     }
 ));
 
-app.use(express.json({limit:"16kb"}))
+app.use(express.json({ limit: "16kb" }))
 app.use(urlencoded())
 app.use(express.urlencoded())
 app.use(cookieParser())
@@ -24,8 +24,27 @@ import companyRouter from "./routes/company.routes.js"; // Adjust the path as ne
 
 app.use("/api/v1/users", companyRouter)
 
-import professionalRouter from "./routes/professional.routes.js"; 
+import professionalRouter from "./routes/professional.routes.js";
 
 app.use("/api/v1/users", professionalRouter)
 
-export {app}
+import studentRouter from "./routes/student.routes.js";
+
+app.use("/api/v1/users", studentRouter)
+
+import authRoutes from './routes/login.routes.js'; // Adjust path as per your project structure
+
+app.use('/api/v1/users', authRoutes); // Mount the authRoutes under /api/v1/users
+
+import categoryRoutes from './routes/categories.routes.js'
+
+app.use('/api/v1/users', categoryRoutes)
+
+import courseRoutes from './routes/courses.routes.js'
+
+app.use('/api/v1/users', courseRoutes)
+
+export { app }
+
+
+

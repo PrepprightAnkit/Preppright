@@ -2,7 +2,7 @@ import mongoose, { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const studentSchema = new Schema(
+const userSchema = new Schema(
   {
     fullName: {
       type: String,
@@ -19,34 +19,73 @@ const studentSchema = new Schema(
     },
     phoneNumber: {
       type: String,
-      required: true,
+      trim: true
     },
-    currentCollege: {
+    password: {
+      type: String,
+      required: true
+    },
+    role: {
+      type: String,
+      required: true,
+      enum: ["College Student", "Corporate Employee", "Other"]
+    },
+    institution: {
       type: String,
       required: true,
       trim: true
     },
-    degreeName: {
+    yearOrRole: {
       type: String,
       required: true,
       trim: true
     },
-    expectedYearOfGraduation: {
-      type: Number,
-      required: true,
-    },
-    profilePicture: { // Cloudinary URL
+    fieldOrDepartment: {
       type: String,
-    },
-   
-    courseEnrolled: {
-      type: String,
-      required: true,
       trim: true
     },
-  
-  }, 
+    preferredLearningMode: {
+      type: String,
+      required: true,
+      enum: ["Live Classes", "Recorded Sessions", "Both"]
+    },
+    courseCategories: {
+      type: [String],
+      required: true,
+      enum: ["Science and Technology", "Business and Management", "Arts and Humanities", "Social Sciences", "Health and Medicine", "Languages", "Personal Development"]
+    },
+    profilePicture: {
+      type: String
+    },
+    preferredContactMethod: {
+      type: String,
+      required: true,
+      enum: ["Email", "Phone", "Both"]
+    }
+  },
   { timestamps: true }
 );
 
-export const Student = model("Student", studentSchema);
+// Password hashing middleware
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Method to compare passwords
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+// Method to generate JWT
+userSchema.methods.generateJWT = function () {
+  return jwt.sign({ id: this._id, email: this.email }, process.env.ACCESS_TOKEN_SECRECT, { expiresIn: '1h' });
+};
+
+export const User = model("User", userSchema);
