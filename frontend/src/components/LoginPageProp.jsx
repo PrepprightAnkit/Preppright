@@ -8,7 +8,7 @@ const LoginPageProp = () => {
     });
 
     const [message, setMessage] = useState('');
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null); // Initialize as null
 
     const navigate = useNavigate();
 
@@ -38,9 +38,14 @@ const LoginPageProp = () => {
             }
 
             const result = await response.json();
-            setUser(result.user);
+            setUser(result.data.user);
             setMessage('Login successful!');
-            navigate('/');
+            console.log(result.user);
+
+            // Wait for 2 seconds before navigating
+            setTimeout(() => {
+                navigate('/');
+            }, 2000);
         } catch (error) {
             setMessage(`Error: ${error.message}`);
         }
@@ -65,6 +70,25 @@ const LoginPageProp = () => {
                         >
                             Logout
                         </button>
+                        <div className="bg-white bg-opacity-25 rounded-lg p-4 mt-4 text-white">
+                            <h3 className="font-bold text-xl">User Details</h3>
+                            <p><strong>Full Name:</strong> {user.fullName}</p>
+                            <p><strong>Email:</strong> {user.email}</p>
+                            <p><strong>Phone Number:</strong> {user.phoneNumber}</p>
+                            <p><strong>Role:</strong> {user.role}</p>
+                            <p><strong>Institution:</strong> {user.institution}</p>
+                            <p><strong>Year or Role:</strong> {user.yearOrRole}</p>
+                            <p><strong>Field or Department:</strong> {user.fieldOrDepartment}</p>
+                            <p><strong>Preferred Learning Mode:</strong> {user.preferredLearningMode}</p>
+                            <p><strong>Course Categories:</strong> {user.courseCategories.join(', ')}</p>
+                            <p><strong>Preferred Contact Method:</strong> {user.preferredContactMethod}</p>
+                            {user.profilePicture && (
+                                <div>
+                                    <strong>Profile Picture:</strong>
+                                    <img src={user.profilePicture} alt="Profile" className="rounded mt-2" />
+                                </div>
+                            )}
+                        </div>
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-4">

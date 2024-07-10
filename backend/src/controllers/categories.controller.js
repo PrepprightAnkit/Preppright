@@ -1,69 +1,46 @@
-import { Category } from "../models/categories.model.js";
+import { Category } from '../models/categories.model.js';
+import { asynchandler } from "../utils/asynchandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
+const uploadCat = asynchandler(async (req, res) => {
+  const { title, description } = req.body;
 
-export const createCategory = async (req, res) => {
-  const { title, description, image } = req.body;
-
-  try {
-    const newCategory = new Category({ title, description, image });
-    await newCategory.save();
-    res.status(201).json(newCategory);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  if ([title, description].some((field) => field?.trim() === "")) {
+      throw new ApiError(400, "All required fields must be filled out");
   }
-};
 
-export const getAllCategories = async (req, res) => {
-  try {
-    const categories = await Category.find();
-    res.status(200).json(categories);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  const existingCat = await Category.findOne({ title });
+
+  if (existingCat) {
+      throw new ApiError(409, "Category with this title already exists");
   }
-};
-export const getCategoryById = async (req, res) => {
-  const { id } = req.params;
 
-  try {
-    const category = await Category.findById(id);
-    if (!category) {
-      return res.status(404).json({ error: 'Category not found' });
-    }
-    res.status(200).json(category);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  const avatarLocalPath = req.files?.image?.[0]?.path;
+
+  let profilePicture;
+  if (avatarLocalPath) {
+      profilePicture = await uploadOnCloudinary(avatarLocalPath);
   }
-};
 
-export const updateCategory = async (req, res) => {
-  const { id } = req.params;
-  const { title, description, image, isActive } = req.body;
+  const category = await Category.create({
+      title,
+      description,
+      image: profilePicture?.url || ""
+  });
 
-  try {
-    const category = await Category.findByIdAndUpdate(
-      id,
-      { title, description, image, isActive },
-      { new: true }
-    );
-    if (!category) {
-      return res.status(404).json({ error: 'Category not found' });
-    }
-    res.status(200).json(category);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  const createdCat = await Category.findById(category._id).select();
+
+  if (!createdCat) {
+      throw new ApiError(500, "Something went wrong while registering the category");
   }
-};
 
-export const deleteCategory = async (req, res) => {
-  const { id } = req.params;
+  return res.status(201).json(
+      new ApiResponse(200, createdCat, "Category registered successfully")
+  );
+});
 
-  try {
-    const category = await Category.findByIdAndDelete(id);
-    if (!category) {
-      return res.status(404).json({ error: 'Category not found' });
-    }
-    res.status(200).json({ message: 'Category deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+export {
+  uploadCat,
 };

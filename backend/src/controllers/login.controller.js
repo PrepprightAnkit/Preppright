@@ -30,9 +30,9 @@ const loginUser = asynchandler(async (req, res) => {
 
   // Generate JWT token
   const token = user.generateJWT();
-
+  console.log(user.toJSON());
   // Return token and additional user data if needed
-  res.json(new ApiResponse(200, { token, user }, "Login successful"));
+  res.json(new ApiResponse(200, { token, user: user.toJSON() }, "Login successful"));
 });
 
 export {

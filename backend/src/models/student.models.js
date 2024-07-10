@@ -83,6 +83,16 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
+// In your User model (student.models.js)
+userSchema.methods.toJSON = function() {
+  const user = this;
+  const userObject = user.toObject();
+
+  delete userObject.password;
+
+  return userObject;
+};
+
 // Method to generate JWT
 userSchema.methods.generateJWT = function () {
   return jwt.sign({ id: this._id, email: this.email }, process.env.ACCESS_TOKEN_SECRECT, { expiresIn: '1h' });
