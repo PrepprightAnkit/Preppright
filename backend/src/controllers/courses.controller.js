@@ -1,92 +1,115 @@
 import { Course } from '../models/courses.model.js';
-import { uploadOnCloudinary } from '../utils/cloudinary.js';
-import fs from "fs"
-export const createCourse = async (req, res) => {
-  const { name, price, description, detailedDescription, numberOfLessons, level, categoryId } = req.body;
-  const files = req.files;
+import { Category } from '../models/categories.model.js';
+import { asynchandler } from "../utils/asynchandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
-  try {
-    // Upload files to Cloudinary
-    const uploadedFiles = await Promise.all(files.map(file => uploadOnCloudinary(file.path)));
+const uploadCourse = asynchandler(async (req, res) => {
+  const { name, price, description, detailedDescription, numberOfLessons, level, category } = req.body;
 
-    // Extract URLs from the uploaded files
-    const fileUrls = uploadedFiles.map(file => file.secure_url);
-
-    // Create a new course
-    const course = new Course({
-      name,
-      price,
-      description,
-      detailedDescription,
-      numberOfLessons,
-      level,
-      files: fileUrls.filter(url => url.endsWith('.pdf')), // Filter for PDFs
-      videos: fileUrls.filter(url => url.endsWith('.mp4')), // Filter for videos
-      category: categoryId,
-    });
-
-    await course.save();
-    res.status(201).json(course);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  } finally {
-    // Clean up temporary files
-    files.forEach(file => fs.unlinkSync(file.path));
+  // Ensure all required string fields are filled out
+  const requiredFields = [name, description, detailedDescription, level, category];
+  if (requiredFields.some((field) => typeof field === 'string' && field.trim() === "")) {
+    throw new ApiError(400, "All required fields must be filled out");
   }
-};
 
-export const getAllCourses = async (req, res) => {
-  try {
-    const courses = await Course.find().populate('category');
-    res.status(200).json(courses);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  // Ensure price and numberOfLessons are valid numbers
+  if (isNaN(price) || isNaN(numberOfLessons)) {
+    throw new ApiError(400, "Price and numberOfLessons must be valid numbers");
   }
-};
 
-export const getCourseById = async (req, res) => {
-  const { id } = req.params;
+  const existingCourse = await Course.findOne({ name });
 
-  try {
-    const course = await Course.findById(id).populate('category');
-    if (!course) {
-      return res.status(404).json({ error: 'Course not found' });
-    }
-    res.status(200).json(course);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  if (existingCourse) {
+    throw new ApiError(409, "Course with this name already exists");
   }
-};
 
-export const updateCourse = async (req, res) => {
-  const { id } = req.params;
-  const { name, price, description, detailedDescription, numberOfLessons, level, categoryId } = req.body;
-
-  try {
-    const course = await Course.findByIdAndUpdate(
-      id,
-      { name, price, description, detailedDescription, numberOfLessons, level, category: categoryId },
-      { new: true }
-    );
-    if (!course) {
-      return res.status(404).json({ error: 'Course not found' });
-    }
-    res.status(200).json(course);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  // Find the category by title
+  const categoryDoc = await Category.findOne({ title: category });
+  if (!categoryDoc) {
+    throw new ApiError(400, "Invalid category");
   }
-};
 
-export const deleteCourse = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const course = await Course.findByIdAndDelete(id);
-    if (!course) {
-      return res.status(404).json({ error: 'Course not found' });
-    }
-    res.status(200).json({ message: 'Course deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  // Handle image upload
+  const imageLocalPath = req.files?.image?.[0]?.path;
+  let courseImage;
+  if (imageLocalPath) {
+    courseImage = await uploadOnCloudinary(imageLocalPath);
   }
+  if (!courseImage) {
+    console.log("no image");
+  }
+
+  // Handle video uploads
+  const videoPaths = req.files?.videos || [];
+  const uploadedVideos = await Promise.all(
+    videoPaths.map(async (file) => {
+      const result = await uploadOnCloudinary(file.path);
+      return result.url;
+    })
+  );
+
+  // Handle file uploads
+  const filePaths = req.files?.files || [];
+  const uploadedFiles = await Promise.all(
+    filePaths.map(async (file) => {
+      const result = await uploadOnCloudinary(file.path);
+      return result.url;
+    })
+  );
+
+  // Handle free video upload
+  const freeVideoPath = req.files?.freeVideo?.[0]?.path;
+  let freeVideoUrl;
+  if (freeVideoPath) {
+    const result = await uploadOnCloudinary(freeVideoPath);
+    freeVideoUrl = result.url;
+  }
+
+  // Handle free notes upload
+  const freeNotesPath = req.files?.freeNotes?.[0]?.path;
+  let freeNotesUrl;
+  if (freeNotesPath) {
+    const result = await uploadOnCloudinary(freeNotesPath);
+    freeNotesUrl = result.url;
+  }
+
+  // Handle course intro video upload
+  const courseIntroVideoPath = req.files?.courseIntroVideo?.[0]?.path;
+  let courseIntroVideoUrl;
+  if (courseIntroVideoPath) {
+    const result = await uploadOnCloudinary(courseIntroVideoPath);
+    courseIntroVideoUrl = result.url;
+  }
+
+  const course = await Course.create({
+    name,
+    price,
+    description,
+    detailedDescription,
+    numberOfLessons,
+    level,
+    category: categoryDoc._id,
+    image: courseImage?.url || "",
+    videos: uploadedVideos,
+    files: uploadedFiles,
+    freeVideo: freeVideoUrl,
+    freeNotes: freeNotesUrl,
+    courseIntroVideo: courseIntroVideoUrl,
+  });
+
+  const createdCourse = await Course.findById(course._id).select();
+
+  if (!createdCourse) {
+    throw new ApiError(500, "Something went wrong while registering the course");
+  }
+
+  return res.status(201).json(
+    new ApiResponse(200, createdCourse, "Course registered successfully")
+  );
+});
+
+export {
+  uploadCourse,
 };

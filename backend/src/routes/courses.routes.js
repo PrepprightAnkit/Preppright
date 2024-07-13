@@ -1,21 +1,23 @@
-import express from 'express';
-import multer from 'multer';
-import {
-  createCourse,
-  getAllCourses,
-  getCourseById,
-  updateCourse,
-  deleteCourse,
-} from '../controllers/courses.controller.js';
+import { Router } from "express";
+import { uploadCourse } from "../controllers/courses.controller.js";
+import { getCourses } from '../controllers/getCourses.controller.js';
+import { upload } from "../middlewares/upload.js";
+import { getCourseById } from "../controllers/getCoursesMain.js";
 
 
-const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
+const router = Router();
 
-router.post('/course', upload.array('files'), createCourse);
-router.get('/course', getAllCourses);
-router.get('/course:id', getCourseById);
-router.put('/course:id', updateCourse);
-router.delete('/course:id', deleteCourse);
+router.route('/courses').get(
+  getCourses
+);
+
+router.route('/courses/:id').get(
+  getCourseById
+);
+
+router.route('/courses').post(
+  upload,
+  uploadCourse
+);
 
 export default router;

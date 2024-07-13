@@ -6,6 +6,8 @@ import UploadCat from "./components/UploadCat";
 import LoginPageProp from "./components/LoginPageProp";
 import Register from "./components/Register";
 import LoginPage from "./components/LoginPage";
+import UploadCourse from "./components/UploadCourse";
+import CourseDetails from "./components/landingPage/CourseDetails";
 function App() {
 
 
@@ -19,9 +21,10 @@ function App() {
             <Route path="reg" element={<Register />} />
             <Route path="loginOtp" element={<LoginPage />} />
             <Route path="uploadCat" element={<UploadCat />} />
-
+            <Route path="uploadCourse" element={<UploadCourse />} />
+            <Route path="courses/:id" element={<CourseDetails />} />
             <Route path="login" element={<LoginPageProp />} />
-            <Route path="reg" element={<Register/>}/>
+            <Route path="reg" element={<Register />} />
 
           </Route>
         </Routes>

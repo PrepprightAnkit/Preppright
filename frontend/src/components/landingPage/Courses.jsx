@@ -1,51 +1,77 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import courseImage from './assets/course.png.jpg'; // Import your course image
-
-const courses = Array.from({ length: 12 }, (_, index) => ({
-  id: index,
-  title: `Course ${index + 1}`,
-  description: 'This is a brief description of the course.',
-  price: `$${(index + 1) * 10}.00`,
-}));
 
 const Courses = () => {
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/users/courses');
+      if (response.ok) {
+        const data = await response.json();
+        setCourses(data.data);
+      } else {
+        console.error('Failed to fetch courses');
+      }
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
+  };
+
   return (
-    <section className="bg-white min-h-screen p-8">
+    <section className="bg-gray-100 min-h-screen p-8">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-bold">Courses</h2>
-        <Link to="/courses">
-          <button className="bg-blue-700 text-white py-2 px-4 rounded">
-            All Courses
-          </button>
-        </Link>
+        {/* You can add a link to all courses here if needed */}
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {courses.map((course) => (
-          <div
-            key={course.id}
-            className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col"
-          >
-            <img
-              src={courseImage}
-              alt={course.title}
-              className="h-3/5 w-full object-cover"
-            />
-            <div className="flex flex-col justify-between h-2/5 p-4">
-              <div>
-                <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
-                <p className="text-gray-700">{course.description}</p>
+      {courses.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {courses.map(course => (
+            <div
+              key={course._id}
+              className="bg-white shadow-md rounded-lg border border-blue-700 overflow-hidden"
+            >
+              <div className="relative p-3 border-xl rounded-2xl border-3 border-blue-700">
+                <img
+                  src={course.image}
+                  alt={course.name}
+                  className="w-full h-64 object-cover"
+                />
+                <div className="absolute top-0 right-0 bg-blue-700 text-white px-2 py-1 m-2 rounded-md">
+                  {course.level}
+                </div>
               </div>
-              <div className="flex justify-between items-center mt-4">
-                <button className="bg-blue-700 text-white py-1 px-2 rounded">
-                  Explore Course
-                </button>
-                <span className="text-black font-bold">{course.price}</span>
+              <div className="p-4 bg-blue-50">
+                <h3 className="text-xl font-semibold text-blue-700 mb-2">
+                  {course.name}
+                </h3>
+                <p className="text-gray-700 mb-2">{course.description}</p>
+                {/* <p className="text-gray-500 mb-4">{course.detailedDescription}</p> */}
+                <div className="flex justify-between items-center mb-2">
+                  <div>
+                    <span className="text-gray-600">Price: ${course.price}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">
+                      Number of Lessons: {course.numberOfLessons}
+                    </span>
+                  </div>
+                </div>
+                <Link to={`/courses/${course._id}`} className="bg-blue-700 text-white px-4 py-2 rounded-md">
+                  View More
+                </Link>
+
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center text-gray-600">No courses available</div>
+      )}
     </section>
   );
 };

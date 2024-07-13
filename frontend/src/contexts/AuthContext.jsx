@@ -13,7 +13,8 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      const decoded = jwt_decode(token);
+    
+        const decoded = jwt_decode(token);
       setUser(decoded);
       setIsAdmin(decoded.role === 'admin');
     }
