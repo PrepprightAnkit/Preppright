@@ -1,63 +1,154 @@
-import { Question } from "../models/question.models.js";
-import { asyncHandler } from "../utils/asynchandler.js";
+  import { Question } from "../models/questions.models.js";
 
-const askQuestion = asyncHandler(async (req, res) => {
-  console.log("In askQuestion");
+  // Create a new question
+  const askQuestion = async (req, res) => {
+    try {
+      const { questionText } = req.body;
 
-  const { question } = req.body;
+      const newQuestion = new Question({
+        questionText,
+      });
 
-  console.log("Obtained question ", question);
-  if (!question) {
-    console.log("Enter question");
-  }
+      await newQuestion.save();
 
-  const putQuestion = await Question.create({ question, author: req.user._id });
-
-  if (!putQuestion) {
-    console.log("Did not receive question");
-  }
-  console.log(putQuestion);
-
-  const getQuestion = await Question.findById(putQuestion._id);
-
-  return res.status(200).json(getQuestion);
-});
-
-const like = asyncHandler(async (req, res) => {
-    console.log("In like controller");
-    const questionId = req.params.id;
-  
-    const question = await Question.findByIdAndUpdate(
-      questionId,
-      { $inc: { likes: 1 } },
-      { new: true }
-    );
-  
-    if (!question) {
-      console.log("Question not found");
-      return res.status(404).json({ error: "Question not found" });
+      res.status(201).json(newQuestion);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-  
-    return res.status(200).json(question);
-  });
+  };
 
-const getQuestionsPublic = asyncHandler(async (req, res) => {
-  const questions = await Question.find({}).populate("answer");
+  // Answer a question
+  const answerQuestion = async (req, res) => {
+    try {
+      const { questionId, answerText } = req.body;
 
-  if (!questions) {
-    console.log("Questions not found");
-    res.status(404);
-  } 
-  console.log(questions);
+      const question = await Question.findById(questionId);
 
-  return res.status(200).json(questions);
-});
+      if (!question) {
+        return res.status(404).json({ message: 'Question not found' });
+      }
 
-const deleteQuestion = asyncHandler(async (req, res) => {
-    console.log('In deleteQuestion controller')
-    const id = req.params.id
-    const delQuestion = await Question.findByIdAndDelete(id)
-    return res.status(200)
-})
+      const newAnswer = {
+        answerText,
+      };
 
-export { askQuestion, getQuestionsPublic, like, deleteQuestion };
+      question.answers.push(newAnswer);
+      await question.save();
+
+      res.status(201).json(newAnswer);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
+  // Like a question
+  const likeQuestion = async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const question = await Question.findById(id);
+
+      if (!question) {
+        return res.status(404).json({ message: 'Question not found' });
+      }
+
+      question.likes += 1;
+      await question.save();
+
+      res.status(200).json(question);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
+  // Dislike a question
+  const dislikeQuestion = async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const question = await Question.findById(id);
+
+      if (!question) {
+        return res.status(404).json({ message: 'Question not found' });
+      }
+
+      question.dislikes += 1;
+      await question.save();
+
+      res.status(200).json(question);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
+  // Like an answer
+  const likeAnswer = async (req, res) => {
+    try {
+      const { questionId, answerId } = req.params;
+
+      const question = await Question.findById(questionId);
+
+      if (!question) {
+        return res.status(404).json({ message: 'Question not found' });
+      }
+
+      const answer = question.answers.id(answerId);
+
+      if (!answer) {
+        return res.status(404).json({ message: 'Answer not found' });
+      }
+
+      answer.likes += 1;
+      await question.save();
+
+      res.status(200).json(answer);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
+  // Dislike an answer
+  const dislikeAnswer = async (req, res) => {
+    try {
+      const { questionId, answerId } = req.params;
+
+      const question = await Question.findById(questionId);
+
+      if (!question) {
+        return res.status(404).json({ message: 'Question not found' });
+      }
+
+      const answer = question.answers.id(answerId);
+
+      if (!answer) {
+        return res.status(404).json({ message: 'Answer not found' });
+      }
+
+      answer.dislikes += 1;
+      await question.save();
+
+      res.status(200).json(answer);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
+  // Get public questions
+  const getQuestionsPublic = async (req, res) => {
+    try {
+      const questions = await Question.find()
+      res.status(200).json(questions);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
+  export {
+    askQuestion,
+    answerQuestion,
+    likeQuestion,
+    dislikeQuestion,
+    likeAnswer,
+    dislikeAnswer,
+    getQuestionsPublic,
+  };

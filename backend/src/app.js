@@ -44,6 +44,13 @@ import courseRoutes from './routes/courses.routes.js'
 
 app.use('/api/v1/users', courseRoutes)
 
+import questionRoutes from "./routes/question.routes.js"
+
+app.use('/api/v1/users', questionRoutes)
+
+
+
+
 export { app }
 
 

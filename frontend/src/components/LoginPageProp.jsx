@@ -57,8 +57,14 @@ const LoginPageProp = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-start justify-start md:bg-cover bg-center bg-loginBg">
-            <div className="scale-105 bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-10 w-full md:w-1/4 shadow-lg ml-10 md:mt-48">
+        <div className="min-h-screen flex flex-col items-start justify-start md:bg-cover bg-center bg-loginBg">
+            <button
+                onClick={() => navigate('/')}
+                className="bg-blue-500 text-white font-bold py-2 px-4 rounded ml-8 mt-4  hover:bg-blue-600"
+            >
+                Go to Home
+            </button>
+            <div className="scale-105 bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-10 w-full md:w-1/4 shadow-lg ml-10 md:mt-10">
                 <h2 className="font-bold text-3xl text-white mb-12">{user ? 'Welcome' : 'Login Page'}</h2>
                 {message && <p className="text-red-600 mb-4">{message}</p>}
                 {user ? (

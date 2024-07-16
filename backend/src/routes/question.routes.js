@@ -1,34 +1,67 @@
 import { Router } from "express";
-import { checkAdmin, verifyJWT } from "../middlewares/auth.middelwares.js";
-import { asyncHandler } from "../utils/asynchandler.js";
-import { askQuestion,getQuestionsPublic, like, deleteQuestion } from "../controllers/question.controllers.js";
+import { asynchandler } from "../utils/asynchandler.js";
+import { 
+  askQuestion, 
+  getQuestionsPublic, 
+  likeQuestion, 
+  dislikeQuestion, 
+  answerQuestion, 
+  likeAnswer, 
+  dislikeAnswer 
+} from "../controllers/question.controllers.js";
 
-const questionRouter = Router()
+const questionRouter = Router();
 
-questionRouter.route("/questionPublic").post(verifyJWT, asyncHandler( async(req,res) => {
-    console.log("In /question");
-    const received = await askQuestion(req,res)
+// Question routes
+questionRouter.route("/questionPublic").post(asynchandler(async (req, res) => {
+    console.log("In /questionPublic");
+    const received = await askQuestion(req, res);
     console.log(received);
-    res.json(askQuestion)
-} ))
-
-questionRouter.route("/getQuestions").get(verifyJWT, asyncHandler( async(req,res) => {
-    console.log("In /getQuestions");
-    const received = await getQuestionsPublic(req,res)
-    console.log(received)
     res.json(received);
-} ))
+}));
 
-questionRouter.route("/like/:id").post(verifyJWT, asyncHandler( async(req, res) => {
-    console.log("In /like route");
-    const question = await like(req, res)
-    res.json(question)
-}))
+questionRouter.route("/getQuestions").get(asynchandler(async (req, res) => {
+    console.log("In /getQuestions");
+    const received = await getQuestionsPublic(req, res);
+    console.log(received);
+    res.json(received);
+}));
 
-questionRouter.route("/delQuestion/:id").post(verifyJWT, checkAdmin, asyncHandler( async(req, res) => {
-    console.log("In /delQuestion route");
-    await deleteQuestion(req, res);
-    res.status(200)
-}))
+questionRouter.route("/likeQuestion/:id").post(asynchandler(async (req, res) => {
+    console.log("In /likeQuestion route");
+    const question = await likeQuestion(req, res);
+    console.log(question);
+    res.json(question);
+}));
 
-export {questionRouter}
+questionRouter.route("/dislikeQuestion/:id").post(asynchandler(async (req, res) => {
+    console.log("In /dislikeQuestion route");
+    const question = await dislikeQuestion(req, res);
+    console.log(question);
+    res.json(question);
+}));
+
+
+// Answer routes
+questionRouter.route("/answer/:questionId").post(asynchandler(async (req, res) => {
+    console.log("In /answer route");
+    const received = await answerQuestion(req, res);
+    console.log(received);
+    res.json(received);
+}));
+
+questionRouter.route("/likeAnswer/:questionId/:answerId").post(asynchandler(async (req, res) => {
+    console.log("In /likeAnswer route");
+    const answer = await likeAnswer(req, res);
+    console.log(answer);
+    res.json(answer);
+}));
+
+questionRouter.route("/dislikeAnswer/:questionId/:answerId").post(asynchandler(async (req, res) => {
+    console.log("In /dislikeAnswer route");
+    const answer = await dislikeAnswer(req, res);
+    console.log(answer);
+    res.json(answer);
+}));
+
+export default questionRouter;
