@@ -10,7 +10,7 @@ const userSchema = new Schema(
       trim: true,
       index: true
     },
-    email: {
+    wemail: {
       type: String,
       required: true,
       unique: true,
@@ -84,7 +84,7 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 };
 
 // In your User model (student.models.js)
-userSchema.methods.toJSON = function() {
+userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
 

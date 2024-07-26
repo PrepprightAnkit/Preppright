@@ -7,7 +7,8 @@ import LoginPageProp from "./components/LoginPageProp";
 import Register from "./components/Register";
 import LoginPage from "./components/LoginPage";
 import UploadCourse from "./components/UploadCourse";
-import CourseDetails from "./components/landingPage/CourseDetails";
+import CourseDetails from "./components/CourseDetails";
+import RegisterCompany from "./components/RegisterCompany";
 function App() {
 
 
@@ -25,6 +26,8 @@ function App() {
             <Route path="courses/:id" element={<CourseDetails />} />
             <Route path="login" element={<LoginPageProp />} />
             <Route path="reg" element={<Register />} />
+            <Route path="company-register" element={<RegisterCompany />} />
+
 
           </Route>
         </Routes>

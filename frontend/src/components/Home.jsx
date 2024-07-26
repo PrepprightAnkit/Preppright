@@ -4,6 +4,7 @@ import Categories from "./landingPage/Categories"
 import Discuss from './landingPage/Discuss';
 import { Link, useNavigate } from 'react-router-dom';
 import Courses from './landingPage/Courses';
+import Platform from './landingPage/Platform';
 const Home = () => {
     const [courses, setCourses] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -63,31 +64,31 @@ const Home = () => {
                         <button onClick={() => scrollToSection('discuss')} className="text-blue-800 hover:underline">Discuss</button>
 
                     </div>
-                    
 
 
-                        <div className="relative w-full border-4  md:w-1/4">
-                            <input
-                                type="text"
-                                value={searchTerm}
-                                onChange={handleSearch}
-                                className="w-full px-4 py-2 border rounded-full focus:outline-none"
-                                placeholder="Search courses..."
-                            />
-                            {filteredCourses.length > 0 && (
-                                <div className="absolute w-full bg-white shadow-lg rounded-lg mt-2 z-10">
-                                    {filteredCourses.map((course) => (
-                                        <div
-                                            key={course._id}
-                                            className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                                            onClick={() => handleSelectCourse(course._id)}
-                                        >
-                                            {course.name}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+
+                    <div className="relative w-full border-4  md:w-1/4">
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={handleSearch}
+                            className="w-full px-4 py-2 border rounded-full focus:outline-none"
+                            placeholder="Search courses..."
+                        />
+                        {filteredCourses.length > 0 && (
+                            <div className="absolute w-full bg-white shadow-lg rounded-lg mt-2 z-10">
+                                {filteredCourses.map((course) => (
+                                    <div
+                                        key={course._id}
+                                        className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                        onClick={() => handleSelectCourse(course._id)}
+                                    >
+                                        {course.name}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                     <div className="flex space-x-4">
                         <button className="bg-blue-500 hover:bg-blue-900 text-white px-4 py-2 rounded-full">
                             <Link to="/login">
@@ -95,7 +96,7 @@ const Home = () => {
                             </Link></button>
                         <button className="bg-green-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
                             <Link to="/reg">
-                                register
+                                Register
                             </Link></button>
                     </div>
                 </div>
@@ -109,9 +110,13 @@ const Home = () => {
             <div id="courses" className="pt-4">
                 <Courses />
             </div>
+            <div id="platform" className="pt-4">
+                <Platform />
+            </div>
             <div id="discuss" className="pt-4">
                 <Discuss />
             </div>
+
         </div>
     );
 }

@@ -110,6 +110,13 @@ const Register = () => {
                         >
                             Go to Home
                         </button>
+                        <button
+                            onClick={() => navigate('/company-register')}
+                            className="bg-green-500 text-white font-bold py-2 px-4 rounded ml-4 mt-2 mb-4 hover:bg-green-600"
+                        >
+                            Register as Company
+                        </button>
+
                         <h2 className=" font-bold text-3xl text-white mb-2 ml-4">Register Page</h2>
                         {message && <p className="text-red-600 mb-4">{message}</p>}
                         <form onSubmit={handleSubmit} className="space-y-4">

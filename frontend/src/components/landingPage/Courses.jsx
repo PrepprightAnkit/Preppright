@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import c1 from './assets/c1.png';
+import c2 from './assets/c2.png';
+import c3 from './assets/c3.png';
+import { Slide,Fade } from 'react-awesome-reveal';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -24,49 +28,57 @@ const Courses = () => {
 
   return (
     <section className="bg-gray-100 min-h-screen p-8">
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-bold">Courses</h2>
-        {/* You can add a link to all courses here if needed */}
+      <div className="w-full flex justify-between items-center mb-8">
+        <Slide>
+          <div className="flex flex-col">
+            <h2 className="text-5xl font-bold text-blue-700">POPULAR COURSES!</h2>
+            <h2 className="text-2xl ml-2 mt-2 font-light text-gray-800">Explore our Top Courses</h2>
+          </div>
+          <Link to="/allCat">
+            <button className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800">
+              View All Courses
+            </button>
+          </Link>
+        </Slide>
       </div>
       {courses.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {courses.map(course => (
-            <div
-              key={course._id}
-              className="bg-white shadow-md rounded-lg border border-blue-700 overflow-hidden"
-            >
-              <div className="relative p-3 border-xl rounded-2xl border-3 border-blue-700">
-                <img
-                  src={course.image}
-                  alt={course.name}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="absolute top-0 right-0 bg-blue-700 text-white px-2 py-1 m-2 rounded-md">
-                  {course.level}
-                </div>
-              </div>
-              <div className="p-4 bg-blue-50">
-                <h3 className="text-xl font-semibold text-blue-700 mb-2">
-                  {course.name}
-                </h3>
-                <p className="text-gray-700 mb-2">{course.description}</p>
-                {/* <p className="text-gray-500 mb-4">{course.detailedDescription}</p> */}
-                <div className="flex justify-between items-center mb-2">
-                  <div>
-                    <span className="text-gray-600">Price: ${course.price}</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 ">
+          {courses.map((course) => (
+            <Link to={`/courses/${course._id}`} key={course._id} className="text-white px-4 py-2 rounded-md">
+              <div className="bg-white shadow-md rounded-lg border-blue-700 overflow-hidden hover:shadow-lg transform hover:scale-105 transition-transform duration-300 group">
+                <Fade cascade>
+                  <div className="relative">
+                    <img
+                      src={course.image}
+                      alt={course.name}
+                      className="w-full h-36 hover:h-auto object-cover"
+                    />
                   </div>
-                  <div>
-                    <span className="text-gray-600">
-                      Number of Lessons: {course.numberOfLessons}
-                    </span>
+                  <div className="p-4 bg-blue-50">
+                    <h3 className="text-xl font-semibold text-blue-700 mb-2 line-clamp-1 hover:line-clamp-none">
+                      {course.name}
+                    </h3>
+                    <p className="text-gray-700 mb-2 line-clamp-3 hover:line-clamp-none">
+                      {course.description}
+                    </p>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center">
+                        <img src={c1} alt="Book" className="w-6 h-6 mr-2" />
+                        <span className="text-gray-600">{course.numberOfLessons}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <img src={c2} alt="Icon 2" className="w-6 h-6 mr-2" />
+                        <span className="text-gray-600">23</span>
+                      </div>
+                      <div className="flex items-center">
+                        <img src={c3} alt="Icon 3" className="w-6 h-6 mr-2" />
+                        <span className="text-gray-600">{course.level}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <Link to={`/courses/${course._id}`} className="bg-blue-700 text-white px-4 py-2 rounded-md">
-                  View More
-                </Link>
-
+                </Fade>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       ) : (
