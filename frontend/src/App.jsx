@@ -8,13 +8,15 @@ import Register from "./components/Register";
 import LoginPage from "./components/LoginPage";
 import UploadCourse from "./components/UploadCourse";
 import CourseDetails from "./components/CourseDetails";
+import UploadContent from "./components/UploadContent";
 import RegisterCompany from "./components/RegisterCompany";
+import { AuthProvider } from "./contexts/AuthContext";
 function App() {
 
 
 
   return (
-    <><PhoneNumberProvider>
+    <><AuthProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" >
@@ -27,12 +29,14 @@ function App() {
             <Route path="login" element={<LoginPageProp />} />
             <Route path="reg" element={<Register />} />
             <Route path="company-register" element={<RegisterCompany />} />
+            <Route path="uploadContent" element={<UploadContent />} />
+
 
 
           </Route>
         </Routes>
       </BrowserRouter>
-    </PhoneNumberProvider>
+    </AuthProvider>
 
     </>
   )

@@ -1,45 +1,46 @@
-// src/contexts/AuthContext.js
-import React, { createContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
+import React, { createContext, useState, useContext } from 'react';
 
 const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const navigate = useNavigate();
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+    const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-    
-        const decoded = jwt_decode(token);
-      setUser(decoded);
-      setIsAdmin(decoded.role === 'admin');
-    }
-  }, []);
+    const login = async (formData) => {
+        try {
+            const response = await fetch('http://localhost:8000/api/v1/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
 
-  const login = (token) => {
-    localStorage.setItem('token', token);
-    const decoded = jwt_decode(token);
-    setUser(decoded);
-    setIsAdmin(decoded.role === 'admin');
-    navigate('/');
-  };
+            if (!response.ok) {
+                const result = await response.text();
+                throw new Error(result);
+            }
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    setIsAdmin(false);
-    navigate('/login');
-  };
+            const result = await response.json();
+            setUser(result.data.user);
+            setMessage('Login successful!');
+            return { success: true, user: result.data.user };
+        } catch (error) {
+            setMessage(`Error: ${error.message}`);
+            return { success: false, error: error.message };
+        }
+    };
 
-  return (
-    <AuthContext.Provider value={{ user, isAdmin, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+    const logout = () => {
+        setUser(null);
+        setMessage('Logout successful!');
+    };
+
+    return (
+        <AuthContext.Provider value={{ user, message, login, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
-export { AuthProvider, AuthContext };
+export const useAuth = () => useContext(AuthContext);

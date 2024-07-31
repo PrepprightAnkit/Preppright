@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const LoginPageProp = () => {
     const [formData, setFormData] = useState({
@@ -7,10 +8,8 @@ const LoginPageProp = () => {
         password: '',
     });
 
-    const [message, setMessage] = useState('');
-    const [user, setUser] = useState(null); // Initialize as null
-
     const navigate = useNavigate();
+    const { user, message, login, logout } = useAuth();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -23,37 +22,14 @@ const LoginPageProp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            const response = await fetch('http://localhost:8000/api/v1/users/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
+        const result = await login(formData);
 
-            if (!response.ok) {
-                const result = await response.text();
-                throw new Error(result);
-            }
-
-            const result = await response.json();
-            setUser(result.data.user);
-            setMessage('Login successful!');
-            console.log(result.user);
-
+        if (result.success) {
             // Wait for 2 seconds before navigating
             setTimeout(() => {
                 navigate('/');
             }, 2000);
-        } catch (error) {
-            setMessage(`Error: ${error.message}`);
         }
-    };
-
-    const handleLogout = () => {
-        setUser(null);
-        setMessage('Logout successful!');
     };
 
     return (
@@ -71,7 +47,7 @@ const LoginPageProp = () => {
                     <div>
                         <p className="text-white">Logged in as: {user.email}</p>
                         <button
-                            onClick={handleLogout}
+                            onClick={logout}
                             className="w-full py-2 px-4 bg-red-700 text-white font-bold rounded hover:bg-red-800"
                         >
                             Logout

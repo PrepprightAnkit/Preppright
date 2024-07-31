@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import Hero from "./landingPage/Hero"
-import Categories from "./landingPage/Categories"
-import Discuss from './landingPage/Discuss';
 import { Link, useNavigate } from 'react-router-dom';
+import Hero from "./landingPage/Hero";
+import Categories from "./landingPage/Categories";
+import Discuss from './landingPage/Discuss';
 import Courses from './landingPage/Courses';
 import Platform from './landingPage/Platform';
+import { useAuth } from '../contexts/AuthContext';
+
 const Home = () => {
     const [courses, setCourses] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCourses, setFilteredCourses] = useState([]);
     const navigate = useNavigate();
+    const { user, logout } = useAuth();
 
     const scrollToSection = (id) => {
         const section = document.getElementById(id);
@@ -17,6 +20,7 @@ const Home = () => {
             section.scrollIntoView({ behavior: 'smooth' });
         }
     };
+
     useEffect(() => {
         fetchCourses();
     }, []);
@@ -51,7 +55,6 @@ const Home = () => {
         navigate(`/courses/${courseId}`);
     };
 
-
     return (
         <div>
             <nav className="bg-white p-4">
@@ -62,10 +65,7 @@ const Home = () => {
                         <button onClick={() => scrollToSection('categories')} className="text-blue-800 hover:underline">Categories</button>
                         <button onClick={() => scrollToSection('courses')} className="text-blue-800 hover:underline">Courses</button>
                         <button onClick={() => scrollToSection('discuss')} className="text-blue-800 hover:underline">Discuss</button>
-
                     </div>
-
-
 
                     <div className="relative w-full border-4  md:w-1/4">
                         <input
@@ -90,17 +90,36 @@ const Home = () => {
                         )}
                     </div>
                     <div className="flex space-x-4">
-                        <button className="bg-blue-500 hover:bg-blue-900 text-white px-4 py-2 rounded-full">
-                            <Link to="/login">
-                                Login
-                            </Link></button>
-                        <button className="bg-green-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                            <Link to="/reg">
-                                Register
-                            </Link></button>
+                        {user ? (
+                            <>
+                                <button
+                                    onClick={logout}
+                                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-full">
+                                    Logout
+                                </button>
+                                <button className="bg-gray-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
+                                    <Link to="/uploadContent">
+                                        Upload
+                                    </Link></button>
+                            </>
+                        ) : (
+                            <>
+                                <button className="bg-blue-500 hover:bg-blue-900 text-white px-4 py-2 rounded-full">
+                                    <Link to="/login">
+                                        Login
+                                    </Link>
+                                </button>
+                                <button className="bg-green-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
+                                    <Link to="/reg">
+                                        Register
+                                    </Link>
+                                </button>
+
+                            </>
+                        )}
                     </div>
                 </div>
-            </nav>
+            </nav >
             <div id="home" className="pt-4">
                 <Hero />
             </div>
@@ -116,8 +135,7 @@ const Home = () => {
             <div id="discuss" className="pt-4">
                 <Discuss />
             </div>
-
-        </div>
+        </div >
     );
 }
 

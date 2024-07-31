@@ -51,7 +51,7 @@ const Courses = () => {
                     <img
                       src={course.image}
                       alt={course.name}
-                      className="w-full h-36 hover:h-auto object-cover"
+                      className="w-full h-48 hover:h-auto object-cover"
                     />
                   </div>
                   <div className="p-4 bg-blue-50">

@@ -6,6 +6,8 @@ const Discuss = () => {
     const [questionText, setQuestionText] = useState('');
     const [answerText, setAnswerText] = useState('');
     const [reload, setReload] = useState(false);
+    const [filteredQuestions, setFilteredQuestions] = useState([]);
+    const [showDropdown, setShowDropdown] = useState(false);
 
     useEffect(() => {
         const fetchQuestions = async () => {
@@ -117,20 +119,41 @@ const Discuss = () => {
         }
     };
 
+    const handleSearchChange = (e) => {
+        const searchText = e.target.value;
+        setQuestionText(searchText);
+        if (searchText) {
+            const filtered = questions.filter((question) =>
+                question.questionText.toLowerCase().startsWith(searchText.toLowerCase())
+            );
+            setFilteredQuestions(filtered);
+            setShowDropdown(true);
+        } else {
+            setFilteredQuestions([]);
+            setShowDropdown(false);
+        }
+    };
+
+    const handleDropdownSelect = (question) => {
+        setSelectedQuestion(question);
+        setShowDropdown(false);
+        setQuestionText('');
+    };
+
     return (
         <div className="flex flex-col items-center justify-center w-full p-4 bg-blue-100 min-h-screen">
             <h1 className="text-blue-700 text-5xl font-bold mb-8">Discussion Forum !!</h1>
-            <div className="w-full max-w-6xl p-4 bg-white border-4 border-blue-700 rounded-lg shadow-lg">
+            <div className="w-full max-w-6xl p-4 bg-white border-4 border-blue-700 rounded-lg shadow-lg max-h-screen overflow-auto">
                 <div className="flex flex-col md:flex-row">
                     <div className="w-full md:w-3/4 p-4">
-                        <h2 className="text-2xl font-bold mb-4">Questions</h2>
+                        <h2 className="text-3xl ml-4 text-blue-600 font-black mb-4">Questions</h2>
                         {questions.map((question) => (
                             <div
                                 key={question._id}
-                                className="mb-4 p-4 bg-white rounded-lg shadow-md"
+                                className="mb-4 p-4 text-blue-700 text-2xl bg-white rounded-lg shadow-md"
                             >
-                                <h3 className="text-xl font-semibold">{question.questionText}</h3>
-                                <div className="text-sm text-gray-600 mt-2">
+                                <h3 className="text-2xl font-semibold">{question.questionText}</h3>
+                                <div className=" text-xl text-gray-600 mt-2">
                                     Likes: {question.likes} | Dislikes: {question.dislikes}
                                     <button
                                         onClick={() => handleLikeQuestion(question._id)}
@@ -200,11 +223,24 @@ const Discuss = () => {
                                     className="w-full p-2 mb-2 border rounded"
                                     rows="4"
                                     value={questionText}
-                                    onChange={(e) => setQuestionText(e.target.value)}
+                                    onChange={handleSearchChange}
                                     placeholder="Type your question here..."
                                     required
                                 />
-                                <button type="submit" className="w-full py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-700">
+                                {showDropdown && (
+                                    <ul className="border border-gray-300 rounded mt-2 max-h-40 overflow-y-auto">
+                                        {filteredQuestions.map((question) => (
+                                            <li
+                                                key={question._id}
+                                                className="p-2 cursor-pointer hover:bg-gray-200"
+                                                onClick={() => handleDropdownSelect(question)}
+                                            >
+                                                {question.questionText}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                                <button type="submit" className="w-full py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-700 mt-2">
                                     Submit
                                 </button>
                             </form>
