@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CourseDetails = () => {
     const { id } = useParams();
     const [course, setCourse] = useState(null);
     const [category, setCategory] = useState(null);
-    const { user } = useAuth();
+    const { user,isAuthenticated } = useSelector((state) => state.auth);
 
     useEffect(() => {
-        if (user) {
+        if (isAuthenticated) {
             fetchCourseDetails();
         }
-    }, [user]);
+    }, [isAuthenticated, id]);
 
     const fetchCourseDetails = async () => {
         try {
             const response = await fetch(`http://localhost:8000/api/v1/users/courses/${id}`);
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
                 setCourse(data.data);
                 fetchCategoryDetails(data.data.category);
             } else {
@@ -44,7 +43,7 @@ const CourseDetails = () => {
         }
     };
 
-    if (!user) {
+    if (!isAuthenticated) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
                 <div className="bg-white p-8 border-2 border-gray-300 rounded-lg text-center">

@@ -10,12 +10,17 @@ import UploadCourse from "./components/UploadCourse";
 import CourseDetails from "./components/CourseDetails";
 import UploadContent from "./components/UploadContent";
 import RegisterCompany from "./components/RegisterCompany";
+import ProfilePage from "./components/ProfilePage";
 import { AuthProvider } from "./contexts/AuthContext";
+import { Provider } from 'react-redux';
+import store from './store';
 function App() {
 
 
 
   return (
+    <Provider store={store}>
+
     <><AuthProvider>
       <BrowserRouter>
         <Routes>
@@ -27,6 +32,7 @@ function App() {
             <Route path="uploadCourse" element={<UploadCourse />} />
             <Route path="courses/:id" element={<CourseDetails />} />
             <Route path="login" element={<LoginPageProp />} />
+            <Route path="userProfile" element={<ProfilePage />} />
             <Route path="reg" element={<Register />} />
             <Route path="company-register" element={<RegisterCompany />} />
             <Route path="uploadContent" element={<UploadContent />} />
@@ -39,6 +45,8 @@ function App() {
     </AuthProvider>
 
     </>
+    </Provider>
+
   )
 }
 

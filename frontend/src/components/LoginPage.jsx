@@ -1,23 +1,21 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from '../firebase'; // Adjust import based on your Firebase initialization
-import loginPa from '../assets/loginBg.jpg'
-import { Fade } from 'react-awesome-reveal';
+import loginPa from '../assets/loginBg.jpg';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
-import PhoneNumberContext from '../contexts/PhoneNumberContext';
 
 const LoginPage = () => {
+    const [phoneNumber, setPhoneNumber] = useState(""); // Use local state for phone number
     const [otp, setOtp] = useState("");
     const [verificationId, setVerificationId] = useState("");
     const [message, setMessage] = useState("");
     const navigate = useNavigate(); // Initialize useNavigate
-    const { phoneNumberG, setPhoneNumberG } = useContext(PhoneNumberContext);
 
     const setupRecaptcha = () => {
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
             'size': 'invisible',
             'callback': (response) => {
-                log(response)
+                log(response);
             }
         });
     };
@@ -26,12 +24,11 @@ const LoginPage = () => {
         e.preventDefault();
         setupRecaptcha();
         const appVerifier = window.recaptchaVerifier;
-        signInWithPhoneNumber(auth, phoneNumberG, appVerifier)
+        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
             .then((confirmationResult) => {
                 setVerificationId(confirmationResult.verificationId);
                 setMessage("OTP sent to your phone.");
                 window.confirmationResult = confirmationResult;
-
             }).catch((error) => {
                 console.error(error);
                 setMessage("Failed to send OTP. Try again.");
@@ -64,8 +61,8 @@ const LoginPage = () => {
                                 <label className="block text-white">Phone number</label>
                                 <input
                                     type="text"
-                                    value={phoneNumberG}
-                                    onChange={(e) => setPhoneNumberG(e.target.value)}
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
                                     className="w-full p-2 mt-1 rounded border border-gray-300 bg-transparent text-white"
                                     required
                                 />

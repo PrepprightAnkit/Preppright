@@ -1,6 +1,6 @@
-import mongoose, { Schema, model } from "mongoose";
-import bcrypt from "bcrypt";
+import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 const userSchema = new Schema(
   {
@@ -10,7 +10,7 @@ const userSchema = new Schema(
       trim: true,
       index: true
     },
-    wemail: {
+    email: {
       type: String,
       required: true,
       unique: true,
@@ -61,41 +61,57 @@ const userSchema = new Schema(
       type: String,
       required: true,
       enum: ["Email", "Phone", "Both"]
+    },
+    courses: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Course'
+    }],
+    progress: {
+      type: Number,
+      default: 0
     }
+
   },
   { timestamps: true }
 );
 
-// Password hashing middleware
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (err) {
-    next(err);
-  }
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
-// Method to compare passwords
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
+userSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
 };
 
-// In your User model (student.models.js)
-userSchema.methods.toJSON = function () {
-  const user = this;
-  const userObject = user.toObject();
-
-  delete userObject.password;
-
-  return userObject;
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      username: this.username,
+      fullName: this.fullName,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    }
+  );
 };
 
-// Method to generate JWT
-userSchema.methods.generateJWT = function () {
-  return jwt.sign({ id: this._id, email: this.email }, process.env.ACCESS_TOKEN_SECRECT, { expiresIn: '1h' });
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
+  );
 };
 
-export const User = model("User", userSchema);
+export const User = mongoose.model("User", userSchema);

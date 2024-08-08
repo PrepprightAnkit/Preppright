@@ -1,6 +1,8 @@
+// src/components/LoginPageProp.js
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, logout } from '../actions/authActions';
 
 const LoginPageProp = () => {
     const [formData, setFormData] = useState({
@@ -9,7 +11,8 @@ const LoginPageProp = () => {
     });
 
     const navigate = useNavigate();
-    const { user, message, login, logout } = useAuth();
+    const dispatch = useDispatch();
+    const { user, message, isAuthenticated } = useSelector((state) => state.auth);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,15 +24,16 @@ const LoginPageProp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const result = await login(formData);
-
-        if (result.success) {
-            // Wait for 2 seconds before navigating
+        await dispatch(login(formData));
+        if (isAuthenticated) {
             setTimeout(() => {
                 navigate('/');
-            }, 2000);
+            }, 10);
         }
+    };
+
+    const handleLogout = () => {
+        dispatch(logout());
     };
 
     return (
@@ -47,30 +51,12 @@ const LoginPageProp = () => {
                     <div>
                         <p className="text-white">Logged in as: {user.email}</p>
                         <button
-                            onClick={logout}
+                            onClick={handleLogout}
                             className="w-full py-2 px-4 bg-red-700 text-white font-bold rounded hover:bg-red-800"
                         >
                             Logout
                         </button>
-                        <div className="bg-white bg-opacity-25 rounded-lg p-4 mt-4 text-white">
-                            <h3 className="font-bold text-xl">User Details</h3>
-                            <p><strong>Full Name:</strong> {user.fullName}</p>
-                            <p><strong>Email:</strong> {user.email}</p>
-                            <p><strong>Phone Number:</strong> {user.phoneNumber}</p>
-                            <p><strong>Role:</strong> {user.role}</p>
-                            <p><strong>Institution:</strong> {user.institution}</p>
-                            <p><strong>Year or Role:</strong> {user.yearOrRole}</p>
-                            <p><strong>Field or Department:</strong> {user.fieldOrDepartment}</p>
-                            <p><strong>Preferred Learning Mode:</strong> {user.preferredLearningMode}</p>
-                            <p><strong>Course Categories:</strong> {user.courseCategories.join(', ')}</p>
-                            <p><strong>Preferred Contact Method:</strong> {user.preferredContactMethod}</p>
-                            {user.profilePicture && (
-                                <div>
-                                    <strong>Profile Picture:</strong>
-                                    <img src={user.profilePicture} alt="Profile" className="rounded mt-2" />
-                                </div>
-                            )}
-                        </div>
+                        {/* User details display here */}
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-4">

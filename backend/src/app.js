@@ -32,9 +32,9 @@ import studentRouter from "./routes/student.routes.js";
 
 app.use("/api/v1/users", studentRouter)
 
-import authRoutes from './routes/login.routes.js'; // Adjust path as per your project structure
+// import authRoutes from './routes/login.routes.js'; // Adjust path as per your project structure
 
-app.use('/api/v1/users', authRoutes); // Mount the authRoutes under /api/v1/users
+// app.use('/api/v1/users', authRoutes); // Mount the authRoutes under /api/v1/users
 
 import categoryRoutes from './routes/categories.routes.js'
 
@@ -49,6 +49,9 @@ import questionRoutes from "./routes/question.routes.js"
 app.use('/api/v1/users', questionRoutes)
 
 
+import buyRoutes from "./routes/courseRoutes.js"
+
+app.use('/api/v1/users', buyRoutes) 
 
 
 export { app }

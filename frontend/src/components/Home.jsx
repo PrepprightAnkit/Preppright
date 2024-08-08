@@ -5,14 +5,16 @@ import Categories from "./landingPage/Categories";
 import Discuss from './landingPage/Discuss';
 import Courses from './landingPage/Courses';
 import Platform from './landingPage/Platform';
-import { useAuth } from '../contexts/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../actions/authActions';
 
 const Home = () => {
     const [courses, setCourses] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCourses, setFilteredCourses] = useState([]);
     const navigate = useNavigate();
-    const { user, logout } = useAuth();
+    const dispatch = useDispatch();
+    const { user,isAuthenticated } = useSelector((state) => state.auth);
 
     const scrollToSection = (id) => {
         const section = document.getElementById(id);
@@ -55,6 +57,11 @@ const Home = () => {
         navigate(`/courses/${courseId}`);
     };
 
+    const handleLogout = async () => {
+        await dispatch(logout());
+        navigate('/');
+    };
+
     return (
         <div>
             <nav className="bg-white p-4">
@@ -67,7 +74,7 @@ const Home = () => {
                         <button onClick={() => scrollToSection('discuss')} className="text-blue-800 hover:underline">Discuss</button>
                     </div>
 
-                    <div className="relative w-full border-4  md:w-1/4">
+                    <div className="relative w-full border-4 md:w-1/4">
                         <input
                             type="text"
                             value={searchTerm}
@@ -90,16 +97,20 @@ const Home = () => {
                         )}
                     </div>
                     <div className="flex space-x-4">
-                        {user ? (
+                        {isAuthenticated ? (
                             <>
                                 <button
-                                    onClick={logout}
+                                    onClick={handleLogout}
                                     className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-full">
                                     Logout
                                 </button>
                                 <button className="bg-gray-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
                                     <Link to="/uploadContent">
                                         Upload
+                                    </Link></button>
+                                <button className="bg-blue-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
+                                    <Link to="/userProfile">
+                                        My Profile
                                     </Link></button>
                             </>
                         ) : (
@@ -114,7 +125,6 @@ const Home = () => {
                                         Register
                                     </Link>
                                 </button>
-
                             </>
                         )}
                     </div>
