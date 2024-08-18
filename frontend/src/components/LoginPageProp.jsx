@@ -28,9 +28,10 @@ const LoginPageProp = () => {
         if (isAuthenticated) {
             setTimeout(() => {
                 navigate('/');
-            }, 10);
+            }, 2000);  // 2000 milliseconds = 2 seconds
         }
     };
+    
 
     const handleLogout = () => {
         dispatch(logout());
@@ -47,7 +48,7 @@ const LoginPageProp = () => {
             <div className="scale-105 bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-10 w-full md:w-1/4 shadow-lg ml-10 md:mt-10">
                 <h2 className="font-bold text-3xl text-white mb-12">{user ? 'Welcome' : 'Login Page'}</h2>
                 {message && <p className="text-red-600 mb-4">{message}</p>}
-                {user ? (
+                {isAuthenticated ? (
                     <div>
                         <p className="text-white">Logged in as: {user.email}</p>
                         <button
