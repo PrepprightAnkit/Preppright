@@ -11,6 +11,9 @@ import CourseDetails from "./components/CourseDetails";
 import UploadContent from "./components/UploadContent";
 import RegisterCompany from "./components/RegisterCompany";
 import ProfilePage from "./components/ProfilePage";
+import AllCourses from "./components/AllCourses";
+import AllCat from "./components/AllCat";
+
 import { AuthProvider } from "./contexts/AuthContext";
 import { Provider } from 'react-redux';
 import store from './store';
@@ -30,6 +33,10 @@ function App() {
             <Route path="loginOtp" element={<LoginPage />} />
             <Route path="uploadCat" element={<UploadCat />} />
             <Route path="uploadCourse" element={<UploadCourse />} />
+            <Route path="allCourse" element={<AllCourses />} />
+            <Route path="allCat" element={<AllCat />} />
+
+
             <Route path="courses/:id" element={<CourseDetails />} />
             <Route path="login" element={<LoginPageProp />} />
             <Route path="userProfile" element={<ProfilePage />} />

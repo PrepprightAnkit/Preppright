@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from '../actions/authActions';
 const ProfilePage = () => {
+    const navigate = useNavigate();
     const { user, isAuthenticated } = useSelector((state) => state.auth);
     const handleLogout = () => {
         dispatch(logout());
@@ -33,7 +34,7 @@ const ProfilePage = () => {
 
                     <div className="scale-75 md:scale-100 flex space-x-3 text-2xl font-bold mb-2 md:mb-0">
                         <button onClick={() => navigate('/')} className="text-blue-800 hover:underline">Home</button>
-                        <button onClick={() => navigate('/categories')} className="text-blue-800 hover:underline">Categories</button>
+                        <button onClick={() => navigate('/allCat')} className="text-blue-800 hover:underline">Categories</button>
                         <button onClick={() => navigate('/allCourse')} className="text-blue-800 hover:underline">Courses</button>
                       
                     </div>

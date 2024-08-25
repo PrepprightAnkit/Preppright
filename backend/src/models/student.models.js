@@ -30,6 +30,11 @@ const userSchema = new Schema(
       required: true,
       enum: ["College Student", "Corporate Employee", "Other"]
     },
+    isAdmin:{
+      type:Boolean,
+      required:true,
+      default:false,
+    },
     institution: {
       type: String,
       required: true,
@@ -69,7 +74,26 @@ const userSchema = new Schema(
     progress: {
       type: Number,
       default: 0
-    }
+    },
+    quizzesTaken: [
+      {
+        quiz: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Quiz",
+        },
+        score: {
+          type: Number,
+        },
+        certificate: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Certificate",
+        },
+        takenAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
 
   },
   { timestamps: true }
@@ -113,5 +137,7 @@ userSchema.methods.generateRefreshToken = function () {
     }
   );
 };
+
+
 
 export const User = mongoose.model("User", userSchema);
