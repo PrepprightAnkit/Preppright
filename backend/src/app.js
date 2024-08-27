@@ -53,6 +53,10 @@ import buyRoutes from "./routes/courseRoutes.js"
 
 app.use('/api/v1/users', buyRoutes) 
 
+import quizRoutes from "./routes/quiz.routes.js"
+
+app.use('/api/v1/quiz', quizRoutes) 
+
 
 export { app }
 

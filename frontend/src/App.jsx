@@ -11,6 +11,8 @@ import CourseDetails from "./components/CourseDetails";
 import UploadContent from "./components/UploadContent";
 import RegisterCompany from "./components/RegisterCompany";
 import ProfilePage from "./components/ProfilePage";
+import Quiz from "./components/Quiz";
+import TakeQuiz from "./components/TakeQuiz";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Provider } from 'react-redux';
 import store from './store';
@@ -34,8 +36,11 @@ function App() {
             <Route path="login" element={<LoginPageProp />} />
             <Route path="userProfile" element={<ProfilePage />} />
             <Route path="reg" element={<Register />} />
+            <Route path="quiz" element={<Quiz/>}/>
             <Route path="company-register" element={<RegisterCompany />} />
             <Route path="uploadContent" element={<UploadContent />} />
+            <Route path="takeQuiz" element={<TakeQuiz />} />
+
 
 
 

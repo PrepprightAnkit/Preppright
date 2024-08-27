@@ -2,6 +2,18 @@ import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
+const quizScoreSchema = new Schema({
+  quiz: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Quiz',
+    required: true
+  },
+  score: {
+    type: Number,
+    required: true
+  }
+});
+
 const userSchema = new Schema(
   {
     fullName: {
@@ -66,6 +78,7 @@ const userSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Course'
     }],
+    quizes: [quizScoreSchema],
     progress: {
       type: Number,
       default: 0
