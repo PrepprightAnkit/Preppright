@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
+
+
+import {  useSelector } from 'react-redux';
+
 const TakeQuiz = () => {
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+
   const [quizzes, setQuizzes] = useState([]);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -85,6 +91,7 @@ const TakeQuiz = () => {
       body: JSON.stringify({
         quizId: selectedQuiz,
         answers: answers,
+        userId: user._id
       }),
     })
       .then((response) => response.json())

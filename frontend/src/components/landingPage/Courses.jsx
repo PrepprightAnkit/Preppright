@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import c1 from './assets/c1.png';
 import c2 from './assets/c2.png';
 import c3 from './assets/c3.png';
-import { Slide,Fade } from 'react-awesome-reveal';
+import { Slide, Fade } from 'react-awesome-reveal';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -42,21 +42,21 @@ const Courses = () => {
         </Slide>
       </div>
       {courses.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {courses.map((course) => (
             <Link to={`/courses/${course._id}`} key={course._id} className="text-white px-4 py-2 rounded-md">
               <div className="bg-white shadow-md rounded-lg border-blue-700 overflow-hidden hover:shadow-lg transform hover:scale-105 transition-transform duration-300 group">
                 <Fade cascade>
                   <div className="relative">
                     <img
-                      src={course.image}
-                      alt={course.name}
+                      src={course.courseImage}
+                      alt={course.title}
                       className="w-full h-48 hover:h-auto object-cover"
                     />
                   </div>
                   <div className="p-4 bg-blue-50">
                     <h3 className="text-xl font-semibold text-blue-700 mb-2 line-clamp-1 hover:line-clamp-none">
-                      {course.name}
+                      {course.title}
                     </h3>
                     <p className="text-gray-700 mb-2 line-clamp-3 hover:line-clamp-none">
                       {course.description}
@@ -64,7 +64,7 @@ const Courses = () => {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center">
                         <img src={c1} alt="Book" className="w-6 h-6 mr-2" />
-                        <span className="text-gray-600">{course.numberOfLessons}</span>
+                        <span className="text-gray-600">{course.lessons.length}</span>
                       </div>
                       <div className="flex items-center">
                         <img src={c2} alt="Icon 2" className="w-6 h-6 mr-2" />

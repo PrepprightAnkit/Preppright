@@ -5,7 +5,7 @@ import fs from 'fs';
 // Ensure the uploads directory exists
 const uploadsDir = 'uploads';
 if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
+  fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
 // Set up multer storage options
@@ -15,30 +15,34 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    cb(null, `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`);
   }
 });
 
-// Initialize multer with storage options
-const upload = multer({ 
-  storage, 
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif|mp4|mkv|avi|pdf|doc|docx/;
-    const mimeType = allowedTypes.test(file.mimetype);
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+// Allowed file types
+const allowedTypes = /jpeg|jpg|png|gif|mp4|mkv|avi|pdf|doc|docx/;
 
-    if (mimeType && extname) {
-      return cb(null, true);
-    }
-    cb(new Error('Error: File upload only supports the following filetypes - ' + allowedTypes));
+// File filter function to validate file types
+const fileFilter = (req, file, cb) => {
+  const mimeType = allowedTypes.test(file.mimetype);
+  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+
+  if (mimeType && extname) {
+    return cb(null, true);
+  }
+  cb(new Error('Error: File upload only supports the following filetypes - jpeg, jpg, png, gif, mp4, mkv, avi, pdf, doc, docx'));
+};
+
+// Initialize multer with storage and file filter options
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 1024 * 1024 * 50 // 50MB file size limit, adjust as needed
   }
 }).fields([
-  { name: 'image', maxCount: 1 },
-  { name: 'videos', maxCount: 10 },
-  { name: 'files', maxCount: 10 },
-  { name: 'freeVideo', maxCount: 5 },
-  { name: 'freeNotes', maxCount: 5 },
-  { name: 'courseIntroVideo', maxCount: 1 }
+  { name: 'image', maxCount: 1 },   // Single image upload
+  { name: 'videos', maxCount: 10 }, // Multiple video uploads
 ]);
 
 export { upload };

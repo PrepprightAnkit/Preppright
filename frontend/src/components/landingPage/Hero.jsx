@@ -2,6 +2,7 @@ import React from 'react';
 import heroBg from "./assets/heroBg.png";
 import companiesHero from "./assets/companiesHero.png";
 import { Fade, Zoom, Slide } from "react-awesome-reveal";
+import { Link } from 'react-router-dom';
 const Hero = () => {
     const scrollToCategories = () => {
         const categoriesSection = document.getElementById('categories');
@@ -32,6 +33,11 @@ const Hero = () => {
                                     >
                                         Get Started
                                     </button>
+                                    <Link to="/quiz">
+                                    <h1 className='text-xl'> 
+                                    Quiz
+                                    </h1>
+                                    </Link>
                                 </div>
                             </Fade>
                         </div>

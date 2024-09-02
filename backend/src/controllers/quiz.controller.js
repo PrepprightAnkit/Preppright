@@ -164,10 +164,9 @@ export const getQuestionById = async (req, res) => {
   }
 };
 
-
 export const submitQuiz = async (req, res) => {
   try {
-    const { quizId, userId, answers } = req.body;  // answers should be an array of objects { questionId, selectedOptionId }
+    const { quizId, userId, answers } = req.body; // answers should be an array of objects { questionId, selectedOptionId }
 
     // Find the quiz by its ID
     const quiz = await Quiz.findById(quizId);
@@ -178,22 +177,45 @@ export const submitQuiz = async (req, res) => {
     // Calculate the score
     let score = 0;
     for (const answer of answers) {
-      const question = quiz.questions.id(answer.questionId);
+      // Find the question by its identifier or question ID
+      const question = quiz.questions.find(
+        (q) => q._id.toString() === answer.questionId
+      );
+
       if (question) {
-        const selectedOption = question.options.id(answer.selectedOptionId);
+        // Find the selected option within the question
+        const selectedOption = question.options.find(
+          (opt) => opt._id.toString() === answer.selectedOptionId
+        );
+
+        // Check if the selected option is correct
         if (selectedOption && selectedOption.isCorrect) {
-          score += 1;
+          score += 1; // Increment the score for each correct answer
         }
       }
     }
 
-    // Store the score in the user's record
+    // Find the user by their ID
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    user.quizes.push({ quiz: quizId, score });
+    // Check if the quiz has already been taken
+    const existingQuizRecord = user.quizzesTaken.find(
+      (takenQuiz) => takenQuiz.quiz.toString() === quizId
+    );
+
+    if (existingQuizRecord) {
+      // Update the existing score if the quiz has already been taken
+      existingQuizRecord.score = score;
+      existingQuizRecord.takenAt = new Date(); // Update the timestamp when the quiz was taken
+    } else {
+      // Add a new quiz record if not taken before
+      user.quizzesTaken.push({ quiz: quizId, score, takenAt: new Date() });
+    }
+
+    // Save the updated user data
     await user.save();
 
     res.status(200).json({ success: true, score });
@@ -202,6 +224,7 @@ export const submitQuiz = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 
 export const getAllQuizzes = async (req, res) => {
   try {

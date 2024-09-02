@@ -14,6 +14,19 @@ const quizScoreSchema = new Schema({
   }
 });
 
+// Define the schema for tracking lesson progress within a course
+const courseLessonProgressSchema = new Schema({
+  lessonId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Lesson',
+    required: true
+  },
+  isCompleted: {
+    type: Boolean,
+    default: false
+  }
+});
+
 const userSchema = new Schema(
   {
     fullName: {
@@ -74,20 +87,24 @@ const userSchema = new Schema(
       required: true,
       enum: ["Email", "Phone", "Both"]
     },
-    courses: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Course'
-    }],
+    coursesTaken: [
+      {
+        course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
+        progress: {
+          type: Number,
+          default: 0 // Percentage of course completed (0 to 100)
+        },
+        lessons: [courseLessonProgressSchema] // Array to track lesson progress
+      }
+    ],
     quizes: [quizScoreSchema],
     progress: {
       type: Number,
       default: 0
     }
-
   },
   { timestamps: true }
 );
-
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

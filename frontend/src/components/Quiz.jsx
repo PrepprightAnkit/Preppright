@@ -288,14 +288,14 @@ const Quiz = () => {
                   value={optionText}
                   onChange={(e) => setOptionText(e.target.value)}
                 />
-                <label className="inline-flex items-center mb-4">
+                <label className="inline-flex  items-center mb-4">
                   <input
                     type="checkbox"
-                    className="form-checkbox text-green-600"
+                    className="form-checkbox text-green-600 ml-2"
                     checked={isCorrect}
                     onChange={(e) => setIsCorrect(e.target.checked)}
                   />
-                  <span className="ml-2">Correct Option</span>
+                  <span className="ml-2 mr-2">Correct Option</span>
                 </label>
                 <button
                   onClick={addOption}
