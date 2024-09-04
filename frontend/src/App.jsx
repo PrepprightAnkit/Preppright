@@ -13,6 +13,8 @@ import RegisterCompany from "./components/RegisterCompany";
 import ProfilePage from "./components/ProfilePage";
 import Quiz from "./components/Quiz";
 import TakeQuiz from "./components/TakeQuiz";
+import AllQuiz from "./components/AllQuiz";
+
 import { AuthProvider } from "./contexts/AuthContext";
 import { Provider } from 'react-redux';
 import store from './store';
@@ -40,6 +42,8 @@ function App() {
             <Route path="company-register" element={<RegisterCompany />} />
             <Route path="uploadContent" element={<UploadContent />} />
             <Route path="takeQuiz" element={<TakeQuiz />} />
+            <Route path="allQuiz" element={<AllQuiz />} />
+
 
 
 

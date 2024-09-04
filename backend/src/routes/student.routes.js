@@ -7,7 +7,8 @@ import {
     changeCurrentPassword, 
     getCurrentUser, 
     updateUserAvatar, 
-    updateUserCoverImage, 
+    updateUserCoverImage,
+    updateQuizScore, 
 } from "../controllers/student.controllers.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { upload } from "../middlewares/multer.middlware.js";
@@ -37,5 +38,5 @@ router.route("/current-user").get(verifyJWT, getCurrentUser);
 router.route("/avatar").patch(verifyJWT,  updateUserAvatar);
 router.route("/cover-image").patch(verifyJWT,  updateUserCoverImage);
 
-
+router.route("/updateQuiz").post(updateQuizScore);
 export default router;

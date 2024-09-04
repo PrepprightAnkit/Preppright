@@ -84,6 +84,51 @@ const registerUser = asynchandler(async (req, res) => {
     );
 });
 
+
+
+const updateQuizScore = asynchandler(async (req, res) => {
+    const { userId, quizId, score } = req.body;
+  
+    if (!userId || !quizId || score === undefined) {
+      return res.status(400).json({
+        status: "fail",
+        message: "User ID, Quiz ID, and Score are required fields.",
+      });
+    }
+  
+    const user = await User.findById(userId);
+  
+    if (!user) {
+      return res.status(404).json({
+        status: "fail",
+        message: "User not found.",
+      });
+    }
+  
+    // Check if the quiz already exists in the user's quizzes array
+    const quizIndex = user.quizes.findIndex(
+      (quizScore) => quizScore.quiz.toString() === quizId
+    );
+  
+    if (quizIndex !== -1) {
+      // If the quiz exists, update the score
+      user.quizes[quizIndex].score = score;
+    } else {
+      // If the quiz does not exist, add it to the quizzes array
+      user.quizes.push({ quiz: quizId, score });
+    }
+  
+    await user.save();
+  
+    return res.status(200).json({
+      status: "success",
+      data: {
+        message: "Quiz score updated successfully.",
+        quizes: user.quizes,
+      },
+    });
+  });
+  
 // Login User
 const loginUser = asynchandler(async (req, res) => {
     const { email,  password } = req.body;
@@ -332,4 +377,5 @@ export {
     updateAccountDetails,
     updateUserAvatar,
     updateUserCoverImage,
+    updateQuizScore
 };

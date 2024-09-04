@@ -3,7 +3,11 @@ import heroBg from "./assets/heroBg.png";
 import companiesHero from "./assets/companiesHero.png";
 import { Fade, Zoom, Slide } from "react-awesome-reveal";
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 const Hero = () => {
+    const { user, isAuthenticated } = useSelector((state) => state.auth);
+
     const scrollToCategories = () => {
         const categoriesSection = document.getElementById('categories');
         if (categoriesSection) {
@@ -33,16 +37,26 @@ const Hero = () => {
                                     >
                                         Get Started
                                     </button>
-                                    <Link to="/quiz">
-                                    <h1 className='text-xl'> 
-                                    Quiz
-                                    </h1>
-                                    </Link>
+
+                                    <div className='flex flex-row items-center justify-center w-full gap-4'>
+                                        <Link to="/allQuiz">
+                                            <h1 className='text-xl'>
+                                                Quiz
+                                            </h1>
+                                        </Link>
+
+                                        {/* Conditional rendering for admin */}
+                                        {user && user.isAdmin && (
+                                            <Link to="/Quiz">
+                                                <h1 className='text-xl'>
+                                                    Create a Quiz                                            </h1>
+                                            </Link>
+                                        )}
+                                    </div>
                                 </div>
                             </Fade>
                         </div>
                         <div className="w-full lg:w-1/2 h-1/2 lg:h-full order-2 flex justify-center lg:justify-end items-center">
-
                             <img
                                 src={heroBg}
                                 alt="Hero Image"
