@@ -50,6 +50,7 @@ const registerUser = asynchandler(async (req, res) => {
     if (existingUser) {
         throw new ApiError(409, "User with this email already exists");
     }
+    let isAdmin=false;
 
     const avatarLocalPath = req.files?.profilePicture?.[0]?.path;
 
@@ -64,6 +65,7 @@ const registerUser = asynchandler(async (req, res) => {
         phoneNumber,
         password,
         role,
+        isAdmin,
         institution,
         yearOrRole,
         fieldOrDepartment,

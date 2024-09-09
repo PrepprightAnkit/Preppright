@@ -34,7 +34,7 @@ const Courses = () => {
             <h2 className="text-5xl font-bold text-blue-700">POPULAR COURSES!</h2>
             <h2 className="text-2xl ml-2 mt-2 font-light text-gray-800">Explore our Top Courses</h2>
           </div>
-          <Link to="/allCat">
+          <Link to="/allCourse">
             <button className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800">
               View All Courses
             </button>

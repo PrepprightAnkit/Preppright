@@ -53,6 +53,7 @@ import buyRoutes from "./routes/courseRoutes.js"
 
 app.use('/api/v1/users', buyRoutes) 
 
+<<<<<<< HEAD
 import quizRoutes from "./routes/quiz.routes.js"
 
 app.use('/api/v1/quiz', quizRoutes) 
@@ -60,6 +61,12 @@ app.use('/api/v1/quiz', quizRoutes)
 import approveRoutes from "./routes/courseApproval.routes.js"
 
 app.use('/api/v1/approve',  approveRoutes);
+=======
+import quizRouters from "./routes/quiz.routes.js"
+
+app.use('/api/v1/quiz', quizRouters) 
+
+>>>>>>> 1cb8c2a3b262bdcc985090ead53cf08661763dc5
 
 export { app }
 
