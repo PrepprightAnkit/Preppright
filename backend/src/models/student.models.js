@@ -106,31 +106,7 @@ const userSchema = new Schema(
     progress: {
       type: Number,
       default: 0
-<<<<<<< HEAD
     }
-=======
-    },
-    quizzesTaken: [
-      {
-        quiz: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Quiz",
-        },
-        score: {
-          type: Number,
-        },
-        certificate: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Certificate",
-        },
-        takenAt: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
-
->>>>>>> 1cb8c2a3b262bdcc985090ead53cf08661763dc5
   },
   { timestamps: true }
 );

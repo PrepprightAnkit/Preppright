@@ -59,13 +59,8 @@ const AllCat = () => {
 
                     <div className="scale-75 md:scale-100 flex space-x-4 text-2xl font-bold mb-2 md:mb-0">
                         <button onClick={() => navigate('/')} className="text-blue-800 hover:underline">Home</button>
-<<<<<<< HEAD
                         <button onClick={() => navigate('/allCat')} className="text-blue-800 hover:underline">Categories</button>
                         <button onClick={() => navigate('/allCourses')} className="text-blue-800 hover:underline">Courses</button>
-=======
-                        <button onClick={() => navigate('/categories')} className="text-blue-800 hover:underline">Categories</button>
-                        <button onClick={() => navigate('/allCourse')} className="text-blue-800 hover:underline">Courses</button>
->>>>>>> 1cb8c2a3b262bdcc985090ead53cf08661763dc5
                     </div>
 
                     <div className="relative w-full md:w-1/4 group">
