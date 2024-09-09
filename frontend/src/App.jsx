@@ -14,7 +14,11 @@ import ProfilePage from "./components/ProfilePage";
 import Quiz from "./components/Quiz";
 import TakeQuiz from "./components/TakeQuiz";
 import AllQuiz from "./components/AllQuiz";
-
+import CourseApprovalPage from "./components/CourseApprovalPage";
+import AllCat from "./components/AllCat";
+import AllCourses from "./components/AllCourses";
+import ApproveCourse from "./components/ApproveCourse";
+import UploadCourseApproval from "./components/UploadCourseApproval";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Provider } from 'react-redux';
 import store from './store';
@@ -43,6 +47,13 @@ function App() {
             <Route path="uploadContent" element={<UploadContent />} />
             <Route path="takeQuiz" element={<TakeQuiz />} />
             <Route path="allQuiz" element={<AllQuiz />} />
+            <Route path="allCat" element={<AllCat />} />
+            <Route path="allCourses" element={<AllCourses />} />
+
+
+            <Route path="approveCourse" element={<ApproveCourse />} />
+            <Route path="uploadCourseApproval" element={<UploadCourseApproval />} />
+
 
 
 

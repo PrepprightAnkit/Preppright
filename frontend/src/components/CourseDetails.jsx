@@ -6,7 +6,18 @@ const CourseDetails = () => {
     const { id } = useParams();
     const [course, setCourse] = useState(null);
     const [category, setCategory] = useState(null);
-    const { isAuthenticated } = useSelector((state) => state.auth);
+    const { user, isAuthenticated } = useSelector((state) => state.auth);
+    const [purchased, setPurchased] = useState(null);
+    let userHasCourse = false;
+
+    if (isAuthenticated) {
+        for (let i = 0; i < user.coursesTaken.length; i++) {
+            if (user.coursesTaken[i].course === course?._id) {
+                userHasCourse = true;
+                break;
+            }
+        }
+    }
 
     const [completedLessons, setCompletedLessons] = useState([]);
 
@@ -20,8 +31,13 @@ const CourseDetails = () => {
         if (course) {
             const savedProgress = JSON.parse(localStorage.getItem(`progress-${course._id}`)) || [];
             setCompletedLessons(savedProgress);
+            setPurchased(true);
         }
     }, [course]);
+
+    const handleBuyNowClick = () => {
+        setShowPaymentForm(true);
+    };
 
     const fetchCourseDetails = async () => {
         try {
@@ -93,9 +109,41 @@ const CourseDetails = () => {
     };
 
     const [expandedLesson, setExpandedLesson] = useState(null);
+    const [showPaymentForm, setShowPaymentForm] = useState(false);
+    const [transactionId, setTransactionId] = useState('');
+    const [paymentConfirmationImage, setPaymentConfirmationImage] = useState(null);
 
     const toggleLesson = (lessonId) => {
         setExpandedLesson(expandedLesson === lessonId ? null : lessonId);
+    };
+
+    const handlePaymentFormSubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('courseId', course._id);
+        formData.append('userId', user._id);
+        formData.append('transactionId', transactionId);
+        formData.append('paymentConfirmationImage', paymentConfirmationImage);
+
+        try {
+            const response = await fetch('http://localhost:8000/api/v1/approve/courseApproval', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${user.token}` // Include JWT token if required
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Course purchased successfully:', data);
+                setShowPaymentForm(false); // Hide form after successful purchase
+            } else {
+                console.error('Failed to approve course');
+            }
+        } catch (error) {
+            console.error('Error approving course:', error);
+        }
     };
 
     if (!isAuthenticated) {
@@ -118,17 +166,25 @@ const CourseDetails = () => {
     return (
         <section className="bg-gradient-to-r from-blue-300 to-blue-700 p-8 min-h-screen">
             {/* Progress Bar */}
-            <div className="bg-white p-2 mb-6 rounded-lg shadow-lg">
-                <div className="relative w-full h-6 bg-gray-200 rounded-full">
-                    <div
-                        className="absolute top-0 left-0 h-6 bg-green-600 rounded-full transition-all duration-300"
-                        style={{ width: `${getProgressPercentage()}%` }}
-                    ></div>
-                </div>
-                <p className="text-center text-sm font-semibold mt-2 text-green-700">
-                    {getProgressPercentage()}% of Lessons Completed
-                </p>
-            </div>
+            {
+                userHasCourse ? (
+                    <>
+                        <div className="bg-white p-2 mb-6 rounded-lg shadow-lg">
+                            <div className="relative w-full h-6 bg-gray-200 rounded-full">
+                                <div
+                                    className="absolute top-0 left-0 h-6 bg-green-600 rounded-full transition-all duration-300"
+                                    style={{ width: `${getProgressPercentage()}%` }}
+                                ></div>
+                            </div>
+                            <p className="text-center text-sm font-semibold mt-2 text-green-700">
+                                {getProgressPercentage()}% of Lessons Completed
+                            </p>
+                        </div>
+                    </>
+                ) : (
+                    <></>
+                )
+            }
 
             <div className="flex justify-between items-center mb-6">
                 <div>
@@ -169,74 +225,133 @@ const CourseDetails = () => {
                             <span className="text-gray-600 text-lg">Price: ${course.price}</span>
                         </div>
                         <div className="text-center mt-4">
-                            <button className="bg-green-700 text-white text-lg font-bold py-2 px-4 rounded-lg shadow-lg">
-                                Buy Now
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="bg-white shadow-md rounded-lg p-4 mt-4">
-                        <h3 className="text-3xl font-semibold text-green-700 mb-4">Free Video and Notes</h3>
-                        <div className="mb-8">
-                            <h4 className="text-2xl font-semibold text-blue-700 mb-4 text-center">Free Video</h4>
-                            <div className="bg-blue-700 w-full h-full flex justify-center items-center py-8">
-                                {/* Free Video in Iframe */}
-                                <div className="h-full sm:w-3/4 md:w-2/3 lg:w-1/2">
-                                    <iframe
-                                        src={course.freeVideo.replace("watch?v=", "embed/")}
-                                        title="Free Video"
-                                        className="w-full h-full rounded-lg shadow-lg"
-                                        allowFullScreen
-                                    ></iframe>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 className="text-2xl font-semibold text-blue-700 mb-2">Free Notes</h4>
-                            <a href={course.freeNotes} target="_blank" rel="noopener noreferrer" className="text-green-700 underline text-lg">
-                                Download Free Notes
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="bg-white shadow-md rounded-lg p-8 mt-8">
-                <h3 className="text-3xl font-bold text-blue-700 mb-4">Course Lessons</h3>
-                <div className="space-y-4">
-                    {course.lessons.map((lesson) => (
-                        <div key={lesson._id} className="border-b pb-4">
-                            <div
-                                className="bg-blue-100 p-4 rounded-lg cursor-pointer flex justify-between items-center"
-                                onClick={() => toggleLesson(lesson._id)}
-                            >
-                                <h4 className="text-xl font-semibold text-blue-700">{lesson.title}</h4>
-                                <input
-                                    type="checkbox"
-                                    checked={completedLessons.includes(lesson._id)}
-                                    onChange={() => toggleLessonCompletion(lesson._id)}
-                                    className="form-checkbox h-5 w-5 text-green-600"
-                                />
-                            </div>
-                            {expandedLesson === lesson._id && (
-                                <div className="mt-4">
-                                    <video controls className="w-full rounded-lg shadow-lg">
-                                        <source src={lesson.videoLink} type="video/mp4" />
-                                        Your browser does not support the video tag.
-                                    </video>
-                                    <div className="mt-2">
-                                        <a href={lesson.notes} target="_blank" rel="noopener noreferrer" className="text-green-700 underline">
-                                            Download Lesson Notes
-                                        </a>
-                                    </div>
-                                </div>
+                            {userHasCourse ? (
+                                // This is where you can place content if the user has the course.
+                                <></>
+                            ) : (
+                                <button
+                                    className="bg-green-700 text-white text-lg font-bold py-2 px-4 rounded-lg shadow-lg"
+                                    onClick={handleBuyNowClick}
+                                >
+                                    Buy Now
+                                </button>
                             )}
                         </div>
-                    ))}
+
+                    </div>
+
+                    {showPaymentForm && !userHasCourse && (
+                        <div className="bg-white shadow-md rounded-lg p-4 mt-4">
+                            <h3 className="text-2xl font-semibold text-blue-700 mb-4">Complete Your Purchase</h3>
+                            <form onSubmit={handlePaymentFormSubmit}>
+                                <div className="mb-4">
+                                    <label htmlFor="transactionId" className="block text-gray-700 font-bold mb-2">
+                                        Transaction ID:
+                                    </label>
+                                    <input
+                                        id="transactionId"
+                                        type="text"
+                                        value={transactionId}
+                                        onChange={(e) => setTransactionId(e.target.value)}
+                                        className="w-full p-2 border border-gray-300 rounded-lg shadow-inner"
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label htmlFor="paymentConfirmationImage" className="block text-gray-700 font-bold mb-2">
+                                        Upload Payment Confirmation:
+                                    </label>
+                                    <input
+                                        id="paymentConfirmationImage"
+                                        type="file"
+                                        onChange={(e) => setPaymentConfirmationImage(e.target.files[0])}
+                                        className="w-full p-2 border border-gray-300 rounded-lg shadow-inner"
+                                    />
+                                </div>
+                                <div className="text-center">
+                                    <button
+                                        type="submit"
+                                        className="bg-green-700 text-white text-lg font-bold py-2 px-4 rounded-lg shadow-lg"
+                                    >
+                                        Confirm Payment
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    )}
                 </div>
             </div>
+
+            <div className="bg-white shadow-md rounded-lg p-4 mt-4">
+                <h3 className="text-3xl font-semibold text-green-700 mb-4">Free Video and Notes</h3>
+                <div className="mb-8">
+                    <h4 className="text-2xl font-semibold text-blue-700 mb-4 text-center">Free Video</h4>
+                    <div className="bg-blue-700 w-full h-full flex justify-center items-center py-8">
+                        {/* Free Video in Iframe */}
+                        <div className="h-full sm:w-3/4 md:w-2/3 lg:w-1/2">
+                            <iframe
+                                src={course.freeVideo.replace("watch?v=", "embed/")}
+                                title="Free Video"
+                                className="w-full h-full rounded-lg shadow-lg"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 className="text-2xl font-semibold text-blue-700 mb-2">Free Notes</h4>
+                    <a href={course.freeNotes} target="_blank" rel="noopener noreferrer" className="text-green-700 underline text-lg">
+                        Download Free Notes
+                    </a>
+                </div>
+            </div>
+
+
+
+            <div className="bg-white shadow-md rounded-lg p-8 mt-8">
+                {userHasCourse ? (
+                    <>
+                        <div className="bg-white shadow-md rounded-lg p-8 mt-8">
+                            <h3 className="text-3xl font-bold text-blue-700 mb-4">Course Lessons</h3>
+                            <div className="space-y-4">
+                                {course.lessons.map((lesson) => (
+                                    <div key={lesson._id} className="border-b pb-4">
+                                        <div
+                                            className="bg-blue-100 p-4 rounded-lg cursor-pointer flex justify-between items-center"
+                                            onClick={() => toggleLesson(lesson._id)}
+                                        >
+                                            <h4 className="text-xl font-semibold text-blue-700">{lesson.title}</h4>
+                                            <input
+                                                type="checkbox"
+                                                checked={completedLessons.includes(lesson._id)}
+                                                onChange={() => toggleLessonCompletion(lesson._id)}
+                                                className="form-checkbox h-5 w-5 text-green-600"
+                                            />
+                                        </div>
+                                        {expandedLesson === lesson._id && (
+                                            <div className="mt-4">
+                                                <video controls className="w-full rounded-lg shadow-lg">
+                                                    <source src={lesson.videoLink} type="video/mp4" />
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                                <div className="mt-2">
+                                                    <a href={lesson.notes} target="_blank" rel="noopener noreferrer" className="text-green-700 underline">
+                                                        Download Lesson Notes
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <p className="text-2xl text-red-700 text-center">You need to purchase this course to access the lessons.</p>
+                )}
+            </div>
         </section>
+
     );
 };
 

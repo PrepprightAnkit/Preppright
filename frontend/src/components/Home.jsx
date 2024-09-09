@@ -72,6 +72,8 @@ const Home = () => {
                         <button onClick={() => scrollToSection('categories')} className="text-blue-800 hover:underline">Categories</button>
                         <button onClick={() => scrollToSection('courses')} className="text-blue-800 hover:underline">Courses</button>
                         <button onClick={() => scrollToSection('discuss')} className="text-blue-800 hover:underline">Discuss</button>
+                        <button className="text-blue-800 hover:underline"><Link to="/allQuiz">Quiz
+                                        </Link></button>
                     </div>
 
                     <div className="relative w-full border-4 md:w-1/4">
