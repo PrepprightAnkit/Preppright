@@ -369,6 +369,19 @@ const updateUserCoverImage = asynchandler(async (req, res) => {
         );
 });
 
+// Get All Users
+const getAllUsers = asynchandler(async (req, res) => {
+    const users = await User.find().select("-password -refreshToken");
+
+    if (!users || users.length === 0) {
+        throw new ApiError(404, "No users found");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, users, "Users fetched successfully")
+    );
+});
+
 export {
     registerUser,
     loginUser,
@@ -379,5 +392,6 @@ export {
     updateAccountDetails,
     updateUserAvatar,
     updateUserCoverImage,
-    updateQuizScore
+    updateQuizScore,
+    getAllUsers // Add this line to export the new controller
 };

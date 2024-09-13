@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-
+import bg from '../assets/PreepPright.png'
 const UploadCourse = () => {
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
@@ -95,13 +95,15 @@ const UploadCourse = () => {
       {/* Navbar */}
       <nav className="bg-white p-4 border-b border-gray-200">
         <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-          <h1 className="text-2xl font-bold mb-2 md:mb-0">LOGO</h1>
+          {/* <h1 className="text-2xl font-bold mb-2 md:mb-0">LOGO</h1> */}
+          <img src={bg}
+            className='h-12 w-auto mb-2 md:mb-0' />
           <div className="scale-75 md:scale-100 flex space-x-4 text-2xl font-bold mb-2 md:mb-0">
             <button onClick={() => navigate('/')} className="text-blue-800 hover:underline">Home</button>
             <button onClick={() => navigate('/allCat')} className="text-blue-800 hover:underline">Categories</button>
             <button onClick={() => navigate('/allCourse')} className="text-blue-800 hover:underline">Courses</button>
           </div>
-          
+
           <div className="flex space-x-4">
             {isAuthenticated ? (
               <>

@@ -7,7 +7,7 @@ import Courses from './landingPage/Courses';
 import Platform from './landingPage/Platform';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../actions/authActions';
-
+import bg from '../assets/PreepPright.png'
 const Home = () => {
     const [courses, setCourses] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -66,7 +66,9 @@ const Home = () => {
         <div>
             <nav className="bg-white p-4">
                 <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-                    <h1 className="text-2xl font-bold mb-2 md:mb-0">LOGO</h1>
+                    {/* <h1 className="text-2xl font-bold ">LOGO</h1> */}
+                    <img src = {bg}
+                    className='h-12 w-auto mb-2 md:mb-0'/>
                     
                     <div className="scale-75 md:scale-100 flex space-x-4 text-2xl font-bold mb-2 md:mb-0">
                         <button onClick={() => scrollToSection('home')} className="text-blue-800 hover:underline">Home</button>

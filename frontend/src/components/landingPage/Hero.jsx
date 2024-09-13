@@ -61,8 +61,8 @@ const Hero = () => {
                                                 </Link>
                                             </div>
                                             <div className='bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700'>
-                                                <Link to="/uploadCourseApproval">
-                                                    Upload Course Approval
+                                                <Link to="/certificate">
+                                                    Certificate
                                                 </Link>
                                             </div>
                                         </div>

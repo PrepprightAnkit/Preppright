@@ -9,6 +9,7 @@ import {
     updateUserAvatar, 
     updateUserCoverImage,
     updateQuizScore, 
+    getAllUsers
 } from "../controllers/student.controllers.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { upload } from "../middlewares/multer.middlware.js";
@@ -28,7 +29,7 @@ router.route("/register").post(
 );
 
 router.route("/login").post(loginUser);
-
+router.route("/getAllUsers").get(getAllUsers);
 // Secured routes
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refresh-token").post(refreshAccessToken);

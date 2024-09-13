@@ -1,154 +1,154 @@
-  import { Question } from "../models/questions.models.js";
+import { Question } from "../models/questions.models.js";
 
-  // Create a new question
-  const askQuestion = async (req, res) => {
-    try {
-      const { questionText } = req.body;
+// Create a new question
+const askQuestion = async (req, res) => {
+  try {
+    const { questionText } = req.body;
 
-      const newQuestion = new Question({
-        questionText,
-      });
+    const newQuestion = new Question({
+      questionText,
+    });
 
-      await newQuestion.save();
+    await newQuestion.save();
 
-      res.status(201).json(newQuestion);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    res.status(201).json(newQuestion);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Answer a question
+const answerQuestion = async (req, res) => {
+  try {
+    const { questionId, answerText } = req.body;
+
+    const question = await Question.findById(questionId);
+
+    if (!question) {
+      return res.status(404).json({ message: 'Question not found' });
     }
-  };
 
-  // Answer a question
-  const answerQuestion = async (req, res) => {
-    try {
-      const { questionId, answerText } = req.body;
+    const newAnswer = {
+      answerText,
+    };
 
-      const question = await Question.findById(questionId);
+    question.answers.push(newAnswer);
+    await question.save();
 
-      if (!question) {
-        return res.status(404).json({ message: 'Question not found' });
-      }
+    res.status(201).json(newAnswer);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-      const newAnswer = {
-        answerText,
-      };
+// Like a question
+const likeQuestion = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-      question.answers.push(newAnswer);
-      await question.save();
+    const question = await Question.findById(id);
 
-      res.status(201).json(newAnswer);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    if (!question) {
+      return res.status(404).json({ message: 'Question not found' });
     }
-  };
 
-  // Like a question
-  const likeQuestion = async (req, res) => {
-    try {
-      const { id } = req.params;
+    question.likes += 1;
+    await question.save();
 
-      const question = await Question.findById(id);
+    res.status(200).json(question);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-      if (!question) {
-        return res.status(404).json({ message: 'Question not found' });
-      }
+// Dislike a question
+const dislikeQuestion = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-      question.likes += 1;
-      await question.save();
+    const question = await Question.findById(id);
 
-      res.status(200).json(question);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    if (!question) {
+      return res.status(404).json({ message: 'Question not found' });
     }
-  };
 
-  // Dislike a question
-  const dislikeQuestion = async (req, res) => {
-    try {
-      const { id } = req.params;
+    question.dislikes += 1;
+    await question.save();
 
-      const question = await Question.findById(id);
+    res.status(200).json(question);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-      if (!question) {
-        return res.status(404).json({ message: 'Question not found' });
-      }
+// Like an answer
+const likeAnswer = async (req, res) => {
+  try {
+    const { questionId, answerId } = req.params;
 
-      question.dislikes += 1;
-      await question.save();
+    const question = await Question.findById(questionId);
 
-      res.status(200).json(question);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    if (!question) {
+      return res.status(404).json({ message: 'Question not found' });
     }
-  };
 
-  // Like an answer
-  const likeAnswer = async (req, res) => {
-    try {
-      const { questionId, answerId } = req.params;
+    const answer = question.answers.id(answerId);
 
-      const question = await Question.findById(questionId);
-
-      if (!question) {
-        return res.status(404).json({ message: 'Question not found' });
-      }
-
-      const answer = question.answers.id(answerId);
-
-      if (!answer) {
-        return res.status(404).json({ message: 'Answer not found' });
-      }
-
-      answer.likes += 1;
-      await question.save();
-
-      res.status(200).json(answer);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    if (!answer) {
+      return res.status(404).json({ message: 'Answer not found' });
     }
-  };
 
-  // Dislike an answer
-  const dislikeAnswer = async (req, res) => {
-    try {
-      const { questionId, answerId } = req.params;
+    answer.likes += 1;
+    await question.save();
 
-      const question = await Question.findById(questionId);
+    res.status(200).json(answer);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-      if (!question) {
-        return res.status(404).json({ message: 'Question not found' });
-      }
+// Dislike an answer
+const dislikeAnswer = async (req, res) => {
+  try {
+    const { questionId, answerId } = req.params;
 
-      const answer = question.answers.id(answerId);
+    const question = await Question.findById(questionId);
 
-      if (!answer) {
-        return res.status(404).json({ message: 'Answer not found' });
-      }
-
-      answer.dislikes += 1;
-      await question.save();
-
-      res.status(200).json(answer);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    if (!question) {
+      return res.status(404).json({ message: 'Question not found' });
     }
-  };
 
-  // Get public questions
-  const getQuestionsPublic = async (req, res) => {
-    try {
-      const questions = await Question.find()
-      res.status(200).json(questions);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    const answer = question.answers.id(answerId);
+
+    if (!answer) {
+      return res.status(404).json({ message: 'Answer not found' });
     }
-  };
 
-  export {
-    askQuestion,
-    answerQuestion,
-    likeQuestion,
-    dislikeQuestion,
-    likeAnswer,
-    dislikeAnswer,
-    getQuestionsPublic,
-  };
+    answer.dislikes += 1;
+    await question.save();
+
+    res.status(200).json(answer);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get public questions
+const getQuestionsPublic = async (req, res) => {
+  try {
+    const questions = await Question.find()
+    res.status(200).json(questions);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export {
+  askQuestion,
+  answerQuestion,
+  likeQuestion,
+  dislikeQuestion,
+  likeAnswer,
+  dislikeAnswer,
+  getQuestionsPublic,
+};

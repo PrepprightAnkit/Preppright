@@ -1,24 +1,57 @@
-import mongoose, { Schema } from "mongoose";
-import { Option } from "./options.models.js"; // Import the Option model
+import mongoose from "mongoose";
+const Schema = mongoose.Schema;
 
-const questionSchema = new Schema({
-  text: {
+// Answer schema
+const answerSchema = new Schema({
+  answerText: {
     type: String,
-    trim: true,
-  },
-  image: {
-    type: String,
-  },
-  options: {
-    type: [Schema.Types.Mixed], // Use Mixed to allow custom types
-    validate: {
-      validator: function (v) {
-        return v.length >= 2 && v.length <= 4; // Ensure 2-4 options
-      },
-      message: "A question must have between 2 and 4 options.",
-    },
     required: true,
   },
+  likes: {
+    type: Number,
+    default: 0,
+  },
+  dislikes: {
+    type: Number,
+    default: 0,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+
 });
 
-export const Question = mongoose.model("Question", questionSchema);
+// Question schema
+const questionSchema = new Schema({
+  questionText: {
+    type: String,
+    required: true,
+  },
+  likes: {
+    type: Number,
+    default: 0,
+  },
+  dislikes: {
+    type: Number,
+    default: 0,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+
+  answers: [answerSchema], // Embed answers as a subdocument array
+});
+
+
+
+export const Question = mongoose.model('Question', questionSchema);

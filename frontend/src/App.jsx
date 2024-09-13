@@ -19,8 +19,8 @@ import AllCat from "./components/AllCat";
 import AllCourses from "./components/AllCourses";
 import ApproveCourse from "./components/ApproveCourse";
 import UploadCourseApproval from "./components/UploadCourseApproval";
-
-
+import Certificate from "./components/Certificate";
+import AddLessons from "./components/AddLessons";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Provider } from 'react-redux';
 import store from './store';
@@ -43,6 +43,8 @@ function App() {
             <Route path="allCourse" element={<AllCourses />} />
             <Route path="allCat" element={<AllCat />} />
 
+            <Route path="certificate" element={<Certificate />} />
+            <Route path="addlesson" element={<AddLessons />} />
 
             <Route path="courses/:id" element={<CourseDetails />} />
             <Route path="login" element={<LoginPageProp />} />
