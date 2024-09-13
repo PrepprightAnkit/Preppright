@@ -1,364 +1,318 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Slide, Fade } from 'react-awesome-reveal';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 const UploadCourse = () => {
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
-  const [courses, setCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState('');
-  const [courseData, setCourseData] = useState({
-    title: '',
-    price: '',
-    description: '',
-    detailedDescription: '',
-    level: '',
-    category: '',
-    introVideo: '',
-    freeVideo: '',
-    freeNotes: '',
-    lessonTitle: '',
-    lessonNotes: '',
-  });
+  const [title, setTitle] = useState('');
+  const [price, setPrice] = useState('');
+  const [description, setDescription] = useState('');
+  const [detailedDescription, setDetailedDescription] = useState('');
+  const [level, setLevel] = useState('');
+  const [category, setCategory] = useState('');
+  const [introVideo, setIntroVideo] = useState('');
+  const [freeVideo, setFreeVideo] = useState('');
+  const [freeNotes, setFreeNotes] = useState('');
+  const [lessonTitle, setLessonTitle] = useState('');
+  const [lessonNotes, setLessonNotes] = useState('');
+  const [lessonVideo, setLessonVideo] = useState('');
   const [imageFile, setImageFile] = useState(null);
-  const [videoFiles, setVideoFiles] = useState([]);
-  const [lessonFile, setLessonFile] = useState(null);
-
-  // Fetch courses on component mount
-  useEffect(() => {
-    const loadCourses = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/v1/users/courses');
-        const data = await response.json();
-        if (response.ok) {
-          setCourses(data.data || []);
-        } else {
-          console.error('Error fetching courses:', data.message);
-        }
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      }
-    };
-    loadCourses();
-  }, []);
-
-  const handleCourseChange = (e) => {
-    setSelectedCourse(e.target.value);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setCourseData((prev) => ({ ...prev, [name]: value }));
-  };
+  const [videos, setVideos] = useState(null);
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    if (name === 'courseImage') {
-      setImageFile(files[0]);
-    } else if (name === 'videos') {
-      setVideoFiles(Array.from(files));
-    } else if (name === 'lessonFile') {
-      setLessonFile(files[0]);
+    if (e.target.name === 'image') {
+      setImageFile(e.target.files[0]);
+    } else if (e.target.name === 'videos') {
+      setVideos(e.target.files);
     }
   };
 
-  const handleCourseSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true); // Start loading
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('price', price);
+    formData.append('description', description);
+    formData.append('detailedDescription', detailedDescription);
+    formData.append('level', level);
+    formData.append('category', category);
+    formData.append('introVideo', introVideo);
+    formData.append('freeVideo', freeVideo);
+    formData.append('freeNotes', freeNotes);
+    formData.append('lessonTitle', lessonTitle);
+    formData.append('lessonNotes', lessonNotes);
+    formData.append('lessonVideo', lessonVideo);
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+    if (videos) {
+      Array.from(videos).forEach((file) => formData.append('videos', file));
+    }
+
     try {
-      const formData = new FormData();
-      formData.append('title', courseData.title);
-      formData.append('price', courseData.price);
-      formData.append('description', courseData.description);
-      formData.append('detailedDescription', courseData.detailedDescription);
-      formData.append('level', courseData.level);
-      formData.append('category', courseData.category);
-      formData.append('introVideo', courseData.introVideo);
-      formData.append('freeVideo', courseData.freeVideo);
-      formData.append('freeNotes', courseData.freeNotes);
-
-      if (imageFile) formData.append('courseImage', imageFile);
-      videoFiles.forEach((file, index) => formData.append(`videos[${index}]`, file));
-
       const response = await fetch('http://localhost:8000/api/v1/users/courses', {
         method: 'POST',
         body: formData,
       });
-      const result = await response.json();
+
       if (response.ok) {
-        console.log('Course uploaded successfully:', result.data);
+        alert('Course uploaded successfully!');
+        // Reset form fields
+        setTitle('');
+        setPrice('');
+        setDescription('');
+        setDetailedDescription('');
+        setLevel('');
+        setCategory('');
+        setIntroVideo('');
+        setFreeVideo('');
+        setFreeNotes('');
+        setLessonTitle('');
+        setLessonNotes('');
+        setLessonVideo('');
+        setImageFile(null);
+        setVideos(null);
       } else {
-        console.error('Error uploading course:', result.message);
+        alert('Failed to upload course.');
       }
     } catch (error) {
       console.error('Error uploading course:', error);
+      alert('Error uploading course.');
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
-  const handleAddLesson = async (e) => {
-    e.preventDefault();
-    try {
-      const formData = new FormData();
-      formData.append('title', courseData.lessonTitle);
-      formData.append('notes', courseData.lessonNotes);
-      formData.append('courseId', selectedCourse);
-
-      if (lessonFile) formData.append('videos[0]', lessonFile);
-
-      const response = await fetch('http://localhost:8000/api/v1/users/courses/add-lesson', {
-        method: 'POST',
-        body: formData,
-      });
-      const result = await response.json();
-      if (response.ok) {
-        console.log('Lesson added successfully:', result.data);
-      } else {
-        console.error('Error adding lesson:', result.message);
-      }
-    } catch (error) {
-      console.error('Error adding lesson:', error);
-    }
-  };
+  const levels = ['Beginner', 'Intermediate', 'Advanced'];
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   return (
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Navbar */}
+      <nav className="bg-white p-4 border-b border-gray-200">
+        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
+          <h1 className="text-2xl font-bold mb-2 md:mb-0">LOGO</h1>
+          <div className="scale-75 md:scale-100 flex space-x-4 text-2xl font-bold mb-2 md:mb-0">
+            <button onClick={() => navigate('/')} className="text-blue-800 hover:underline">Home</button>
+            <button onClick={() => navigate('/allCat')} className="text-blue-800 hover:underline">Categories</button>
+            <button onClick={() => navigate('/allCourse')} className="text-blue-800 hover:underline">Courses</button>
+          </div>
+          
+          <div className="flex space-x-4">
+            {isAuthenticated ? (
+              <>
+                <button className="bg-blue-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
+                  <Link to="/userProfile">My Profile</Link>
+                </button>
+              </>
+            ) : (
+              <>
+                <button className="bg-blue-500 hover:bg-blue-900 text-white px-4 py-2 rounded-full">
+                  <Link to="/login">Login</Link>
+                </button>
+                <button className="bg-green-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
+                  <Link to="/reg">Register</Link>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </nav>
 
-    <div className="container mx-auto p-6 bg-white text-black">
-      <nav className="bg-white p-4">
-                <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-                    <h1 className="text-2xl font-bold mb-2 md:mb-0">LOGO</h1>
+      {/* Form */}
+      <div className="flex-1 flex items-center justify-center p-6">
+        <form onSubmit={handleSubmit} className="max-w-lg w-full bg-white rounded-lg shadow-lg p-8">
+          <h2 className="text-2xl font-bold mb-6 text-blue-700 text-center">Upload New Course</h2>
 
-                    <div className="scale-75 md:scale-100 flex space-x-4 text-2xl font-bold mb-2 md:mb-0">
-                        <button onClick={() => navigate('/')} className="text-blue-800 hover:underline">Home</button>
-                        <button onClick={() => navigate('/allCat')} className="text-blue-800 hover:underline">Categories</button>
-                        <button onClick={() => navigate('/allCourses')} className="text-blue-800 hover:underline">Courses</button>
-                    </div>
+          {/* Course Title */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Title</label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              required
+            />
+          </div>
 
-                  
+          {/* Price */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Price</label>
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              required
+            />
+          </div>
 
-                    <div className="flex space-x-4">
-                        {isAuthenticated ? (
-                            <>
-                                <button
-                                    onClick={handleLogout}
-                                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-full"
-                                >
-                                    Logout
-                                </button>
-                                {user.isAdmin ? (
-                                    <button className="bg-gray-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                                        <Link to="/uploadContent">Upload</Link>
-                                    </button>
-                                ) : null}
-                                <button className="bg-blue-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                                    <Link to="/userProfile">My Profile</Link>
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <button className="bg-blue-500 hover:bg-blue-900 text-white px-4 py-2 rounded-full">
-                                    <Link to="/login">Login</Link>
-                                </button>
-                                <button className="bg-green-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                                    <Link to="/reg">Register</Link>
-                                </button>
-                            </>
-                        )}
-                    </div>
-                </div>
-            </nav>
+          {/* Short Description */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Short Description</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              required
+            />
+          </div>
 
-      <h1 className="text-2xl font-bold text-blue-600 mb-4">Upload Course</h1>
-      <form onSubmit={handleCourseSubmit} className="mb-8">
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="title">Course Title</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={courseData.title}
-            onChange={handleInputChange}
-            className="border border-gray-300 p-2 w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="price">Price</label>
-          <input
-            type="number"
-            id="price"
-            name="price"
-            value={courseData.price}
-            onChange={handleInputChange}
-            className="border border-gray-300 p-2 w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            value={courseData.description}
-            onChange={handleInputChange}
-            className="border border-gray-300 p-2 w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="detailedDescription">Detailed Description</label>
-          <textarea
-            id="detailedDescription"
-            name="detailedDescription"
-            value={courseData.detailedDescription}
-            onChange={handleInputChange}
-            className="border border-gray-300 p-2 w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="level">Level</label>
-          <input
-            type="text"
-            id="level"
-            name="level"
-            value={courseData.level}
-            onChange={handleInputChange}
-            className="border border-gray-300 p-2 w-full"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="category">Category</label>
-          <input
-            type="text"
-            id="category"
-            name="category"
-            value={courseData.category}
-            onChange={handleInputChange}
-            className="border border-gray-300 p-2 w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="introVideo">Intro Video URL</label>
-          <input
-            type="text"
-            id="introVideo"
-            name="introVideo"
-            value={courseData.introVideo}
-            onChange={handleInputChange}
-            className="border border-gray-300 p-2 w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="freeVideo">Free Video URL</label>
-          <input
-            type="text"
-            id="freeVideo"
-            name="freeVideo"
-            value={courseData.freeVideo}
-            onChange={handleInputChange}
-            className="border border-gray-300 p-2 w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="freeNotes">Free Notes URL</label>
-          <input
-            type="text"
-            id="freeNotes"
-            name="freeNotes"
-            value={courseData.freeNotes}
-            onChange={handleInputChange}
-            className="border border-gray-300 p-2 w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="courseImage">Course Image</label>
-          <input
-            type="file"
-            id="courseImage"
-            name="courseImage"
-            onChange={handleFileChange}
-            className="border border-gray-300 p-2 w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="videos">Video Files</label>
-          <input
-            type="file"
-            id="videos"
-            name="videos"
-            multiple
-            onChange={handleFileChange}
-            className="border border-gray-300 p-2 w-full"
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-        >
-          Upload Course
-        </button>
-      </form>
+          {/* Detailed Description */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Detailed Description</label>
+            <textarea
+              value={detailedDescription}
+              onChange={(e) => setDetailedDescription(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              required
+            />
+          </div>
 
-      <h2 className="text-xl font-bold text-blue-600 mb-4">Add Lesson</h2>
-      <form onSubmit={handleAddLesson}>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="selectedCourse">Select Course</label>
-          <select
-            id="selectedCourse"
-            value={selectedCourse}
-            onChange={handleCourseChange}
-            className="border border-gray-300 p-2 w-full"
+          {/* Level */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Level</label>
+            <select
+              value={level}
+              onChange={(e) => setLevel(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              required
+            >
+              <option value="">Select Level</option>
+              {levels.map((levelOption) => (
+                <option key={levelOption} value={levelOption}>{levelOption}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Category */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Category</label>
+            <input
+              type="text"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              required
+            />
+          </div>
+
+          {/* Intro Video */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Intro Video URL</label>
+            <input
+              type="text"
+              value={introVideo}
+              onChange={(e) => setIntroVideo(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              required
+            />
+          </div>
+
+          {/* Free Video */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Free Video URL</label>
+            <input
+              type="text"
+              value={freeVideo}
+              onChange={(e) => setFreeVideo(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              required
+            />
+          </div>
+
+          {/* Free Notes */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Free Notes URL</label>
+            <input
+              type="text"
+              value={freeNotes}
+              onChange={(e) => setFreeNotes(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              required
+            />
+          </div>
+
+          {/* Lesson Title */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Lesson Title</label>
+            <input
+              type="text"
+              value={lessonTitle}
+              onChange={(e) => setLessonTitle(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              required
+            />
+          </div>
+
+          {/* Lesson Notes */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Lesson Notes URL</label>
+            <input
+              type="text"
+              value={lessonNotes}
+              onChange={(e) => setLessonNotes(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              required
+            />
+          </div>
+
+          {/* Lesson Video */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Lesson Video URL</label>
+            <input
+              type="text"
+              value={lessonVideo}
+              onChange={(e) => setLessonVideo(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              required
+            />
+          </div>
+
+          {/* Image Upload */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Upload Course Image</label>
+            <input
+              type="file"
+              name="image"
+              onChange={handleFileChange}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+            />
+          </div>
+
+          {/* Videos Upload */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Upload Lesson Videos</label>
+            <input
+              type="file"
+              name="videos"
+              onChange={handleFileChange}
+              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              multiple
+            />
+          </div>
+
+          {/* Loading Animation */}
+          {loading && (
+            <div className="flex justify-center mb-4">
+              <div className="w-12 h-12 border-4 border-blue-600 border-dashed rounded-full animate-spin"></div>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            disabled={loading} // Disable button during loading
           >
-            <option value="">-- Select a Course --</option>
-            {courses.map((course) => (
-              <option key={course._id} value={course._id}>{course.title}</option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="lessonTitle">Lesson Title</label>
-          <input
-            type="text"
-            id="lessonTitle"
-            name="lessonTitle"
-            value={courseData.lessonTitle}
-            onChange={handleInputChange}
-            className="border border-gray-300 p-2 w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="lessonNotes">Lesson Notes URL</label>
-          <input
-            type="text"
-            id="lessonNotes"
-            name="lessonNotes"
-            value={courseData.lessonNotes}
-            onChange={handleInputChange}
-            className="border border-gray-300 p-2 w-full"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2" htmlFor="lessonFile">Lesson Video File</label>
-          <input
-            type="file"
-            id="lessonFile"
-            name="lessonFile"
-            onChange={handleFileChange}
-            className="border border-gray-300 p-2 w-full"
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
-        >
-          Add Lesson
-        </button>
-      </form>
+            {loading ? 'Uploading...' : 'Upload Course'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

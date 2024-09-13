@@ -91,8 +91,8 @@ const uploadCourse = asynchandler(async (req, res) => {
   }
 
   // Ensure price is a valid number
-  if (isNaN(price)) {
-    throw new ApiError(400, "Price must be a valid number");
+  if (isNaN(price) || price <= 0) {
+    throw new ApiError(400, "Price must be a valid positive number");
   }
 
   // Check if a course with the same title already exists
@@ -108,9 +108,9 @@ const uploadCourse = asynchandler(async (req, res) => {
   }
 
   // Handle course image upload
-  const imageLocalPath = req.files?.image?.[0]?.path;
   let courseImage;
-  if (imageLocalPath) {
+  if (req.files?.image?.length > 0) {
+    const imageLocalPath = req.files.image[0].path;
     const result = await uploadOnCloudinary(imageLocalPath);
     courseImage = result.url;
   } else {
@@ -118,16 +118,17 @@ const uploadCourse = asynchandler(async (req, res) => {
   }
 
   // Handle lesson video upload if provided
-  const videoPaths = req.files?.videos || [];
-  const uploadedVideos = await Promise.all(
-    videoPaths.map(async (file) => {
-      const result = await uploadOnCloudinary(file.path);
-      return result.url;
-    })
-  );
-
-  // Check if uploadedVideos has a single URL string, not an array
-  const lessonVideo = uploadedVideos[0] || ""; // Use the first uploaded video URL
+  let lessonVideo = "";
+  if (req.files?.videos?.length > 0) {
+    const videoPaths = req.files.videos;
+    const uploadedVideos = await Promise.all(
+      videoPaths.map(async (file) => {
+        const result = await uploadOnCloudinary(file.path);
+        return result.url;
+      })
+    );
+    lessonVideo = uploadedVideos[0] || ""; // Use the first uploaded video URL
+  }
 
   // Create the course with the provided details and uploaded video links in lessons
   const course = await Course.create({
@@ -148,18 +149,18 @@ const uploadCourse = asynchandler(async (req, res) => {
         notes: lessonNotes || "",
         image: "", // Default empty string if no image provided
         isCompleted: false,
-      }
+      },
     ],
   });
 
   // Fetch and return the created course
-  const createdCourse = await Course.findById(course._id).select();
+  const createdCourse = await Course.findById(course._id);
   if (!createdCourse) {
     throw new ApiError(500, "Something went wrong while registering the course");
   }
 
   return res.status(201).json(
-    new ApiResponse(200, createdCourse, "Course registered successfully")
+    new ApiResponse(201, createdCourse, "Course registered successfully")
   );
 });
 
