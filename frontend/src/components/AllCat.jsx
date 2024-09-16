@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../actions/authActions';
 
 const AllCat = () => {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
     const [categories, setCategories] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCategories, setFilteredCategories] = useState([]);
@@ -18,7 +20,7 @@ const AllCat = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/v1/users/cat');
+            const response = await fetch(`${apiUrl}/api/v1/users/cat`);
             if (response.ok) {
                 const data = await response.json();
                 setCategories(data.data);

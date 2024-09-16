@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import bg from '../assets/PreepPright.png'
 const UploadCat = () => {
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
   const [title, setTitle] = useState('');
   const navigate = useNavigate();
   const [description, setDescription] = useState('');
@@ -27,7 +29,7 @@ const UploadCat = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/v1/users/cat', {
+      const response = await fetch(`${apiUrl}/api/v1/users/cat`, {
         method: 'POST',
         body: formData,
       });

@@ -8,15 +8,17 @@ const Certificate = () => {
     const [certificates, setCertificates] = useState([]);
     const navigate = useNavigate();
     const {isAuthenticated} =  useSelector((state) => state.auth);
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
     useEffect(() => {
        
 
         const fetchData = async () => {
             try {
-                const usersResponse = await fetch('http://localhost:8000/api/v1/users/getAllUsers');
+                const usersResponse = await fetch(`${apiUrl}/api/v1/users/getAllUsers`);
                 const usersData = await usersResponse.json();
 
-                const coursesResponse = await fetch('http://localhost:8000/api/v1/users/courses');
+                const coursesResponse = await fetch(`${apiUrl}/api/v1/users/courses`);
                 const coursesData = await coursesResponse.json();
 
                 // Filter and process certificates

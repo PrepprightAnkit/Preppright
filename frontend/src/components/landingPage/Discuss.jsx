@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 const Discuss = () => {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
     const [questions, setQuestions] = useState([]);
     const [selectedQuestion, setSelectedQuestion] = useState(null);
     const [questionText, setQuestionText] = useState('');
@@ -12,7 +14,8 @@ const Discuss = () => {
     useEffect(() => {
         const fetchQuestions = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/v1/users/getQuestions');
+
+                const response = await fetch(`${apiUrl}/api/v1/users/getQuestions`);
                 const data = await response.json();
                 setQuestions(data);
             } catch (error) {
@@ -26,7 +29,8 @@ const Discuss = () => {
     const handleQuestionSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:8000/api/v1/users/questionPublic', {
+
+            const response = await fetch(`${apiUrl}/api/v1/users/questionPublic`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -47,7 +51,8 @@ const Discuss = () => {
         if (!selectedQuestion) return;
 
         try {
-            const response = await fetch(`http://localhost:8000/api/v1/users/answer/${selectedQuestion._id}`, {
+            
+            const response = await fetch(`${apiUrl}/api/v1/users/answer/${selectedQuestion._id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,7 +74,7 @@ const Discuss = () => {
 
     const handleLikeQuestion = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/v1/users/likeQuestion/${id}`, {
+            const response = await fetch(`${apiUrl}/api/v1/users/likeQuestion/${id}`, {
                 method: 'POST',
             });
             if (response.ok) {
@@ -82,7 +87,7 @@ const Discuss = () => {
 
     const handleDislikeQuestion = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/v1/users/dislikeQuestion/${id}`, {
+            const response = await fetch(`${apiUrl}/api/v1/users/dislikeQuestion/${id}`, {
                 method: 'POST',
             });
             if (response.ok) {
@@ -95,7 +100,7 @@ const Discuss = () => {
 
     const handleLikeAnswer = async (questionId, answerId) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/v1/users/likeAnswer/${questionId}/${answerId}`, {
+            const response = await fetch(`${apiUrl}/api/v1/users/likeAnswer/${questionId}/${answerId}`, {
                 method: 'POST',
             });
             if (response.ok) {
@@ -108,7 +113,7 @@ const Discuss = () => {
 
     const handleDislikeAnswer = async (questionId, answerId) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/v1/users/dislikeAnswer/${questionId}/${answerId}`, {
+            const response = await fetch(`${apiUrl}/api/v1/users/dislikeAnswer/${questionId}/${answerId}`, {
                 method: 'POST',
             });
             if (response.ok) {

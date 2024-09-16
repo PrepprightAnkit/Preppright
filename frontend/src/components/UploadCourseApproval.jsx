@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 
 const UploadCourseApproval = () => {
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
   const [courseId, setCourseId] = useState('');
   const [userId, setUserId] = useState('');
   const [transactionId, setTransactionId] = useState('');
@@ -19,7 +21,7 @@ const UploadCourseApproval = () => {
     }
 
     try {
-      const response = await fetch('/api/v1/course-approval/upload', {
+      const response = await fetch(`${apiUrl}/api/v1/course-approval/upload`, {
         method: 'POST',
         body: formData,
       });

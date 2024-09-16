@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterCompany = () => {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
     const [formData, setFormData] = useState({
         username: '',
         bulkPurchases: [
@@ -49,7 +51,7 @@ const RegisterCompany = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/companies/register', {
+            const response = await fetch(`${apiUrl}/api/v1/companies/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

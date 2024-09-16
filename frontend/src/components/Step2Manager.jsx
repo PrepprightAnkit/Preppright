@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
 const Step2Mangager = ({ nextStep, prevStep }) => {
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -45,7 +47,7 @@ const Step2Mangager = ({ nextStep, prevStep }) => {
       }
     };
 
-    fetch('http://localhost:8000/api/v1/users/registerCompany', {
+    fetch(`${apiUrl}/api/v1/users/registerCompany`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

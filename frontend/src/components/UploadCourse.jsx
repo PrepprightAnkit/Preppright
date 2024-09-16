@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import bg from '../assets/PreepPright.png'
 const UploadCourse = () => {
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
@@ -53,7 +55,7 @@ const UploadCourse = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/v1/users/courses', {
+      const response = await fetch(`${apiUrl}/api/v1/users/courses`, {
         method: 'POST',
         body: formData,
       });

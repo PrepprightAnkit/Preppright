@@ -4,7 +4,8 @@ import { LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT } from './types';
 // Action to handle login
 export const login = (formData) => async (dispatch) => {
     try {
-        const response = await fetch('http://localhost:8000/api/v1/users/login', {
+        const apiUrl = import.meta.env.VITE_API_BASE_URL;
+        const response = await fetch(`${apiUrl}/api/v1/users/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -36,7 +37,9 @@ export const login = (formData) => async (dispatch) => {
 // Action to handle logout
 export const logout = () => async (dispatch) => {
     try {
-        await fetch('http://localhost:8000/api/v1/users/logout', {
+        const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
+        await fetch(`${apiUrl}/api/v1/users/logout`, {
             method: 'POST',
         });
 

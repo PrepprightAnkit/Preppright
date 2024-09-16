@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 
 const AllQuizzes = () => {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
     const [quizzes, setQuizzes] = useState([]);
     const [selectedQuiz, setSelectedQuiz] = useState(null);
     const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -15,7 +17,7 @@ const AllQuizzes = () => {
 
     useEffect(() => {
         // Fetch all quizzes
-        fetch('http://localhost:8000/api/v1/quiz/quizzes')
+        fetch(`${apiUrl}/api/v1/quiz/quizzes`)
             .then((response) => response.json())
             .then((data) => setQuizzes(data.data))
             .catch((error) => console.error('Error fetching quizzes:', error));
@@ -56,7 +58,7 @@ const AllQuizzes = () => {
             setIsSubmitted(true);
 
             // Update score in the backend
-            fetch('http://localhost:8000/api/v1/users/updateQuiz', {
+            fetch(`${apiUrl}/api/v1/users/updateQuiz`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const CourseDetails = () => {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
     const { id } = useParams();
     const [course, setCourse] = useState(null);
     const [category, setCategory] = useState(null);
@@ -41,7 +43,7 @@ const CourseDetails = () => {
 
     const fetchCourseDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/api/v1/users/courses/${id}`);
+            const response = await fetch(`${apiUrl}/api/v1/users/courses/${id}`);
             if (response.ok) {
                 const data = await response.json();
                 setCourse(data.data);
@@ -56,7 +58,7 @@ const CourseDetails = () => {
 
     const fetchCategoryDetails = async (categoryId) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/v1/users/cat/${categoryId}`);
+            const response = await fetch(`${apiUrl}/api/v1/users/cat/${categoryId}`);
             if (response.ok) {
                 const data = await response.json();
                 setCategory(data.data);
@@ -80,7 +82,7 @@ const CourseDetails = () => {
 
         // Post the progress update to the backend
         try {
-            const response = await fetch('http://localhost:8000/api/v1/users/progress', {
+            const response = await fetch(`${apiUrl}/api/v1/users/progress`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -126,7 +128,7 @@ const CourseDetails = () => {
         formData.append('paymentConfirmationImage', paymentConfirmationImage);
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/approve/courseApproval', {
+            const response = await fetch(`${apiUrl}/api/v1/approve/courseApproval`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${user.token}` // Include JWT token if required

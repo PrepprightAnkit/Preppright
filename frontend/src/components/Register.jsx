@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Register = () => {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -77,7 +79,7 @@ const Register = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/users/register', {
+            const response = await fetch(`${apiUrl}/api/v1/users/register`, {
                 method: 'POST',
                 body: data
             });

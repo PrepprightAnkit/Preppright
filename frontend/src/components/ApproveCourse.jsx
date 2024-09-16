@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 const ApproveCourse = () => {
   const [approvalRequests, setApprovalRequests] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     // Fetch the approval requests
-    fetch('http://localhost:8000/api/v1/approve/getApproveCourse')
+    fetch(`${apiUrl}/api/v1/approve/getApproveCourse`)
       .then((response) => response.json())
       .then((data) => setApprovalRequests(data.data))
       .catch((error) => console.error('Error fetching data:', error));
@@ -14,7 +15,7 @@ const ApproveCourse = () => {
 
   const handleApprove = (courseId, userId) => {
     // Send the POST request to approve the course
-    fetch('http://localhost:8000/api/v1/approve/approveCourse', {
+    fetch(`${apiUrl}/api/v1/approve/approveCourse`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

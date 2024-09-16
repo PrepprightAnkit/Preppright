@@ -14,7 +14,9 @@ const Courses = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/users/courses');
+      const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
+      const response = await fetch(`${apiUrl}/api/v1/users/courses`);
       if (response.ok) {
         const data = await response.json();
         setCourses(data.data);

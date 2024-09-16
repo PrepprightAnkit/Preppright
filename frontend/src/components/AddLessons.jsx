@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 const AddLessons = () => {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
     const navigate = useNavigate();
     const {isAuthenticated} = useSelector((state)=>state.auth);
     const [courses, setCourses] = useState([]);
@@ -16,7 +18,7 @@ const AddLessons = () => {
         // Fetch courses from the API
         const fetchCourses = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/v1/users/courses');
+                const response = await fetch(`${apiUrl}/api/v1/users/courses`);
                 const data = await response.json();
                 setCourses(data.data); // Assuming API returns an array of courses
             } catch (error) {
@@ -55,7 +57,7 @@ const AddLessons = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/users/courseLesson', {
+            const response = await fetch(`${apiUrl}/api/v1/users/courseLesson`, {
                 method: 'POST',
                 body: formData,
             });

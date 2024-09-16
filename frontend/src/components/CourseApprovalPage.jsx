@@ -4,12 +4,13 @@ const CourseApprovalPage = () => {
   const [approvals, setApprovals] = useState([]);
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   // Fetch course approvals on component mount
   useEffect(() => {
     const fetchApprovals = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/v1/approve/getApproveCourse');
+        const response = await fetch(`${apiUrl}/api/v1/approve/getApproveCourse`);
         const result = await response.json();
 
         if (result.success) {
@@ -28,7 +29,7 @@ const CourseApprovalPage = () => {
   // Handle course approval
   const handleApprove = async (userId, courseId) => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/approve/approveCourse', {
+      const response = await fetch(`${apiUrl}/api/v1/approve/approveCourse`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

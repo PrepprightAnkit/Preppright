@@ -5,7 +5,8 @@ const Categories = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/v1/users/cat', {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    fetch(`${apiUrl}/api/v1/users/cat`, {
       method: 'get'
     })
       .then(response => response.json())

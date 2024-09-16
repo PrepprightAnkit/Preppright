@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 
 import {  useSelector } from 'react-redux';
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const TakeQuiz = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -17,7 +18,7 @@ const TakeQuiz = () => {
 
   // Fetch all quizzes
   useEffect(() => {
-    fetch('http://localhost:8000/api/v1/quiz/quizzes')
+    fetch(`${apiUrl}/api/v1/quiz/quizzes`)
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
@@ -32,7 +33,7 @@ const TakeQuiz = () => {
   // Fetch questions for the selected quiz
   useEffect(() => {
     if (selectedQuiz) {
-      fetch('http://localhost:8000/api/v1/quiz/quizzes/getallquestions', {
+      fetch(`${apiUrl}/api/v1/quiz/quizzes/getallquestions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ quizId: selectedQuiz }),
@@ -85,7 +86,7 @@ const TakeQuiz = () => {
 
   // Handle quiz submission
   const handleSubmit = () => {
-    fetch('http://localhost:8000/api/v1/quiz/submit', {
+    fetch(`${apiUrl}/api/v1/quiz/submit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

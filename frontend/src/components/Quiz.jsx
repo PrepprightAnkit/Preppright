@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 const Quiz = () => {
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const [quizzes, setQuizzes] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [title, setTitle] = useState('');
@@ -15,7 +16,7 @@ const Quiz = () => {
 
   // Fetch all quizzes from the backend
   useEffect(() => {
-    fetch('http://localhost:8000/api/v1/quiz/quizzes')
+    fetch(`${apiUrl}/api/v1/quiz/quizzes`)
       .then((response) => response.json())
       .then((data) => setQuizzes(data.data || []))
       .catch((error) => console.error('Error fetching quizzes:', error));
@@ -23,7 +24,7 @@ const Quiz = () => {
 
   // Fetch all questions for the selected quiz
   const fetchQuestions = (id) => {
-    fetch('http://localhost:8000/api/v1/quiz/quizzes/getallquestions', {
+    fetch(`${apiUrl}/api/v1/quiz/quizzes/getallquestions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ quizId: id }),
@@ -42,7 +43,7 @@ const Quiz = () => {
 
   // Create a new quiz
   const createQuiz = () => {
-    fetch('http://localhost:8000/api/v1/quiz/quizzes', {
+    fetch(`${apiUrl}/api/v1/quiz/quizzes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title }),
@@ -61,7 +62,7 @@ const Quiz = () => {
 
   // Delete a quiz
   const deleteQuiz = (id) => {
-    fetch(`http://localhost:8000/api/v1/quiz/quizzes/${id}`, {
+    fetch(`${apiUrl}/api/v1/quiz/quizzes/${id}`, {
       method: 'DELETE',
     })
       .then((response) => response.json())
@@ -78,7 +79,7 @@ const Quiz = () => {
 
   // Create a new question for a quiz
   const createQuestion = () => {
-    fetch('http://localhost:8000/api/v1/quiz/quizzes/questions', {
+    fetch(`${apiUrl}/api/v1/quiz/quizzes/questions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ quizId, identifier, question, image }),
@@ -97,7 +98,7 @@ const Quiz = () => {
 
   // Add an option to a question
   const addOption = () => {
-    fetch('http://localhost:8000/api/v1/quiz/quizzes/options', {
+    fetch(`${apiUrl}/api/v1/quiz/quizzes/options`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ quizId, questionId, text: optionText, isCorrect }),
