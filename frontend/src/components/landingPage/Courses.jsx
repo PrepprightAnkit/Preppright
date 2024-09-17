@@ -33,8 +33,8 @@ const Courses = () => {
       <div className="w-full flex justify-between items-center mb-8">
         <Slide>
           <div className="flex flex-col">
-            <h2 className="text-5xl font-bold text-blue-700">POPULAR COURSES!</h2>
-            <h2 className="text-2xl ml-2 mt-2 font-light text-gray-800">Explore our Top Courses</h2>
+            <h2 className="text-2xl md:text-5xl font-bold text-blue-700">POPULAR COURSES!</h2>
+            <h2 className="md:text-2xl ml-2 mt-2 font-light text-gray-800">Explore our Top Courses</h2>
           </div>
           <Link to="/allCourse">
             <button className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800">

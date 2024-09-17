@@ -26,12 +26,12 @@ const Categories = () => {
       <div className="w-full flex justify-between items-center mb-8">
         <Slide>
           <div className='flex flex-col'>
-            <h2 className="text-5xl font-bold text-blue-700">TOP CATEGORIES</h2>
-            <h2 className="text-2xl  ml-2 mt-2 font-light text-gray-800"> Explore our Top Categories</h2>
+            <h2 className=" text-2xl md:text-5xl font-bold text-blue-700">TOP CATEGORIES</h2>
+            <h2 className="md:text-2xl  ml-2 mt-2 font-light text-gray-800"> Explore our Top Categories</h2>
 
           </div>
           <Link to="/allCat">
-            <button className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800">
+            <button className="bg-blue-700 text-white md:px-4 py-2 rounded-md hover:bg-blue-800">
               View All Categories
             </button>
           </Link>

@@ -31,38 +31,38 @@ const LoginPageProp = () => {
             }, 2000);  // 2000 milliseconds = 2 seconds
         }
     };
-    
 
     const handleLogout = () => {
         dispatch(logout());
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-start justify-start md:bg-cover bg-center bg-loginBg">
+        <div className="min-h-screen flex flex-col items-center justify-center md:items-start md:justify-start bg-loginBg bg-cover bg-center p-4 md:p-0">
             <button
                 onClick={() => navigate('/')}
-                className="bg-blue-500 text-white font-bold py-2 px-4 rounded ml-8 mt-4  hover:bg-blue-600"
+                className="bg-blue-500 text-white font-bold py-2 px-4 rounded mb-6 hover:bg-blue-600 md:ml-8 md:mt-4"
             >
                 Go to Home
             </button>
-            <div className="scale-105 bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-10 w-full md:w-1/4 shadow-lg ml-10 md:mt-10">
-                <h2 className="font-bold text-3xl text-white mb-12">{user ? 'Welcome' : 'Login Page'}</h2>
-                {message && <p className="text-red-600 mb-4">{message}</p>}
+            <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-10 w-full max-w-md shadow-lg">
+                <h2 className="font-bold text-3xl text-white text-center md:text-left mb-8">
+                    {user ? 'Welcome' : 'Login Page'}
+                </h2>
+                {message && <p className="text-red-600 mb-4 text-center md:text-left">{message}</p>}
                 {isAuthenticated ? (
                     <div>
-                        <p className="text-white">Logged in as: {user.email}</p>
+                        <p className="text-white text-center md:text-left mb-4">Logged in as: {user.email}</p>
                         <button
                             onClick={handleLogout}
                             className="w-full py-2 px-4 bg-red-700 text-white font-bold rounded hover:bg-red-800"
                         >
                             Logout
                         </button>
-                        {/* User details display here */}
                     </div>
                 ) : (
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="flex flex-wrap scale-105 text-2xl">
-                            <div className="w-full px-4">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="flex flex-col">
+                            <div className="w-full">
                                 <div className="mb-4">
                                     <label className="block text-white">Email Address</label>
                                     <input
@@ -85,11 +85,11 @@ const LoginPageProp = () => {
                                         required
                                     />
                                 </div>
-                                <div className='text-center w-full text-white m-1 mb-3'>
-                                    <Link to="/loginOtp">Click here to Login Via OTP</Link>
+                                <div className='text-center md:text-left text-white mb-4'>
+                                    <Link to="/loginOtp" className="underline">Click here to Login Via OTP</Link>
                                 </div>
-                                <div className='text-center w-full text-white m-1 mb-3'>
-                                    <Link to="/reg">Click here to Register</Link>
+                                <div className='text-center md:text-left text-white mb-4'>
+                                    <Link to="/reg" className="underline">Click here to Register</Link>
                                 </div>
                                 <div className="mb-4">
                                     <button
