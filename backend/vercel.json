@@ -2,14 +2,14 @@
     "version": 2,
     "builds": [
         {
-            "src": "app.js",  // Main entry point for the application
+            "src": "app.js",  
             "use": "@vercel/node"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "/app.js"  // Ensure this points to the correct route handling file
+            "dest": "/app.js" 
         }
     ]
 }
