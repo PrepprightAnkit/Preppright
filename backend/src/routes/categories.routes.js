@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { uploadCat } from "../controllers/categories.controller.js";
 import { upload } from "../middlewares/multer.middlware.js";
-import { getCat } from '../controllers/getCat.controller.js ';
+import { getCat } from "../controllers/getCat.controller.js";
 import  {getCategoryById} from "../controllers/getCategory.controller.js"
 const router = Router();
 
