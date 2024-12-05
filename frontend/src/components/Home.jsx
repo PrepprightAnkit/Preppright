@@ -5,12 +5,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../actions/authActions';
 
 // Import components (assuming these exist in the same structure)
+import companiesHero from './landingPage/assets/companiesHero.png';
+import heroBg from './landingPage/assets/heroBg.png';
 import Categories from "./landingPage/Categories";
 import Courses from './landingPage/Courses';
 import Discuss from './landingPage/Discuss';
 import Hero from "./landingPage/Hero";
 import Platform from './landingPage/Platform';
-
 // Import logo
 import bg from '../assets/PreepPright.png';
 
@@ -265,7 +266,7 @@ const Home = () => {
             {/* Content Sections */}
             <main className="container mx-auto px-4">
                 <div id="home" className="pt-6">
-                    <Hero />
+                <Hero companiesHero={companiesHero} heroBg={heroBg} />
                 </div>
                 <div id="categories" className="pt-6">
                     <Categories />
