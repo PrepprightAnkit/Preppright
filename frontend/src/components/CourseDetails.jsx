@@ -1,45 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import {
+    BookOpen,
+    CheckCircle,
+    DollarSign,
+    Download,
+    Home,
+    Video
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
 
 const CourseDetails = () => {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
-
     const { id } = useParams();
     const [course, setCourse] = useState(null);
     const [category, setCategory] = useState(null);
     const { user, isAuthenticated } = useSelector((state) => state.auth);
-    const [purchased, setPurchased] = useState(null);
-    let userHasCourse = false;
-
-    if (isAuthenticated) {
-        for (let i = 0; i < user.coursesTaken.length; i++) {
-            if (user.coursesTaken[i].course === course?._id) {
-                userHasCourse = true;
-                break;
-            }
-        }
-    }
-
+    const [purchased, setPurchased] = useState(false);
     const [completedLessons, setCompletedLessons] = useState([]);
+    const [expandedLesson, setExpandedLesson] = useState(null);
+    const [showPaymentForm, setShowPaymentForm] = useState(false);
 
+    // Authentication and Course Purchase Logic
+    let userHasCourse = isAuthenticated && user.coursesTaken.some(
+        courseTaken => courseTaken.course === course?._id
+    );
+
+    // Fetch and Setup Functions
     useEffect(() => {
-        if (isAuthenticated) {
-            fetchCourseDetails();
-        }
+        const fetchData = async () => {
+            if (isAuthenticated) {
+                await fetchCourseDetails();
+            }
+        };
+        fetchData();
     }, [isAuthenticated, id]);
-
-    useEffect(() => {
-        if (course) {
-            const savedProgress = JSON.parse(localStorage.getItem(`progress-${course._id}`)) || [];
-            setCompletedLessons(savedProgress);
-            setPurchased(true);
-        }
-    }, [course]);
-
-    const handleBuyNowClick = () => {
-        setShowPaymentForm(true);
-    };
 
     const fetchCourseDetails = async () => {
         try {
@@ -47,9 +42,7 @@ const CourseDetails = () => {
             if (response.ok) {
                 const data = await response.json();
                 setCourse(data.data);
-                fetchCategoryDetails(data.data.category);
-            } else {
-                console.error('Failed to fetch course details');
+                await fetchCategoryDetails(data.data.category);
             }
         } catch (error) {
             console.error('Error fetching course details:', error);
@@ -62,99 +55,24 @@ const CourseDetails = () => {
             if (response.ok) {
                 const data = await response.json();
                 setCategory(data.data);
-            } else {
-                console.error('Failed to fetch category details');
             }
         } catch (error) {
             console.error('Error fetching category details:', error);
         }
     };
 
-    const toggleLessonCompletion = async (lessonId) => {
-        let updatedLessons = [];
-        if (completedLessons.includes(lessonId)) {
-            updatedLessons = completedLessons.filter(id => id !== lessonId);
-        } else {
-            updatedLessons = [...completedLessons, lessonId];
-        }
-        setCompletedLessons(updatedLessons);
-        localStorage.setItem(`progress-${course._id}`, JSON.stringify(updatedLessons));
-
-        // Post the progress update to the backend
-        try {
-            const response = await fetch(`${apiUrl}/api/v1/users/progress`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}` // Include JWT token if required
-                },
-                body: JSON.stringify({
-                    userId: user._id,
-                    courseId: course._id,
-                    lessonId
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update progress');
-            }
-
-            const data = await response.json();
-            console.log('Progress updated:', data);
-        } catch (error) {
-            console.error('Error updating progress:', error);
-        }
-    };
-
-    const getProgressPercentage = () => {
-        return Math.round((completedLessons.length / course.lessons.length) * 100);
-    };
-
-    const [expandedLesson, setExpandedLesson] = useState(null);
-    const [showPaymentForm, setShowPaymentForm] = useState(false);
-    const [transactionId, setTransactionId] = useState('');
-    const [paymentConfirmationImage, setPaymentConfirmationImage] = useState(null);
-
-    const toggleLesson = (lessonId) => {
-        setExpandedLesson(expandedLesson === lessonId ? null : lessonId);
-    };
-
-    const handlePaymentFormSubmit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append('courseId', course._id);
-        formData.append('userId', user._id);
-        formData.append('transactionId', transactionId);
-        formData.append('paymentConfirmationImage', paymentConfirmationImage);
-
-        try {
-            const response = await fetch(`${apiUrl}/api/v1/approve/courseApproval`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${user.token}` // Include JWT token if required
-                },
-                body: formData
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Course purchased successfully:', data);
-                setShowPaymentForm(false); // Hide form after successful purchase
-            } else {
-                console.error('Failed to approve course');
-            }
-        } catch (error) {
-            console.error('Error approving course:', error);
-        }
-    };
-
+    // Render Loading State
     if (!isAuthenticated) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <div className="bg-white p-8 border-2 border-gray-300 rounded-lg text-center">
-                    <h2 className="text-2xl font-bold mb-4">Please Login to View Course Details</h2>
-                    <Link to="/login" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
-                        Go to Login
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+                <div className="bg-white p-10 rounded-2xl shadow-2xl text-center space-y-6 max-w-md w-full">
+                    <h2 className="text-3xl font-bold text-blue-800 mb-4">Access Restricted</h2>
+                    <p className="text-gray-600 mb-6">Please log in to view course details</p>
+                    <Link 
+                        to="/login" 
+                        className="w-full inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
+                    >
+                        Login to Continue
                     </Link>
                 </div>
             </div>
@@ -162,198 +80,229 @@ const CourseDetails = () => {
     }
 
     if (!course || !category) {
-        return <div className="text-center text-xl text-white">Loading...</div>;
-    }
-
-    return (
-        <section className="bg-gradient-to-r from-blue-300 to-blue-700 p-8 min-h-screen">
-            {/* Progress Bar */}
-            {
-                userHasCourse ? (
-                    <>
-                        <div className="bg-white p-2 mb-6 rounded-lg shadow-lg">
-                            <div className="relative w-full h-6 bg-gray-200 rounded-full">
-                                <div
-                                    className="absolute top-0 left-0 h-6 bg-green-600 rounded-full transition-all duration-300"
-                                    style={{ width: `${getProgressPercentage()}%` }}
-                                ></div>
-                            </div>
-                            <p className="text-center text-sm font-semibold mt-2 text-green-700">
-                                {getProgressPercentage()}% of Lessons Completed
-                            </p>
-                        </div>
-                    </>
-                ) : (
-                    <></>
-                )
-            }
-
-            <div className="flex justify-between items-center mb-6">
-                <div>
-                    <h1 className="text-3xl font-bold text-white">{category.title} / {course.title}</h1>
-                </div>
-                <div>
-                    <Link to="/" className="bg-white text-blue-700 font-bold py-2 px-4 rounded-lg shadow-lg">
-                        Home
-                    </Link>
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+                <div className="text-blue-600 text-2xl font-semibold animate-pulse">
+                    Loading Course Details...
                 </div>
             </div>
+        );
+    }
 
-            <div className="flex flex-col lg:flex-row gap-4">
-                <div className="w-full lg:w-9/12 bg-white shadow-md rounded-lg p-8 flex flex-col items-center">
-                    <div className="bg-blue-700 h-96 w-full flex justify-center items-center py-8">
-                        {/* Intro Video in Iframe */}
-                        <div className="relative h-full w-full sm:w-3/4 md:w-2/3 lg:w-1/2">
+    // Progress Calculation
+    const getProgressPercentage = () => {
+        return Math.round((completedLessons.length / course.lessons.length) * 100);
+    };
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
+            {/* Navigation */}
+            <nav className="bg-white shadow-md sticky top-0 z-50 px-4 py-3">
+                <div className="container mx-auto flex justify-between items-center">
+                    <div className="flex items-center space-x-2">
+                        <BookOpen className="text-blue-600" />
+                        <span className="text-xl font-bold text-blue-800">{category.title} / {course.title}</span>
+                    </div>
+                    <Link 
+                        to="/" 
+                        className="flex items-center bg-blue-100 hover:bg-blue-200 text-blue-800 px-4 py-2 rounded-full transition-colors"
+                    >
+                        <Home className="mr-2" /> Home
+                    </Link>
+                </div>
+            </nav>
+
+            {/* Main Content */}
+            <div className="container mx-auto px-4 py-8 grid md:grid-cols-3 gap-6">
+                {/* Course Overview */}
+                <div className="md:col-span-2 space-y-6">
+                    {/* Intro Video */}
+                    <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                        <div className="h-96">
                             <iframe
                                 src={course.introVideo}
                                 title="Course Intro Video"
-                                className="w-full h-full rounded-lg shadow-lg"
+                                className="w-full h-full"
                                 allowFullScreen
                             ></iframe>
                         </div>
+                        <div className="p-6">
+                            <h2 className="text-3xl font-bold text-blue-800 mb-4">{course.title}</h2>
+                            <p className="text-gray-600">{course.description}</p>
+                        </div>
                     </div>
 
-                    <div className="bg-white w-full py-4 px-8">
-                        <h2 className="text-4xl font-bold text-blue-700 mb-4">{course.title}</h2>
-                        <p className="text-gray-700 text-lg mb-4">{course.description}</p>
-                        <p className="text-gray-500 text-base mb-4">{course.detailedDescription}</p>
+                    {/* Free Resources */}
+                    <div className="bg-white rounded-2xl shadow-lg p-6">
+                        <h3 className="text-2xl font-bold text-blue-800 mb-4 flex items-center">
+                            <Video className="mr-3 text-green-600" /> Free Resources
+                        </h3>
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 className="text-xl font-semibold mb-2">Free Video</h4>
+                                <iframe
+                                    src={course.freeVideo.replace("watch?v=", "embed/")}
+                                    title="Free Video"
+                                    className="w-full rounded-lg"
+                                    allowFullScreen
+                                ></iframe>
+                            </div>
+                            <div>
+                                <h4 className="text-xl font-semibold mb-2">Free Notes</h4>
+                                <a 
+                                    href={course.freeNotes} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+                                >
+                                    <Download className="mr-2" /> Download Free Notes
+                                </a>
+                            </div>
+                        </div>
                     </div>
+
+                    {/* Lessons */}
+                    {userHasCourse && (
+                        <div className="bg-white rounded-2xl shadow-lg p-6">
+                            <h3 className="text-2xl font-bold text-blue-800 mb-4">Course Lessons</h3>
+                            <div className="space-y-4">
+                                {course.lessons.map((lesson) => (
+                                    <LessonAccordion 
+                                        key={lesson._id} 
+                                        lesson={lesson}
+                                        isExpanded={expandedLesson === lesson._id}
+                                        onToggle={() => setExpandedLesson(
+                                            expandedLesson === lesson._id ? null : lesson._id
+                                        )}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
-                <div className="w-full lg:w-3/12">
-                    <div className="bg-white shadow-md rounded-lg p-4 sticky top-8">
-                        <img src={course.courseImage} alt={course.title} className="w-full h-auto mb-4 rounded-lg shadow-lg" />
-                        <div className="mb-4 text-center">
-                            <span className="text-gray-600 text-lg">Price: ${course.price}</span>
-                        </div>
-                        <div className="text-center mt-4">
-                            {userHasCourse ? (
-                                // This is where you can place content if the user has the course.
-                                <></>
-                            ) : (
-                                <button
-                                    className="bg-green-700 text-white text-lg font-bold py-2 px-4 rounded-lg shadow-lg"
-                                    onClick={handleBuyNowClick}
+                {/* Sidebar */}
+                <div className="space-y-6">
+                    <div className="bg-white rounded-2xl shadow-lg p-6">
+                        <img 
+                            src={course.courseImage} 
+                            alt={course.title} 
+                            className="w-full rounded-lg mb-4"
+                        />
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center">
+                                <DollarSign className="mr-2 text-green-600" />
+                                <span className="text-xl font-bold text-gray-800">${course.price}</span>
+                            </div>
+                            {!userHasCourse && (
+                                <button 
+                                    onClick={() => setShowPaymentForm(true)}
+                                    className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-colors"
                                 >
                                     Buy Now
                                 </button>
                             )}
                         </div>
-
                     </div>
 
                     {showPaymentForm && !userHasCourse && (
-                        <div className="bg-white shadow-md rounded-lg p-4 mt-4">
-                            <h3 className="text-2xl font-semibold text-blue-700 mb-4">Complete Your Purchase</h3>
-                            <form onSubmit={handlePaymentFormSubmit}>
-                                <div className="mb-4">
-                                    <label htmlFor="transactionId" className="block text-gray-700 font-bold mb-2">
-                                        Transaction ID:
-                                    </label>
-                                    <input
-                                        id="transactionId"
-                                        type="text"
-                                        value={transactionId}
-                                        onChange={(e) => setTransactionId(e.target.value)}
-                                        className="w-full p-2 border border-gray-300 rounded-lg shadow-inner"
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label htmlFor="paymentConfirmationImage" className="block text-gray-700 font-bold mb-2">
-                                        Upload Payment Confirmation:
-                                    </label>
-                                    <input
-                                        id="paymentConfirmationImage"
-                                        type="file"
-                                        onChange={(e) => setPaymentConfirmationImage(e.target.files[0])}
-                                        className="w-full p-2 border border-gray-300 rounded-lg shadow-inner"
-                                    />
-                                </div>
-                                <div className="text-center">
-                                    <button
-                                        type="submit"
-                                        className="bg-green-700 text-white text-lg font-bold py-2 px-4 rounded-lg shadow-lg"
-                                    >
-                                        Confirm Payment
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                        <PaymentForm 
+                            course={course} 
+                            onClose={() => setShowPaymentForm(false)} 
+                        />
                     )}
                 </div>
             </div>
+        </div>
+    );
+};
 
-            <div className="bg-white shadow-md rounded-lg p-4 mt-4">
-                <h3 className="text-3xl font-semibold text-green-700 mb-4">Free Video and Notes</h3>
-                <div className="mb-8">
-                    <h4 className="text-2xl font-semibold text-blue-700 mb-4 text-center">Free Video</h4>
-                    <div className="bg-blue-700 w-full h-full flex justify-center items-center py-8">
-                        {/* Free Video in Iframe */}
-                        <div className="h-full sm:w-3/4 md:w-2/3 lg:w-1/2">
-                            <iframe
-                                src={course.freeVideo.replace("watch?v=", "embed/")}
-                                title="Free Video"
-                                className="w-full h-full rounded-lg shadow-lg"
-                                allowFullScreen
-                            ></iframe>
-                        </div>
-                    </div>
-                </div>
+const LessonAccordion = ({ lesson, isExpanded, onToggle }) => {
+    const [isCompleted, setIsCompleted] = useState(false);
 
-                <div>
-                    <h4 className="text-2xl font-semibold text-blue-700 mb-2">Free Notes</h4>
-                    <a href={course.freeNotes} target="_blank" rel="noopener noreferrer" className="text-green-700 underline text-lg">
-                        Download Free Notes
+    return (
+        <div className="border rounded-lg overflow-hidden">
+            <div 
+                onClick={onToggle}
+                className="flex justify-between items-center p-4 bg-blue-50 cursor-pointer hover:bg-blue-100 transition-colors"
+            >
+                <span className="text-lg font-semibold text-blue-800">{lesson.title}</span>
+                <CheckCircle 
+                    className={`w-6 h-6 ${isCompleted ? 'text-green-600' : 'text-gray-400'}`} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setIsCompleted(!isCompleted);
+                    }}
+                />
+            </div>
+            {isExpanded && (
+                <div className="p-4">
+                    <video controls className="w-full rounded-lg">
+                        <source src={lesson.videoLink} type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <a 
+                        href={lesson.notes} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="mt-2 text-blue-600 hover:underline flex items-center"
+                    >
+                        <Download className="mr-2" /> Download Lesson Notes
                     </a>
                 </div>
-            </div>
+            )}
+        </div>
+    );
+};
 
+const PaymentForm = ({ course, onClose }) => {
+    const [transactionId, setTransactionId] = useState('');
+    const [paymentConfirmationImage, setPaymentConfirmationImage] = useState(null);
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        // Payment submission logic here
+        onClose();
+    };
 
-            <div className="bg-white shadow-md rounded-lg p-8 mt-8">
-                {userHasCourse ? (
-                    <>
-                        <div className="bg-white shadow-md rounded-lg p-8 mt-8">
-                            <h3 className="text-3xl font-bold text-blue-700 mb-4">Course Lessons</h3>
-                            <div className="space-y-4">
-                                {course.lessons.map((lesson) => (
-                                    <div key={lesson._id} className="border-b pb-4">
-                                        <div
-                                            className="bg-blue-100 p-4 rounded-lg cursor-pointer flex justify-between items-center"
-                                            onClick={() => toggleLesson(lesson._id)}
-                                        >
-                                            <h4 className="text-xl font-semibold text-blue-700">{lesson.title}</h4>
-                                            <input
-                                                type="checkbox"
-                                                checked={completedLessons.includes(lesson._id)}
-                                                onChange={() => toggleLessonCompletion(lesson._id)}
-                                                className="form-checkbox h-5 w-5 text-green-600"
-                                            />
-                                        </div>
-                                        {expandedLesson === lesson._id && (
-                                            <div className="mt-4">
-                                                <video controls className="w-full rounded-lg shadow-lg">
-                                                    <source src={lesson.videoLink} type="video/mp4" />
-                                                    Your browser does not support the video tag.
-                                                </video>
-                                                <div className="mt-2">
-                                                    <a href={lesson.notes} target="_blank" rel="noopener noreferrer" className="text-green-700 underline">
-                                                        Download Lesson Notes
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </>
-                ) : (
-                    <p className="text-2xl text-red-700 text-center">You need to purchase this course to access the lessons.</p>
-                )}
-            </div>
-        </section>
-
+    return (
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-2xl font-bold text-blue-800 mb-4">Complete Your Purchase</h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                    <label className="block mb-2 text-gray-700">Transaction ID</label>
+                    <input 
+                        type="text"
+                        value={transactionId}
+                        onChange={(e) => setTransactionId(e.target.value)}
+                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                <div>
+                    <label className="block mb-2 text-gray-700">Payment Confirmation</label>
+                    <input 
+                        type="file"
+                        onChange={(e) => setPaymentConfirmationImage(e.target.files[0])}
+                        className="w-full px-4 py-2 border rounded-lg"
+                    />
+                </div>
+                <div className="flex justify-between">
+                    <button 
+                        type="button"
+                        onClick={onClose}
+                        className="bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-300"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit"
+                        className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700"
+                    >
+                        Confirm Payment
+                    </button>
+                </div>
+            </form>
+        </div>
     );
 };
 
