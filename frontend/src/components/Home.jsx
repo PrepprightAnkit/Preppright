@@ -1,5 +1,6 @@
-import { LogOut, Menu, Search, Upload, User, X } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+
+import { LogOut, Menu, Upload, User, X } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../actions/authActions';
@@ -14,17 +15,31 @@ import Hero from "./landingPage/Hero";
 import Platform from './landingPage/Platform';
 // Import logo
 import bg from '../assets/PreepPright.png';
+import SearchComponent from './Search';
 
 const Home = () => {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const [courses, setCourses] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredCourses, setFilteredCourses] = useState([]);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { user, isAuthenticated } = useSelector((state) => state.auth);
 
+    const filteredCourses = useMemo(() => {
+        if (!searchTerm.trim()) return [];
+        
+        return courses.filter(course => 
+            course && 
+            course.title && 
+            course.description && 
+            course.level && 
+            (course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             course.level.toLowerCase().includes(searchTerm.toLowerCase()))
+        ).slice(0, 5); // Limit to 5 results
+    }, [courses, searchTerm]);
+    
     const scrollToSection = (id) => {
         const section = document.getElementById(id);
         if (section) {
@@ -33,40 +48,33 @@ const Home = () => {
         }
     };
 
-    useEffect(() => {
-        fetchCourses();
-    }, []);
 
-    const fetchCourses = async () => {
-        try {
-            const response = await fetch(`${apiUrl}/api/v1/users/courses`);
-            if (response.ok) {
-                const data = await response.json();
-                setCourses(data.data);
-            } else {
-                console.error('Failed to fetch courses');
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await fetch(`${apiUrl}/api/v1/users/courses`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setCourses(data.data);
+                } else {
+                    console.error('Failed to fetch courses');
+                }
+            } catch (error) {
+                console.error('Error fetching courses:', error);
             }
-        } catch (error) {
-            console.error('Error fetching courses:', error);
-        }
-    };
+        };
+
+        fetchCourses();
+    }, [apiUrl]);
+
 
     const handleSearch = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
-        if (value !== '') {
-            const results = courses.filter(course => 
-                course.name.toLowerCase().includes(value.toLowerCase())
-            );
-            setFilteredCourses(results);
-        } else {
-            setFilteredCourses([]);
-        }
     };
 
     const handleSelectCourse = (courseId) => {
         setSearchTerm('');
-        setFilteredCourses([]);
         navigate(`/courses/${courseId}`);
     };
 
@@ -103,34 +111,13 @@ const Home = () => {
                     </div>
 
                     {/* Search */}
-                    <div className="relative hidden md:block w-1/3">
-                        <div className="relative">
-                            <input
-                                type="text"
-                                value={searchTerm}
-                                onChange={handleSearch}
-                                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Search courses..."
-                            />
-                            <Search 
-                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
-                                size={20} 
-                            />
-                        </div>
-                        {filteredCourses.length > 0 && (
-                            <div className="absolute w-full bg-white shadow-lg rounded-lg mt-2 max-h-60 overflow-y-auto">
-                                {filteredCourses.map((course) => (
-                                    <div
-                                        key={course._id}
-                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                        onClick={() => handleSelectCourse(course._id)}
-                                    >
-                                        {course.name}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                    <div className="relative w-full md:w-1/3">
+            <div className="relative">
+                <SearchComponent/>
+
+        </div>
+        </div>
+
 
                     {/* Auth Buttons */}
                     <div className="hidden md:flex items-center space-x-4">
@@ -205,17 +192,7 @@ const Home = () => {
 
                             {/* Mobile Search */}
                             <div className="relative w-full mt-2">
-                                <input
-                                    type="text"
-                                    value={searchTerm}
-                                    onChange={handleSearch}
-                                    className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Search courses..."
-                                />
-                                <Search 
-                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
-                                    size={20} 
-                                />
+                                <SearchComponent/>
                             </div>
 
                             {/* Mobile Auth Buttons */}

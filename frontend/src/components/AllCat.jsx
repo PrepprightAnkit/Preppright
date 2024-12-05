@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Slide, Fade } from 'react-awesome-reveal';
+import { LogOut, Menu, Search, Upload, User, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../actions/authActions';
+import bg from '../assets/PreepPright.png'; // Import your logo
 
 const AllCat = () => {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
-
     const [categories, setCategories] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCategories, setFilteredCategories] = useState([]);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -33,15 +35,16 @@ const AllCat = () => {
         }
     };
 
-    const handleSearch = (event) => {
-        setSearchTerm(event.target.value);
-        if (event.target.value === '') {
-            setFilteredCategories(categories);
-        } else {
-            const filtered = categories.filter(category =>
-                category.title.toLowerCase().includes(event.target.value.toLowerCase())
+    const handleSearch = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        if (value !== '') {
+            const results = categories.filter(category => 
+                category.title.toLowerCase().includes(value.toLowerCase())
             );
-            setFilteredCategories(filtered);
+            setFilteredCategories(results);
+        } else {
+            setFilteredCategories(categories);
         }
     };
 
@@ -49,36 +52,75 @@ const AllCat = () => {
         navigate(`/categories/${categoryId}`);
     };
 
-    const handleLogout = () => {
-        // Implement logout functionality
+    const handleLogout = async () => {
+        await dispatch(logout());
+        navigate('/');
+    };
+
+    const scrollToSection = (id) => {
+        const section = document.getElementById(id);
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth' });
+            setIsMobileMenuOpen(false);
+        }
     };
 
     return (
-        <section className="bg-gray-100 min-h-screen p-8">
-            <nav className="bg-white p-4">
-                <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-                    <h1 className="text-2xl font-bold mb-2 md:mb-0">LOGO</h1>
+        <div className="min-h-screen bg-gray-50">
+            {/* Navigation */}
+            <nav className="sticky top-0 z-50 bg-white shadow-md">
+                <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+                    {/* Logo */}
+                    <img 
+                        src={bg} 
+                        alt="Preep Logo" 
+                        className="h-10 w-auto"
+                    />
 
-                    <div className="scale-75 md:scale-100 flex space-x-4 text-2xl font-bold mb-2 md:mb-0">
-                        <button onClick={() => navigate('/')} className="text-blue-800 hover:underline">Home</button>
-                        <button onClick={() => navigate('/allCat')} className="text-blue-800 hover:underline">Categories</button>
-                        <button onClick={() => navigate('/allCourses')} className="text-blue-800 hover:underline">Courses</button>
+                    {/* Desktop Navigation */}
+                    <div className="hidden md:flex items-center space-x-6">
+                        {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
+                            <button 
+                                key={item} 
+                                onClick={() => {
+                                    if (item === 'Quiz') {
+                                        navigate('/allQuiz');
+                                    } else if (item === 'Home') {
+                                        navigate('/');
+                                    } else if (item === 'Categories') {
+                                        navigate('/allCat');
+                                    } else {
+                                        navigate('/');
+                                    }
+                                }}
+                                className="text-blue-800 hover:text-blue-600 transition-colors font-semibold"
+                            >
+                                {item}
+                            </button>
+                        ))}
                     </div>
 
-                    <div className="relative w-full md:w-1/4 group">
-                        <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={handleSearch}
-                            className="w-full px-4 py-2 border rounded-full focus:outline-none"
-                            placeholder="Search categories..."
-                        />
-                        {filteredCategories.length > 0 && (
-                            <div className="absolute w-full bg-white shadow-lg rounded-lg mt-2 z-10 opacity-0 group-hover:opacity-100 focus-within:opacity-100">
+                    {/* Search */}
+                    <div className="relative hidden md:block w-1/3">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                value={searchTerm}
+                                onChange={handleSearch}
+                                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Search categories..."
+                            />
+                            <Search 
+                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                                size={20} 
+                            />
+                        </div>
+                        {filteredCategories.length > 0 && searchTerm && (
+                            <div className="absolute w-full bg-white shadow-lg rounded-lg mt-2 max-h-60 overflow-y-auto">
                                 {filteredCategories.map((category) => (
                                     <div
                                         key={category._id}
-                                        className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                                         onClick={() => handleSelectCategory(category._id)}
                                     >
                                         {category.title}
@@ -88,77 +130,189 @@ const AllCat = () => {
                         )}
                     </div>
 
-                    <div className="flex space-x-4">
+                    {/* Auth Buttons */}
+                    <div className="hidden md:flex items-center space-x-4">
                         {isAuthenticated ? (
-                            <>
-                                <button
-                                    onClick={handleLogout}
-                                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-full"
+                            <div className="flex items-center space-x-3">
+                                {user.isAdmin && (
+                                    <Link 
+                                        to="/uploadContent" 
+                                        className="flex items-center bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-full transition-colors"
+                                    >
+                                        <Upload size={18} className="mr-2" /> Upload
+                                    </Link>
+                                )}
+                                <Link 
+                                    to="/userProfile" 
+                                    className="flex items-center bg-blue-100 hover:bg-blue-200 px-3 py-2 rounded-full transition-colors"
                                 >
-                                    Logout
+                                    <User size={18} className="mr-2" /> Profile
+                                </Link>
+                                <button 
+                                    onClick={handleLogout}
+                                    className="flex items-center bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded-full transition-colors"
+                                >
+                                    <LogOut size={18} className="mr-2" /> Logout
                                 </button>
-                                {user.isAdmin ? (
-                                    <button className="bg-gray-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                                        <Link to="/uploadContent">Upload</Link>
-                                    </button>
-                                ) : null}
-                                <button className="bg-blue-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                                    <Link to="/userProfile">My Profile</Link>
-                                </button>
-                            </>
+                            </div>
                         ) : (
-                            <>
-                                <button className="bg-blue-500 hover:bg-blue-900 text-white px-4 py-2 rounded-full">
-                                    <Link to="/login">Login</Link>
-                                </button>
-                                <button className="bg-green-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                                    <Link to="/reg">Register</Link>
-                                </button>
-                            </>
+                            <div className="flex space-x-3">
+                                <Link 
+                                    to="/login" 
+                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
+                                >
+                                    Login
+                                </Link>
+                                <Link 
+                                    to="/reg" 
+                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
+                                >
+                                    Register
+                                </Link>
+                            </div>
                         )}
                     </div>
+
+                    {/* Mobile Menu Toggle */}
+                    <div className="md:hidden">
+                        <button 
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="text-blue-800 focus:outline-none"
+                        >
+                            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        </button>
+                    </div>
                 </div>
+
+                {/* Mobile Menu */}
+                {isMobileMenuOpen && (
+                    <div className="md:hidden bg-white absolute w-full shadow-lg">
+                        <div className="px-4 pt-2 pb-4 space-y-2">
+                            {/* Mobile Navigation Links */}
+                            {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
+                                <button 
+                                    key={item} 
+                                    onClick={() => item === 'Quiz' 
+                                        ? navigate('/allQuiz') 
+                                        : item === 'Home'
+                                        ? navigate('/')
+                                        : item === 'Categories'
+                                        ? navigate('/allCat')
+                                        : scrollToSection(item.toLowerCase())}
+                                    className="block w-full text-left py-2 text-blue-800 hover:bg-blue-50"
+                                >
+                                    {item}
+                                </button>
+                            ))}
+
+                            {/* Mobile Search */}
+                            <div className="relative w-full mt-2">
+                                <input
+                                    type="text"
+                                    value={searchTerm}
+                                    onChange={handleSearch}
+                                    className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Search categories..."
+                                />
+                                <Search 
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                                    size={20} 
+                                />
+                            </div>
+
+                            {/* Mobile Auth Buttons */}
+                            {isAuthenticated ? (
+                                <div className="space-y-2 mt-2">
+                                    {user.isAdmin && (
+                                        <Link 
+                                            to="/uploadContent" 
+                                            className="block w-full text-center bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full transition-colors"
+                                        >
+                                            Upload Content
+                                        </Link>
+                                    )}
+                                    <Link 
+                                        to="/userProfile" 
+                                        className="block w-full text-center bg-blue-100 hover:bg-blue-200 px-4 py-2 rounded-full transition-colors"
+                                    >
+                                        My Profile
+                                    </Link>
+                                    <button 
+                                        onClick={handleLogout}
+                                        className="block w-full text-center bg-red-100 hover:bg-red-200 text-red-800 px-4 py-2 rounded-full transition-colors"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="space-y-2 mt-2">
+                                    <Link 
+                                        to="/login" 
+                                        className="block w-full text-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
+                                    >
+                                        Login
+                                    </Link>
+                                    <Link 
+                                        to="/reg" 
+                                        className="block w-full text-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
+                                    >
+                                        Register
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
             </nav>
 
-            <div className="w-full flex flex-col md:flex-row justify-between items-center mb-8">
-                <Slide>
-                    <div className="flex flex-col">
-                        <h2 className="text-5xl font-bold text-blue-700">POPULAR CATEGORIES!</h2>
-                        <h2 className="text-2xl ml-2 mt-2 font-light text-gray-800">Explore our Top Categories</h2>
-                    </div>
-                </Slide>
-            </div>
+            {/* Categories Content */}
+            <main className="container mx-auto px-4 py-8">
+                <div className="text-center mb-8">
+                    <h1 className="text-4xl md:text-5xl font-bold text-blue-700 mb-4">
+                        Explore Categories
+                    </h1>
+                    <p className="text-xl text-gray-600">
+                        Discover courses across various domains
+                    </p>
+                </div>
 
-            {filteredCategories.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {filteredCategories.map((category) => (
-                        <Link to={`/categories/${category._id}`} key={category._id} className="group">
-                            <div className="bg-white shadow-md rounded-lg border-blue-700 overflow-hidden hover:shadow-lg transform hover:scale-105 transition-transform duration-300">
-                                <Fade cascade>
-                                    <div className="relative">
+                {filteredCategories.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {filteredCategories.map((category) => (
+                            <Link 
+                                to={`/categories/${category._id}`} 
+                                key={category._id} 
+                                className="group"
+                            >
+                                <div className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                                    <div className="relative h-48 w-full">
                                         <img
                                             src={category.image}
                                             alt={category.title}
-                                            className="w-full h-48 object-cover"
+                                            className="absolute inset-0 w-full h-full object-cover"
                                         />
                                     </div>
                                     <div className="p-4 bg-blue-50">
-                                        <h3 className="text-xl font-semibold text-blue-700 mb-2 line-clamp-1">
+                                        <h3 className="text-xl font-semibold text-blue-800 mb-2 line-clamp-1">
                                             {category.title}
                                         </h3>
-                                        <p className="text-gray-700 mb-2 line-clamp-3">
+                                        <p className="text-gray-600 line-clamp-2">
                                             {category.description}
                                         </p>
                                     </div>
-                                </Fade>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
-            ) : (
-                <div className="text-center text-gray-600">No categories available</div>
-            )}
-        </section>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-12">
+                        <p className="text-2xl text-gray-500">
+                            No categories found
+                        </p>
+                    </div>
+                )}
+            </main>
+        </div>
     );
 };
 
