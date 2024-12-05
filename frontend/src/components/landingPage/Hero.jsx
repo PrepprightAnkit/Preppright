@@ -1,9 +1,9 @@
 import React from 'react';
-import heroBg from "./assets/heroBg.png";
-import companiesHero from "./assets/companiesHero.png";
-import { Fade, Zoom, Slide } from "react-awesome-reveal";
-import { Link } from 'react-router-dom';
+import { Fade, Slide, Zoom } from "react-awesome-reveal";
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import companiesHero from "./assets/companiesHero.png";
+import heroBg from "./assets/heroBg.png";
 
 const Hero = () => {
     const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -80,9 +80,9 @@ const Hero = () => {
                     </section>
                 </Zoom>
 
-                <div id='companies' className='flex flex-col items-center justify-center w-full mt-8'>
+                <div id='companies' className='flex items-center justify-center w-full mt-8'>
                     <Slide>
-                        <img src={companiesHero} alt="Your companies" className='mx-4 sm:mx-8 lg:mx-11 object-contain w-11/12 lg:w-10/12' />
+                        <img src={companiesHero} alt="Your companies" className='' />
                     </Slide>
                 </div>
             </div>

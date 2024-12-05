@@ -1,19 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Hero from "./landingPage/Hero";
-import Categories from "./landingPage/Categories";
-import Discuss from './landingPage/Discuss';
-import Courses from './landingPage/Courses';
-import Platform from './landingPage/Platform';
+import { LogOut, Menu, Search, Upload, User, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../actions/authActions';
-import bg from '../assets/PreepPright.png'
+
+// Import components (assuming these exist in the same structure)
+import Categories from "./landingPage/Categories";
+import Courses from './landingPage/Courses';
+import Discuss from './landingPage/Discuss';
+import Hero from "./landingPage/Hero";
+import Platform from './landingPage/Platform';
+
+// Import logo
+import bg from '../assets/PreepPright.png';
+
 const Home = () => {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
-
     const [courses, setCourses] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCourses, setFilteredCourses] = useState([]);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -22,6 +28,7 @@ const Home = () => {
         const section = document.getElementById(id);
         if (section) {
             section.scrollIntoView({ behavior: 'smooth' });
+            setIsMobileMenuOpen(false); // Close mobile menu after selecting
         }
     };
 
@@ -44,9 +51,12 @@ const Home = () => {
     };
 
     const handleSearch = (e) => {
-        setSearchTerm(e.target.value);
-        if (e.target.value !== '') {
-            const results = courses.filter(course => course.name.toLowerCase().includes(e.target.value.toLowerCase()));
+        const value = e.target.value;
+        setSearchTerm(value);
+        if (value !== '') {
+            const results = courses.filter(course => 
+                course.name.toLowerCase().includes(value.toLowerCase())
+            );
             setFilteredCourses(results);
         } else {
             setFilteredCourses([]);
@@ -65,36 +75,53 @@ const Home = () => {
     };
 
     return (
-        <div>
-            <nav className="bg-white p-4">
-                <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-                    {/* <h1 className="text-2xl font-bold ">LOGO</h1> */}
-                    <img src = {bg}
-                    className='h-12 w-auto mb-2 md:mb-0'/>
-                    
-                    <div className="scale-75 md:scale-100 flex space-x-4 text-2xl font-bold mb-2 md:mb-0">
-                        <button onClick={() => scrollToSection('home')} className="text-blue-800 hover:underline">Home</button>
-                        <button onClick={() => scrollToSection('categories')} className="text-blue-800 hover:underline">Categories</button>
-                        <button onClick={() => scrollToSection('courses')} className="text-blue-800 hover:underline">Courses</button>
-                        <button onClick={() => scrollToSection('discuss')} className="text-blue-800 hover:underline">Discuss</button>
-                        <button className="text-blue-800 hover:underline"><Link to="/allQuiz">Quiz
-                                        </Link></button>
+        <div className="min-h-screen bg-gray-50">
+            {/* Navigation */}
+            <nav className="sticky top-0 z-50 bg-white shadow-md">
+                <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+                    {/* Logo */}
+                    <img 
+                        src={bg} 
+                        alt="Preep Logo" 
+                        className="h-10 w-auto"
+                    />
+
+                    {/* Desktop Navigation */}
+                    <div className="hidden md:flex items-center space-x-6">
+                        {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
+                            <button 
+                                key={item} 
+                                onClick={() => item === 'Quiz' 
+                                    ? navigate('/allQuiz') 
+                                    : scrollToSection(item.toLowerCase())}
+                                className="text-blue-800 hover:text-blue-600 transition-colors font-semibold"
+                            >
+                                {item}
+                            </button>
+                        ))}
                     </div>
 
-                    <div className="relative w-full border-4 md:w-1/4">
-                        <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={handleSearch}
-                            className="w-full px-4 py-2 border rounded-full focus:outline-none"
-                            placeholder="Search courses..."
-                        />
+                    {/* Search */}
+                    <div className="relative hidden md:block w-1/3">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                value={searchTerm}
+                                onChange={handleSearch}
+                                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Search courses..."
+                            />
+                            <Search 
+                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                                size={20} 
+                            />
+                        </div>
                         {filteredCourses.length > 0 && (
-                            <div className="absolute w-full bg-white shadow-lg rounded-lg mt-2 z-10">
+                            <div className="absolute w-full bg-white shadow-lg rounded-lg mt-2 max-h-60 overflow-y-auto">
                                 {filteredCourses.map((course) => (
                                     <div
                                         key={course._id}
-                                        className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                                         onClick={() => handleSelectCourse(course._id)}
                                     >
                                         {course.name}
@@ -104,53 +131,155 @@ const Home = () => {
                         )}
                     </div>
 
-                    <div className="flex space-x-4">
+                    {/* Auth Buttons */}
+                    <div className="hidden md:flex items-center space-x-4">
                         {isAuthenticated ? (
-                            <>
-                                <button
-                                    onClick={handleLogout}
-                                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-full"
+                            <div className="flex items-center space-x-3">
+                                {user.isAdmin && (
+                                    <Link 
+                                        to="/uploadContent" 
+                                        className="flex items-center bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-full transition-colors"
+                                    >
+                                        <Upload size={18} className="mr-2" /> Upload
+                                    </Link>
+                                )}
+                                <Link 
+                                    to="/userProfile" 
+                                    className="flex items-center bg-blue-100 hover:bg-blue-200 px-3 py-2 rounded-full transition-colors"
                                 >
-                                    Logout
+                                    <User size={18} className="mr-2" /> Profile
+                                </Link>
+                                <button 
+                                    onClick={handleLogout}
+                                    className="flex items-center bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded-full transition-colors"
+                                >
+                                    <LogOut size={18} className="mr-2" /> Logout
                                 </button>
-                                {user.isAdmin ? (
-                                    <button className="bg-gray-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                                        <Link to="/uploadContent">Upload</Link>
-                                    </button>
-                                ) : null}
-                                <button className="bg-blue-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                                    <Link to="/userProfile">My Profile</Link>
-                                </button>
-                            </>
+                            </div>
                         ) : (
-                            <>
-                                <button className="bg-blue-500 hover:bg-blue-900 text-white px-4 py-2 rounded-full">
-                                    <Link to="/login">Login</Link>
-                                </button>
-                                <button className="bg-green-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                                    <Link to="/reg">Register</Link>
-                                </button>
-                            </>
+                            <div className="flex space-x-3">
+                                <Link 
+                                    to="/login" 
+                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
+                                >
+                                    Login
+                                </Link>
+                                <Link 
+                                    to="/reg" 
+                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
+                                >
+                                    Register
+                                </Link>
+                            </div>
                         )}
                     </div>
+
+                    {/* Mobile Menu Toggle */}
+                    <div className="md:hidden">
+                        <button 
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="text-blue-800 focus:outline-none"
+                        >
+                            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        </button>
+                    </div>
                 </div>
+
+                {/* Mobile Menu */}
+                {isMobileMenuOpen && (
+                    <div className="md:hidden bg-white absolute w-full shadow-lg">
+                        <div className="px-4 pt-2 pb-4 space-y-2">
+                            {/* Mobile Navigation Links */}
+                            {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
+                                <button 
+                                    key={item} 
+                                    onClick={() => item === 'Quiz' 
+                                        ? navigate('/allQuiz') 
+                                        : scrollToSection(item.toLowerCase())}
+                                    className="block w-full text-left py-2 text-blue-800 hover:bg-blue-50"
+                                >
+                                    {item}
+                                </button>
+                            ))}
+
+                            {/* Mobile Search */}
+                            <div className="relative w-full mt-2">
+                                <input
+                                    type="text"
+                                    value={searchTerm}
+                                    onChange={handleSearch}
+                                    className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Search courses..."
+                                />
+                                <Search 
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                                    size={20} 
+                                />
+                            </div>
+
+                            {/* Mobile Auth Buttons */}
+                            {isAuthenticated ? (
+                                <div className="space-y-2 mt-2">
+                                    {user.isAdmin && (
+                                        <Link 
+                                            to="/uploadContent" 
+                                            className="block w-full text-center bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full transition-colors"
+                                        >
+                                            Upload Content
+                                        </Link>
+                                    )}
+                                    <Link 
+                                        to="/userProfile" 
+                                        className="block w-full text-center bg-blue-100 hover:bg-blue-200 px-4 py-2 rounded-full transition-colors"
+                                    >
+                                        My Profile
+                                    </Link>
+                                    <button 
+                                        onClick={handleLogout}
+                                        className="block w-full text-center bg-red-100 hover:bg-red-200 text-red-800 px-4 py-2 rounded-full transition-colors"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="space-y-2 mt-2">
+                                    <Link 
+                                        to="/login" 
+                                        className="block w-full text-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
+                                    >
+                                        Login
+                                    </Link>
+                                    <Link 
+                                        to="/reg" 
+                                        className="block w-full text-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
+                                    >
+                                        Register
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
             </nav>
 
-            <div id="home" className="pt-4">
-                <Hero />
-            </div>
-            <div id="categories" className="pt-4">
-                <Categories />
-            </div>
-            <div id="courses" className="pt-4">
-                <Courses />
-            </div>
-            <div id="platform" className="pt-4">
-                <Platform />
-            </div>
-            <div id="discuss" className="pt-4">
-                <Discuss />
-            </div>
+            {/* Content Sections */}
+            <main className="container mx-auto px-4">
+                <div id="home" className="pt-6">
+                    <Hero />
+                </div>
+                <div id="categories" className="pt-6">
+                    <Categories />
+                </div>
+                <div id="courses" className="pt-6">
+                    <Courses />
+                </div>
+                <div id="platform" className="pt-6">
+                    <Platform />
+                </div>
+                <div id="discuss" className="pt-6">
+                    <Discuss />
+                </div>
+            </main>
         </div>
     );
 }
