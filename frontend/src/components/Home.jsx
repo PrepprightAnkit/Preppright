@@ -15,6 +15,7 @@ import Hero from "./landingPage/Hero";
 import Platform from './landingPage/Platform';
 // Import logo
 import bg from '../assets/PreepPright.png';
+import HomeReviews from './HomeReviews';
 import SearchComponent from './Search';
 
 const Home = () => {
@@ -92,7 +93,7 @@ const Home = () => {
                     <img 
                         src={bg} 
                         alt="Preep Logo" 
-                        className="h-10 w-auto"
+                        className="h-20 w-auto md:ml-10"
                     />
 
                     {/* Desktop Navigation */}
@@ -253,6 +254,9 @@ const Home = () => {
                 </div>
                 <div id="platform" className="pt-6">
                     <Platform />
+                </div>
+                <div id="reviews" className="pt-6">
+                    <HomeReviews/>
                 </div>
                 <div id="discuss" className="pt-6">
                     <Discuss />

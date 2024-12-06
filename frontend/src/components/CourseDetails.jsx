@@ -1,40 +1,29 @@
 import {
     BookOpen,
-    CheckCircle,
     DollarSign,
     Download,
     Home,
     Video
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
+import CourseReviews from './CourseReviews';
 
 const CourseDetails = () => {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const { id } = useParams();
     const [course, setCourse] = useState(null);
     const [category, setCategory] = useState(null);
-    const { user, isAuthenticated } = useSelector((state) => state.auth);
-    const [purchased, setPurchased] = useState(false);
-    const [completedLessons, setCompletedLessons] = useState([]);
     const [expandedLesson, setExpandedLesson] = useState(null);
     const [showPaymentForm, setShowPaymentForm] = useState(false);
-
-    // Authentication and Course Purchase Logic
-    let userHasCourse = isAuthenticated && user.coursesTaken.some(
-        courseTaken => courseTaken.course === course?._id
-    );
 
     // Fetch and Setup Functions
     useEffect(() => {
         const fetchData = async () => {
-            if (isAuthenticated) {
-                await fetchCourseDetails();
-            }
+            await fetchCourseDetails();
         };
         fetchData();
-    }, [isAuthenticated, id]);
+    }, [id]);
 
     const fetchCourseDetails = async () => {
         try {
@@ -62,23 +51,6 @@ const CourseDetails = () => {
     };
 
     // Render Loading State
-    if (!isAuthenticated) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
-                <div className="bg-white p-10 rounded-2xl shadow-2xl text-center space-y-6 max-w-md w-full">
-                    <h2 className="text-3xl font-bold text-blue-800 mb-4">Access Restricted</h2>
-                    <p className="text-gray-600 mb-6">Please log in to view course details</p>
-                    <Link 
-                        to="/login" 
-                        className="w-full inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
-                    >
-                        Login to Continue
-                    </Link>
-                </div>
-            </div>
-        );
-    }
-
     if (!course || !category) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
@@ -88,11 +60,6 @@ const CourseDetails = () => {
             </div>
         );
     }
-
-    // Progress Calculation
-    const getProgressPercentage = () => {
-        return Math.round((completedLessons.length / course.lessons.length) * 100);
-    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
@@ -130,6 +97,7 @@ const CourseDetails = () => {
                             <h2 className="text-3xl font-bold text-blue-800 mb-4">{course.title}</h2>
                             <p className="text-gray-600">{course.description}</p>
                         </div>
+                        
                     </div>
 
                     {/* Free Resources */}
@@ -159,26 +127,30 @@ const CourseDetails = () => {
                                 </a>
                             </div>
                         </div>
+                        <CourseReviews/>
                     </div>
 
-                    {/* Lessons */}
-                    {userHasCourse && (
-                        <div className="bg-white rounded-2xl shadow-lg p-6">
-                            <h3 className="text-2xl font-bold text-blue-800 mb-4">Course Lessons</h3>
-                            <div className="space-y-4">
-                                {course.lessons.map((lesson) => (
-                                    <LessonAccordion 
-                                        key={lesson._id} 
-                                        lesson={lesson}
-                                        isExpanded={expandedLesson === lesson._id}
-                                        onToggle={() => setExpandedLesson(
-                                            expandedLesson === lesson._id ? null : lesson._id
-                                        )}
-                                    />
-                                ))}
-                            </div>
+                    {/* Preview Lessons */}
+                    <div className="bg-white rounded-2xl shadow-lg p-6">
+                        <h3 className="text-2xl font-bold text-blue-800 mb-4">Course Lessons Preview</h3>
+                        <div className="space-y-4">
+                            {course.lessons.slice(0, 3).map((lesson) => (
+                                <PreviewLessonAccordion 
+                                    key={lesson._id} 
+                                    lesson={lesson}
+                                    isExpanded={expandedLesson === lesson._id}
+                                    onToggle={() => setExpandedLesson(
+                                        expandedLesson === lesson._id ? null : lesson._id
+                                    )}
+                                />
+                            ))}
+                            {course.lessons.length > 3 && (
+                                <div className="text-center text-gray-600 mt-4">
+                                    More lessons available after course purchase
+                                </div>
+                            )}
                         </div>
-                    )}
+                    </div>
                 </div>
 
                 {/* Sidebar */}
@@ -194,18 +166,16 @@ const CourseDetails = () => {
                                 <DollarSign className="mr-2 text-green-600" />
                                 <span className="text-xl font-bold text-gray-800">${course.price}</span>
                             </div>
-                            {!userHasCourse && (
-                                <button 
-                                    onClick={() => setShowPaymentForm(true)}
-                                    className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-colors"
-                                >
-                                    Buy Now
-                                </button>
-                            )}
+                            <button 
+                                onClick={() => setShowPaymentForm(true)}
+                                className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-colors"
+                            >
+                                Buy Now
+                            </button>
                         </div>
                     </div>
 
-                    {showPaymentForm && !userHasCourse && (
+                    {showPaymentForm && (
                         <PaymentForm 
                             course={course} 
                             onClose={() => setShowPaymentForm(false)} 
@@ -217,9 +187,7 @@ const CourseDetails = () => {
     );
 };
 
-const LessonAccordion = ({ lesson, isExpanded, onToggle }) => {
-    const [isCompleted, setIsCompleted] = useState(false);
-
+const PreviewLessonAccordion = ({ lesson, isExpanded, onToggle }) => {
     return (
         <div className="border rounded-lg overflow-hidden">
             <div 
@@ -227,28 +195,21 @@ const LessonAccordion = ({ lesson, isExpanded, onToggle }) => {
                 className="flex justify-between items-center p-4 bg-blue-50 cursor-pointer hover:bg-blue-100 transition-colors"
             >
                 <span className="text-lg font-semibold text-blue-800">{lesson.title}</span>
-                <CheckCircle 
-                    className={`w-6 h-6 ${isCompleted ? 'text-green-600' : 'text-gray-400'}`} 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setIsCompleted(!isCompleted);
-                    }}
-                />
+                <span className="text-sm text-gray-600">Preview</span>
             </div>
             {isExpanded && (
                 <div className="p-4">
-                    <video controls className="w-full rounded-lg">
-                        <source src={lesson.videoLink} type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
-                    <a 
-                        href={lesson.notes} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="mt-2 text-blue-600 hover:underline flex items-center"
-                    >
-                        <Download className="mr-2" /> Download Lesson Notes
-                    </a>
+                    <div className="relative w-full pt-[56.25%]">
+                        <iframe
+                            src={lesson.videoLink}
+                            title="Lesson Preview"
+                            className="absolute top-0 left-0 w-full h-full rounded-lg"
+                            allowFullScreen
+                        ></iframe>
+                    </div>
+                    <div className="mt-2 text-sm text-gray-600">
+                        This is a preview. Full lesson content available after purchase.
+                    </div>
                 </div>
             )}
         </div>
