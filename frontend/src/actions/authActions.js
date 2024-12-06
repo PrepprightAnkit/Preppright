@@ -1,50 +1,63 @@
-// src/actions/authActions.js
-import { LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT } from './types';
+import axios from 'axios';
+import { loginSuccess, logout } from '../reducers/authReducer';
 
-// Action to handle login
-export const login = (formData) => async (dispatch) => {
+// Login Action
+
+
+export const login = (credentials) => async (dispatch) => {
     try {
         const apiUrl = import.meta.env.VITE_API_BASE_URL;
-        const response = await fetch(`${apiUrl}/api/v1/users/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        });
+        const response = await axios.post(`${apiUrl}/api/v1/users/login`, credentials);
+        
+        // Directly use the response.data as the user object
+        const userData = response.data;
+        
+        // Since there's no token in the response, you might need to handle this differently
+        // If your backend doesn't return a token, you might need to generate or handle authentication differently
+        
+        if (userData && userData._id) {
+            dispatch(loginSuccess({
+                user: userData,
+                token: userData._id // Temporary fallback, not recommended for real authentication
+            }));
 
-        const data = await response.json();
+            localStorage.setItem('user', JSON.stringify(userData));
+            // Note: You'll need to handle token storage separately
 
-        if (response.ok) {
-            dispatch({
-                type: LOGIN_SUCCESS,
-                payload: data,
-            });
+            return response.data;
         } else {
-            dispatch({
-                type: LOGIN_FAILURE,
-                payload: data.message,
-            });
+            throw new Error('Invalid login response: Missing user ID');
         }
     } catch (error) {
-        dispatch({
-            type: LOGIN_FAILURE,
-            payload: 'An error occurred while logging in.',
-        });
+        const errorMessage = error.response?.data?.message || error.message || 'Login failed';
+        dispatch(loginFail(errorMessage));
+        throw error;
     }
 };
 
-// Action to handle logout
-export const logout = () => async (dispatch) => {
-    try {
-        const apiUrl = import.meta.env.VITE_API_BASE_URL;
+// Logout Action
+export const logoutUser = () => (dispatch) => {
+    // Remove token and user from localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
 
-        await fetch(`${apiUrl}/api/v1/users/logout`, {
-            method: 'POST',
-        });
+    dispatch(logout());
+};
 
-        dispatch({ type: LOGOUT });
-    } catch (error) {
-        console.error('Logout failed:', error);
+// Check Authentication and Set User
+export const checkAuth = () => async (dispatch) => {
+    const storedUser = localStorage.getItem('user');
+
+    if (storedUser) {
+        try {
+            const userData = JSON.parse(storedUser);
+            
+            dispatch(loginSuccess({
+                user: userData,
+                token: userData._id // Use a unique identifier if no token
+            }));
+        } catch (error) {
+            dispatch(logoutUser());
+        }
     }
 };

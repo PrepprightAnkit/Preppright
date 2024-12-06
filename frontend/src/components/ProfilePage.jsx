@@ -11,7 +11,7 @@ import {
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { logout } from '../actions/authActions';
+import { logoutUser } from '../actions/authActions';
 import bg from '../assets/PreepPright.png';
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -19,7 +19,7 @@ const ProfilePage = () => {
     const { user, isAuthenticated } = useSelector((state) => state.auth);
 
     const handleLogout = () => {
-        dispatch(logout());
+        dispatch(logoutUser());
         navigate('/');
     };
 

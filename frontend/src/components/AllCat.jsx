@@ -2,7 +2,6 @@ import { LogOut, Menu, Search, Upload, User, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { logout } from '../actions/authActions';
 import bg from '../assets/PreepPright.png'; // Import your logo
 
 const AllCat = () => {

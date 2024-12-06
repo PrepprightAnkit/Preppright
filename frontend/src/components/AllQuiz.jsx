@@ -11,7 +11,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { logout } from '../actions/authActions';
+import { logoutUser } from '../actions/authActions';
 
 // Import your logo
 import bg from '../assets/PreepPright.png';
@@ -121,7 +121,7 @@ const AllQuizzes = () => {
     };
 
     const handleLogout = async () => {
-        await dispatch(logout());
+        await dispatch(logoutUser());
         navigate('/');
     };
 

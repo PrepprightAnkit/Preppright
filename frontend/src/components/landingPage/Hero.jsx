@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion';
 import {
-    Book,
-    ChevronRight,
-    ClipboardList,
-    FileText,
-    Menu,
-    Upload,
-    X
+  Book,
+  ChevronRight,
+  ClipboardList,
+  FileText,
+  Menu,
+  Upload,
+  X
 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -83,17 +83,17 @@ const Hero = ({ companiesHero, heroBg }) => {
           </div>
         </motion.div>
 
-        {/* Hero Image */}
+        {/* Hero Image - Now visible on mobile and desktop */}
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="hidden md:flex justify-center items-center"
+          className="flex justify-center items-center"
         >
           <img 
             src={heroBg}
             alt="Learning Journey" 
-            className="rounded-xl shadow-2xl transform hover:scale-105 transition-transform"
+            className="rounded-xl shadow-2xl transform hover:scale-105 transition-transform w-full max-w-md mx-auto"
           />
         </motion.div>
       </div>

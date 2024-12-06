@@ -3,7 +3,7 @@ import { LogOut, Menu, Upload, User, X } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { logout } from '../actions/authActions';
+import { logoutUser } from '../actions/authActions';
 
 // Import components (assuming these exist in the same structure)
 import companiesHero from './landingPage/assets/companiesHero.png';
@@ -80,7 +80,7 @@ const Home = () => {
     };
 
     const handleLogout = async () => {
-        await dispatch(logout());
+        await dispatch(logoutUser());
         navigate('/');
     };
 

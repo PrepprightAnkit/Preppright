@@ -1,15 +1,8 @@
-import {
-    ArrowLeft,
-    ArrowRight,
-    Lock,
-    LogIn,
-    Mail,
-    User
-} from 'lucide-react';
+import { ArrowLeft, ArrowRight, Lock, LogIn, Mail, User } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { login, logout } from '../actions/authActions';
+import { login, logoutUser } from '../actions/authActions';
 
 const LoginPageProp = () => {
     const [formData, setFormData] = useState({
@@ -32,16 +25,18 @@ const LoginPageProp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await dispatch(login(formData));
-        if (isAuthenticated) {
+        try {
+            await dispatch(login(formData));
             setTimeout(() => {
                 navigate('/');
             }, 2000);
+        } catch (error) {
+            console.error('Login error:', error);
         }
     };
 
     const handleLogout = () => {
-        dispatch(logout());
+        dispatch(logoutUser());
     };
 
     const togglePasswordVisibility = () => {
@@ -70,7 +65,10 @@ const LoginPageProp = () => {
                     </div>
 
                     {message && (
-                        <div className="bg-red-500/20 border border-red-500/30 p-3 rounded-lg text-red-300 text-center">
+                        <div className={`
+                            ${message.includes('successful') ? 'bg-green-500/20 border-green-500/30 text-green-300' : 'bg-red-500/20 border-red-500/30 text-red-300'}
+                            border p-3 rounded-lg text-center
+                        `}>
                             {message}
                         </div>
                     )}
@@ -79,11 +77,11 @@ const LoginPageProp = () => {
                         <div className="text-center space-y-4 text-white">
                             <User className="mx-auto w-16 h-16 text-white/70" />
                             <h2 className="text-2xl font-semibold">Welcome Back</h2>
-                            <p className="text-white/80">{user.email}</p>
+                            <p className="text-white/80">{user?.email || 'User'}</p>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-6">
-                            <h1 className="text-3xl font-bold text-white text-center flex items-center justify-center">
+                             <h1 className="text-3xl font-bold text-white text-center flex items-center justify-center">
                                 <LogIn className="mr-3" /> Login
                             </h1>
 

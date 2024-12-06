@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Fade, Slide } from 'react-awesome-reveal';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { logout } from '../actions/authActions';
+import { logoutUser } from '../actions/authActions';
 
 // Import logo
 import bg from '../assets/PreepPright.png';
@@ -62,7 +62,7 @@ const AllCourses = () => {
     };
 
     const handleLogout = async () => {
-        await dispatch(logout());
+        await dispatch(logoutUser());
         navigate('/');
     };
 
