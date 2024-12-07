@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { BookOpen, ChevronRight } from 'lucide-react';
+import { BookOpen, ChevronRight, TrendingUp } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -27,24 +27,29 @@ const Categories = () => {
   }, []);
 
   const cardVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
+    hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
-      scale: 1,
+      y: 0,
       transition: {
-        duration: 0.3,
-        ease: "easeInOut"
+        duration: 0.4,
+        ease: "easeOut"
       }
     },
     hover: { 
-      scale: 1.05,
-      transition: { duration: 0.2 }
+      scale: 1.03,
+      boxShadow: "0 20px 25px -5px rgba(0, 105, 255, 0.15), 0 10px 10px -5px rgba(0, 105, 255, 0.04)",
+      transition: { 
+        duration: 0.3,
+        type: "spring",
+        stiffness: 300
+      }
     }
   };
 
   return (
     <section className="bg-gradient-to-br from-blue-50 to-white min-h-screen py-16 px-4">
-      <div className="container mx-auto">
+      <div className="container mx-auto max-w-7xl">
         {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: -50 }}
@@ -52,10 +57,11 @@ const Categories = () => {
           className="flex flex-col md:flex-row justify-between items-center mb-12 space-y-4 md:space-y-0"
         >
           <div>
-            <h2 className="text-3xl md:text-5xl font-bold text-blue-700 mb-2">
+            <h2 className="text-3xl md:text-5xl font-extrabold text-blue-900 mb-2 tracking-tight">
               Top Categories
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 flex items-center">
+              <TrendingUp className="mr-2 text-blue-500" size={24} />
               Explore Learning Paths Tailored to Your Goals
             </p>
           </div>
@@ -64,7 +70,7 @@ const Categories = () => {
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-all"
+              className="flex items-center bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-all font-semibold"
             >
               View All Categories
               <ChevronRight className="ml-2" />
@@ -78,7 +84,7 @@ const Categories = () => {
             {[...Array(4)].map((_, index) => (
               <div 
                 key={index} 
-                className="bg-gray-200 rounded-xl h-64 w-full"
+                className="bg-gray-200 rounded-2xl h-80 w-full"
               />
             ))}
           </div>
@@ -110,22 +116,47 @@ const Categories = () => {
                   key={index}
                   variants={cardVariants}
                   whileHover="hover"
-                  className="bg-white border-2 border-blue-100 rounded-xl shadow-lg overflow-hidden transform transition-all"
+                  className="bg-white border-2 border-blue-100 rounded-2xl shadow-lg overflow-hidden transform transition-all group"
                 >
-                  <div className="p-6 text-center">
-                    {category.imageUrl && (
-                      <img 
-                        src={category.imageUrl} 
-                        alt={category.name} 
-                        className="mx-auto h-24 w-24 mb-4 object-contain"
-                      />
-                    )}
-                    <h3 className="text-2xl font-bold text-blue-700 mb-3">
-                      {category.name}
-                    </h3>
-                    <p className="text-gray-600 line-clamp-3">
-                      {category.description}
-                    </p>
+                  <div className="relative p-6 text-center h-full flex flex-col">
+                    {/* Background Gradient Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-white opacity-0 group-hover:opacity-50 transition-opacity duration-300 z-0"></div>
+                    
+                    <div className="relative z-10">
+                      {category.imageUrl ? (
+                        <motion.img 
+                          src={category.imageUrl} 
+                          alt={category.name} 
+                          initial={{ scale: 0.9, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ duration: 0.5 }}
+                          className="mx-auto h-32 w-32 mb-6 object-contain rounded-full border-4 border-blue-100 shadow-md group-hover:scale-105 transition-transform"
+                        />
+                      ) : (
+                        <div className="h-32 w-32 mx-auto mb-6 bg-blue-100 rounded-full flex items-center justify-center">
+                          <BookOpen className="text-blue-500" size={48} />
+                        </div>
+                      )}
+                      
+                      <h3 className="text-2xl font-bold text-blue-900 mb-3 group-hover:text-blue-700 transition-colors">
+                        {category.name}
+                      </h3>
+                      <p className="text-gray-600 line-clamp-3 mb-4">
+                        {category.description}
+                      </p>
+                      
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="mt-auto"
+                      >
+                        <Link to={`/category/${category.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                          <button className="w-full bg-blue-50 text-blue-700 font-semibold py-2 rounded-full hover:bg-blue-100 transition-colors">
+                            Explore Category
+                          </button>
+                        </Link>
+                      </motion.div>
+                    </div>
                   </div>
                 </motion.div>
               ))

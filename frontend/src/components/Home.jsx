@@ -16,6 +16,7 @@ import Platform from './landingPage/Platform';
 // Import logo
 import bg from '../assets/PreepPright.png';
 import HomeReviews from './HomeReviews';
+import LeverageEdu from './milestones';
 import SearchComponent from './Search';
 
 const Home = () => {
@@ -245,6 +246,9 @@ const Home = () => {
             <main className="container mx-auto px-4">
                 <div id="home" className="pt-6">
                 <Hero companiesHero={companiesHero} heroBg={heroBg} />
+                </div>
+                <div id="home" className="pt-6">
+                <LeverageEdu/>
                 </div>
                 <div id="categories" className="pt-6">
                     <Categories />
