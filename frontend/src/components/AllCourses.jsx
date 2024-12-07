@@ -49,34 +49,37 @@ const AllCourses = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-blue-600 text-white p-4 flex items-center justify-between">
-        <button
-          onClick={() => navigate(-1)}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Back
-        </button>
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">All Courses</h1>
-          <p className="text-sm">Browse through our diverse range of courses and pick your favorite.</p>
+      <header className="bg-blue-600 text-white p-6 shadow-md">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
+          <button
+            onClick={() => navigate(-1)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 md:mb-0"
+          >
+            Back
+          </button>
+          <h1 className="text-3xl font-extrabold text-center md:text-left md:ml-10">
+            Explore <span className="text-yellow-300">Our Best</span> IT and Computer Science Courses
+          </h1>
+          <p className="text-sm text-center md:text-left opacity-90 mt-2 md:mt-0 md:ml-5">
+            Whether you're looking to land your first IT job, advance your career, or explore a new tech domain, our best sellers are a great place to start.
+          </p>
         </div>
-        <div></div>
       </header>
 
-      <div className="flex flex-col md:flex-row flex-grow">
-        {/* Left Sidebar - Categories */}
-        <div className="w-full md:w-1/4 bg-blue-100 p-4 overflow-y-auto">
-          <h2 className="text-lg font-bold text-blue-800 mb-4">Categories</h2>
-          <ul className="space-y-2">
+      <main className="container mx-auto flex flex-grow flex-col md:flex-row mt-8">
+        {/* Sidebar - Categories */}
+        <aside className="w-full md:w-1/4 bg-white shadow-lg rounded-lg p-6 mb-6 md:mb-0 md:mr-6">
+          <h2 className="text-xl font-bold text-blue-800 mb-4">Categories</h2>
+          <ul className="space-y-3">
             {categories.map((category) => (
               <li
                 key={category._id}
-                className={`p-2 rounded cursor-pointer transition-colors ${
+                className={`p-3 rounded-lg cursor-pointer transition-colors border ${
                   selectedCategory === category._id
-                    ? "bg-blue-500 text-white"
-                    : "bg-white text-blue-800 hover:bg-blue-200"
+                    ? "bg-blue-500 text-white border-transparent"
+                    : "bg-gray-100 text-blue-800 hover:bg-blue-100"
                 }`}
                 onClick={() => handleCategoryClick(category._id)}
               >
@@ -84,40 +87,52 @@ const AllCourses = () => {
               </li>
             ))}
           </ul>
-        </div>
+        </aside>
 
-        {/* Right Panel - Courses */}
-        <div className="w-full md:w-3/4 p-4">
-          <h2 className="text-lg font-bold text-blue-800 mb-4">
+        {/* Courses List */}
+        <section className="flex-grow bg-white shadow-lg rounded-lg p-6">
+          <h2 className="text-xl font-bold text-blue-800 mb-6">
             {loading ? "Loading Courses..." : "Courses"}
           </h2>
           {filteredCourses.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCourses.map((course) => (
                 <div
                   key={course._id}
-                  className="bg-white shadow rounded p-4 hover:shadow-lg transition-shadow cursor-pointer"
-                  onClick={() => handleCourseClick(course._id)}
+                  className="bg-gray-50 border rounded-lg shadow-sm hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
                 >
                   <img
                     src={course.courseImage}
                     alt={course.title}
-                    className="w-full h-40 object-cover rounded mb-2"
+                    className="w-full h-40 object-cover"
                   />
-                  <h3 className="text-md font-semibold text-blue-800 mb-1 line-clamp-1">
-                    {course.title}
-                  </h3>
-                  <p className="text-gray-600 text-sm line-clamp-2">
-                    {course.description}
-                  </p>
+                  <div className="p-4">
+                    <h3 className="text-md font-semibold text-blue-800 mb-2 truncate">
+                      {course.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm line-clamp-2 mb-4">
+                      {course.description}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <button
+                        className="text-white bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 rounded"
+                        onClick={() => handleCourseClick(course._id)}
+                      >
+                        View Course
+                      </button>
+                      <button className="text-blue-500 hover:text-blue-700 font-bold py-2 px-4">
+                        Info
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
             <p className="text-gray-600">No courses available for this category.</p>
           )}
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 };
@@ -132,7 +147,6 @@ export const fetchCategories = async () => {
     throw new Error("Failed to fetch categories");
   }
   const data = await response.json();
-  console.log("Fetched categories:", data);
   return data.data;
 };
 
@@ -143,6 +157,5 @@ export const fetchAllCourses = async () => {
     throw new Error("Failed to fetch courses");
   }
   const data = await response.json();
-  console.log("Fetched courses:", data);
   return data.data;
 };
