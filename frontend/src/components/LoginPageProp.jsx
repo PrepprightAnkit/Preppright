@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Lock, LogIn, Mail, User } from 'lucide-react';
+import { ArrowRight, Lock, LogIn, Mail, User } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -44,111 +44,96 @@ const LoginPageProp = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4">
-            <div className="w-full max-w-md bg-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
-                <div className="p-8 space-y-6">
-                    <div className="flex justify-between items-center">
-                        <button 
-                            onClick={() => navigate('/')} 
-                            className="text-white hover:text-gray-200 transition-colors flex items-center"
-                        >
-                            <ArrowLeft className="mr-2" /> Home
-                        </button>
-                        {isAuthenticated && (
-                            <button 
-                                onClick={handleLogout} 
-                                className="text-white hover:text-red-300 transition-colors flex items-center"
-                            >
-                                Logout <ArrowRight className="ml-2" />
-                            </button>
-                        )}
-                    </div>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-teal-500 to-green-500 p-4 sm:p-6">
+            <div className="w-full max-w-5xl bg-white/10 backdrop-blur-md rounded-3xl shadow-lg border border-gray-200/20 flex flex-wrap md:flex-nowrap overflow-hidden">
 
-                    {message && (
-                        <div className={`
-                            ${message.includes('successful') ? 'bg-green-500/20 border-green-500/30 text-green-300' : 'bg-red-500/20 border-red-500/30 text-red-300'}
-                            border p-3 rounded-lg text-center
-                        `}>
-                            {message}
-                        </div>
-                    )}
+                {/* Left Panel */}
+                <div className="w-full md:w-1/2 p-6 sm:p-10 space-y-6 bg-white/20 backdrop-blur-md">
+                    <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+                        <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 text-center flex items-center justify-center">
+                            <LogIn className="mr-2 sm:mr-3" /> Login
+                        </h1>
 
-                    {isAuthenticated ? (
-                        <div className="text-center space-y-4 text-white">
-                            <User className="mx-auto w-16 h-16 text-white/70" />
-                            <h2 className="text-2xl font-semibold">Welcome Back</h2>
-                            <p className="text-white/80">{user?.email || 'User'}</p>
-                        </div>
-                    ) : (
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                             <h1 className="text-3xl font-bold text-white text-center flex items-center justify-center">
-                                <LogIn className="mr-3" /> Login
-                            </h1>
-
-                            <div className="space-y-4">
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Mail className="w-5 h-5 text-white/50" />
-                                    </div>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        placeholder="Email Address"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
-                                        required
-                                    />
+                        <div className="space-y-4 sm:space-y-5">
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                                    <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400" />
                                 </div>
-
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Lock className="w-5 h-5 text-white/50" />
-                                    </div>
-                                    <input
-                                        type={isPasswordVisible ? "text" : "password"}
-                                        name="password"
-                                        placeholder="Password"
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                        className="w-full pl-10 pr-10 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
-                                        required
-                                    />
-                                    <button 
-                                        type="button"
-                                        onClick={togglePasswordVisibility}
-                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-white/50 hover:text-white transition-colors"
-                                    >
-                                        {isPasswordVisible ? '🙈' : '👁️'}
-                                    </button>
-                                </div>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Email Address"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    className="w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 bg-white/50 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all"
+                                    required
+                                />
                             </div>
 
-                            <div className="flex flex-col space-y-4">
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                                    <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400" />
+                                </div>
+                                <input
+                                    type={isPasswordVisible ? "text" : "password"}
+                                    name="password"
+                                    placeholder="Password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-2 sm:py-3 bg-white/50 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all"
+                                    required
+                                />
                                 <button
-                                    type="submit"
-                                    className="w-full py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center"
+                                    type="button"
+                                    onClick={togglePasswordVisibility}
+                                    className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
                                 >
-                                    Login <ArrowRight className="ml-2" />
+                                    {isPasswordVisible ? '🙈' : '👁️'}
                                 </button>
-
-                                <div className="flex justify-between text-white/80 text-sm">
-                                    <Link 
-                                        to="/loginOtp" 
-                                        className="hover:underline flex items-center"
-                                    >
-                                        Login via OTP
-                                    </Link>
-                                    <Link 
-                                        to="/reg" 
-                                        className="hover:underline flex items-center"
-                                    >
-                                        Register <User className="ml-2 w-4 h-4" />
-                                    </Link>
-                                </div>
                             </div>
-                        </form>
-                    )}
+                        </div>
+
+                        <div className="flex flex-col space-y-3 sm:space-y-4">
+                            <button
+                                type="submit"
+                                className="w-full py-2 sm:py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors flex items-center justify-center"
+                            >
+                                Login <ArrowRight className="ml-2" />
+                            </button>
+
+                            <div className="flex justify-between text-gray-500 text-sm">
+                                <Link
+                                    to="/loginOtp"
+                                    className="hover:underline flex items-center"
+                                >
+                                    Login via OTP
+                                </Link>
+                                <Link
+                                    to="/reg"
+                                    className="hover:underline flex items-center"
+                                >
+                                    Register <User className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
+                                </Link>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                {/* Right Panel */}
+                <div className="w-full md:w-1/2 p-6 sm:p-10 space-y-6 bg-gradient-to-br from-teal-400 to-green-400 rounded-3xl">
+                    <div className="bg-white/60 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-md">
+                        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4">Customer Testimonial</h2>
+                        <p className="text-gray-700 mb-3 sm:mb-4">
+                            "This platform has truly surpassed all my expectations! Its user-friendly design makes navigation effortless, and the features are well thought out and seamlessly integrated. The attention to detail is evident in every corner, from the intuitive interface to the smooth functionality. Highly recommended for anyone seeking reliability, innovation, and quality in one platform!"
+                        </p>
+                        <p className="text-gray-700 font-semibold text-right">- Kavin, CEO of Electech</p>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-center">
+                        <img src="https://cdn.worldvectorlogo.com/logos/walmart.svg" alt="Walmart Logo" className="w-16 sm:w-3/4 mx-auto object-contain" />
+                        <img src="https://cdn.worldvectorlogo.com/logos/logo-amazon.svg" alt="Amazon Logo" className="w-16 sm:w-3/4 mx-auto object-contain" />
+                        <img src="https://cdn.worldvectorlogo.com/logos/paypal-3.svg" alt="Paypal Logo" className="w-16 sm:w-3/4 mx-auto object-contain" />
+                        <img src="https://cdn.worldvectorlogo.com/logos/stripe-4.svg" alt="Stripe Logo" className="w-16 sm:w-3/4 mx-auto object-contain" />
+                    </div>
                 </div>
             </div>
         </div>
