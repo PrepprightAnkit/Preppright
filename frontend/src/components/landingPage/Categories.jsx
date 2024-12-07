@@ -150,7 +150,7 @@ const Categories = () => {
                         whileTap={{ scale: 0.95 }}
                         className="mt-auto"
                       >
-                        <Link to={`/category/${category.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                        <Link to={`/allCourse`}>
                           <button className="w-full bg-blue-50 text-blue-700 font-semibold py-2 rounded-full hover:bg-blue-100 transition-colors">
                             Explore Category
                           </button>

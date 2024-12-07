@@ -1,296 +1,148 @@
-import { LogOut, Menu, Upload, User, X } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { Fade, Slide } from 'react-awesome-reveal';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { logoutUser } from '../actions/authActions';
-
-// Import logo
-import bg from '../assets/PreepPright.png';
-
-// Course icons
-import c1 from './landingPage/assets/c1.png';
-import c2 from './landingPage/assets/c2.png';
-import c3 from './landingPage/assets/c3.png';
-import SearchComponent from './Search';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AllCourses = () => {
-    const apiUrl = import.meta.env.VITE_API_BASE_URL;
-    const [courses, setCourses] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filteredCourses, setFilteredCourses] = useState([]);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [allCourses, setAllCourses] = useState([]);
+  const [filteredCourses, setFilteredCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchCourses();
-    }, []);
+  useEffect(() => {
+    loadInitialData();
+  }, []);
 
-    const fetchCourses = async () => {
-        try {
-            const response = await fetch(`${apiUrl}/api/v1/users/courses`);
-            if (response.ok) {
-                const data = await response.json();
-                setCourses(data.data);
-                setFilteredCourses(data.data);
-            } else {
-                console.error('Failed to fetch courses');
-            }
-        } catch (error) {
-            console.error('Error fetching courses:', error);
-        }
-    };
+  const loadInitialData = async () => {
+    setLoading(true);
+    try {
+      const [categoriesData, coursesData] = await Promise.all([
+        fetchCategories(),
+        fetchAllCourses(),
+      ]);
+      setCategories(categoriesData);
+      setAllCourses(coursesData);
 
-    const handleSearch = (e) => {
-        const value = e.target.value;
-        setSearchTerm(value);
-        if (value !== '') {
-            const filtered = courses.filter(course => 
-                course.name.toLowerCase().includes(value.toLowerCase())
-            );
-            setFilteredCourses(filtered);
-        } else {
-            setFilteredCourses(courses);
-        }
-    };
+      if (categoriesData.length > 0) {
+        setSelectedCategory(categoriesData[0]._id);
+        filterCoursesByCategory(categoriesData[0]._id, coursesData);
+      }
+    } catch (error) {
+      console.error("Failed to load data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleSelectCourse = (courseId) => {
-        setSearchTerm('');
-        navigate(`/courses/${courseId}`);
-    };
+  const filterCoursesByCategory = (categoryId, courses) => {
+    const filtered = courses.filter((course) => course.category === categoryId);
+    setFilteredCourses(filtered);
+  };
 
-    const handleLogout = async () => {
-        await dispatch(logoutUser());
-        navigate('/');
-    };
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategory(categoryId);
+    filterCoursesByCategory(categoryId, allCourses);
+  };
 
-    return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Navigation */}
-            <nav className="sticky top-0 z-50 bg-white shadow-md">
-                <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-                    {/* Logo */}
-                    <img 
-                        src={bg} 
-                        alt="Preep Logo" 
-                        className="h-10 w-auto"
-                    />
+  const handleCourseClick = (courseId) => {
+    navigate(`/courses/${courseId}`);
+  };
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-6">
-                        {['Home', 'Categories', 'Courses','Discuss', 'Quiz'].map((item) => (
-                            <button 
-                                key={item} 
-                                onClick={() => navigate(item === 'Home' ? '/' : 
-                                    item === 'Categories' ? '/allCat' : '/allCourse')}
-                                className="text-blue-800 hover:text-blue-600 transition-colors font-semibold"
-                            >
-                                {item}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Search */}
-                    <div className="relative hidden md:block w-1/3">
-                    <SearchComponent/>
-                    </div>
-
-                    {/* Auth Buttons */}
-                    <div className="hidden md:flex items-center space-x-4">
-                        {isAuthenticated ? (
-                            <div className="flex items-center space-x-3">
-                                {user.isAdmin && (
-                                    <Link 
-                                        to="/uploadContent" 
-                                        className="flex items-center bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-full transition-colors"
-                                    >
-                                        <Upload size={18} className="mr-2" /> Upload
-                                    </Link>
-                                )}
-                                <Link 
-                                    to="/userProfile" 
-                                    className="flex items-center bg-blue-100 hover:bg-blue-200 px-3 py-2 rounded-full transition-colors"
-                                >
-                                    <User size={18} className="mr-2" /> Profile
-                                </Link>
-                                <button 
-                                    onClick={handleLogout}
-                                    className="flex items-center bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded-full transition-colors"
-                                >
-                                    <LogOut size={18} className="mr-2" /> Logout
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="flex space-x-3">
-                                <Link 
-                                    to="/login" 
-                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
-                                >
-                                    Login
-                                </Link>
-                                <Link 
-                                    to="/reg" 
-                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
-                                >
-                                    Register
-                                </Link>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Mobile Menu Toggle */}
-                    <div className="md:hidden">
-                        <button 
-                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className="text-blue-800 focus:outline-none"
-                        >
-                            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                        </button>
-                    </div>
-                </div>
-
-                {/* Mobile Menu */}
-                {isMobileMenuOpen && (
-                    <div className="md:hidden bg-white absolute w-full shadow-lg">
-                        <div className="px-4 pt-2 pb-4 space-y-2">
-                            {/* Mobile Navigation Links */}
-                            {['Home', 'Categories', 'Courses'].map((item) => (
-                                <button 
-                                    key={item} 
-                                    onClick={() => {
-                                        setIsMobileMenuOpen(false);
-                                        navigate(item === 'Home' ? '/' : 
-                                            item === 'Categories' ? '/allCat' : '/allCourse');
-                                    }}
-                                    className="block w-full text-left py-2 text-blue-800 hover:bg-blue-50"
-                                >
-                                    {item}
-                                </button>
-                            ))}
-
-                            {/* Mobile Search */}
-                            <div className="relative w-full mt-2">
-                                <SearchComponent/>
-                            </div>
-
-                            {/* Mobile Auth Buttons */}
-                            {isAuthenticated ? (
-                                <div className="space-y-2 mt-2">
-                                    {user.isAdmin && (
-                                        <Link 
-                                            to="/uploadContent" 
-                                            className="block w-full text-center bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full transition-colors"
-                                            onClick={() => setIsMobileMenuOpen(false)}
-                                        >
-                                            Upload Content
-                                        </Link>
-                                    )}
-                                    <Link 
-                                        to="/userProfile" 
-                                        className="block w-full text-center bg-blue-100 hover:bg-blue-200 px-4 py-2 rounded-full transition-colors"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                    >
-                                        My Profile
-                                    </Link>
-                                    <button 
-                                        onClick={() => {
-                                            handleLogout();
-                                            setIsMobileMenuOpen(false);
-                                        }}
-                                        className="block w-full text-center bg-red-100 hover:bg-red-200 text-red-800 px-4 py-2 rounded-full transition-colors"
-                                    >
-                                        Logout
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="space-y-2 mt-2">
-                                    <Link 
-                                        to="/login" 
-                                        className="block w-full text-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                    >
-                                        Login
-                                    </Link>
-                                    <Link 
-                                        to="/reg" 
-                                        className="block w-full text-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                    >
-                                        Register
-                                    </Link>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
-            </nav>
-
-            {/* Main Content */}
-            <div className="container mx-auto px-4 py-6">
-                <div className="w-full mb-8">
-                    <Slide>
-                        <div className="text-center md:text-left">
-                            <h2 className="text-4xl md:text-5xl font-bold text-blue-700">POPULAR COURSES!</h2>
-                            <h3 className="text-xl md:text-2xl ml-1 mt-2 font-light text-gray-800">Explore our Top Courses</h3>
-                        </div>
-                    </Slide>
-                </div>
-
-                {/* Courses Grid */}
-                {filteredCourses.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {filteredCourses.map((course) => (
-                            <Link 
-                                to={`/courses/${course._id}`} 
-                                key={course._id} 
-                                className="group"
-                            >
-                                <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transform hover:scale-105 transition-transform duration-300">
-                                    <Fade cascade>
-                                        <div className="relative">
-                                            <img
-                                                src={course.courseImage}  // Note: uses 'courseImage' property
-                                                alt={course.title}
-                                                className="w-full h-48 object-cover"
-                                            />
-                                        </div>
-                                        <div className="p-4 bg-blue-50">
-                                            <h3 className="text-xl font-semibold text-blue-700 mb-2 line-clamp-1">
-                                                {course.name}
-                                            </h3>
-                                            <p className="text-gray-700 mb-2 line-clamp-3">
-                                                {course.description}
-                                            </p>
-                                            <div className="flex items-center justify-between mb-2">
-                                                <div className="flex items-center">
-                                                    <img src={c1} alt="Book" className="w-6 h-6 mr-2" />
-                                                    <span className="text-gray-600">{course.numberOfLessons}</span>
-                                                </div>
-                                                <div className="flex items-center">
-                                                    <img src={c2} alt="Icon" className="w-6 h-6 mr-2" />
-                                                    <span className="text-gray-600">23</span>
-                                                </div>
-                                                <div className="flex items-center">
-                                                    <img src={c3} alt="Level" className="w-6 h-6 mr-2" />
-                                                    <span className="text-gray-600">{course.level}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Fade>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center text-gray-600 text-xl py-12">
-                        No courses available
-                    </div>
-                )}
-            </div>
+  return (
+    <div className="flex flex-col min-h-screen">
+      {/* Header */}
+      <header className="bg-blue-600 text-white p-4 flex items-center justify-between">
+        <button
+          onClick={() => navigate(-1)}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Back
+        </button>
+        <div className="text-center">
+          <h1 className="text-2xl font-bold">All Courses</h1>
+          <p className="text-sm">Browse through our diverse range of courses and pick your favorite.</p>
         </div>
-    );
+        <div></div>
+      </header>
+
+      <div className="flex flex-col md:flex-row flex-grow">
+        {/* Left Sidebar - Categories */}
+        <div className="w-full md:w-1/4 bg-blue-100 p-4 overflow-y-auto">
+          <h2 className="text-lg font-bold text-blue-800 mb-4">Categories</h2>
+          <ul className="space-y-2">
+            {categories.map((category) => (
+              <li
+                key={category._id}
+                className={`p-2 rounded cursor-pointer transition-colors ${
+                  selectedCategory === category._id
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-blue-800 hover:bg-blue-200"
+                }`}
+                onClick={() => handleCategoryClick(category._id)}
+              >
+                {category.title}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Right Panel - Courses */}
+        <div className="w-full md:w-3/4 p-4">
+          <h2 className="text-lg font-bold text-blue-800 mb-4">
+            {loading ? "Loading Courses..." : "Courses"}
+          </h2>
+          {filteredCourses.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredCourses.map((course) => (
+                <div
+                  key={course._id}
+                  className="bg-white shadow rounded p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                  onClick={() => handleCourseClick(course._id)}
+                >
+                  <img
+                    src={course.courseImage}
+                    alt={course.title}
+                    className="w-full h-40 object-cover rounded mb-2"
+                  />
+                  <h3 className="text-md font-semibold text-blue-800 mb-1 line-clamp-1">
+                    {course.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm line-clamp-2">
+                    {course.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600">No courses available for this category.</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default AllCourses;
+
+/** Helper functions for API calls */
+export const fetchCategories = async () => {
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const response = await fetch(`${apiUrl}/api/v1/users/cat`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch categories");
+  }
+  const data = await response.json();
+  console.log("Fetched categories:", data);
+  return data.data;
+};
+
+export const fetchAllCourses = async () => {
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const response = await fetch(`${apiUrl}/api/v1/users/courses`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch courses");
+  }
+  const data = await response.json();
+  console.log("Fetched courses:", data);
+  return data.data;
+};
