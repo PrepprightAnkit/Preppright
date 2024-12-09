@@ -273,17 +273,17 @@
 
 
 import {
-    Award,
-    Book,
-    CheckCircle,
-    CheckCircle2,
-    Code,
-    Globe,
-    Star,
-    Trophy,
-    Users,
-    XCircle,
-    Zap
+  Award,
+  Book,
+  CheckCircle,
+  CheckCircle2,
+  Code,
+  Globe,
+  Star,
+  Trophy,
+  Users,
+  XCircle,
+  Zap
 } from 'lucide-react';
 import React from 'react';
 const CourseDetails = () => {
@@ -383,156 +383,164 @@ return (
           </div>
         </div>
       </div>
-      <div className="bg-gradient-to-br from-gray-900 to-blue-900 text-white min-h-screen">
-      {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16 flex flex-col md:flex-row items-center">
-        <div className="md:w-2/3 space-y-6">
-          <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
-            Master Machine Learning in 6 Weeks
-          </h1>
-          <p className="text-xl text-gray-300 leading-relaxed">
-            Join a revolutionary course that prepares you for the AI-driven future. With a potential 
-            <span className="font-bold text-blue-400"> $15.7 trillion </span> 
-            contribution to the global economy by 2030, machine learning is your gateway to success.
-          </p>
-          <div className="flex space-x-4">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition transform hover:scale-105 shadow-lg">
-              Enroll Now
-            </button>
-            <button className="border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white font-bold py-3 px-6 rounded-full transition transform hover:scale-105">
-              Learn More
-            </button>
-          </div>
-        </div>
-        <div className="md:w-1/3 hidden md:block">
-          <img 
-            src="/api/placeholder/400/400" 
-            alt="Machine Learning Illustration" 
-            className="rounded-xl shadow-2xl"
-          />
-        </div>
-      </div>
-
-      {/* Course Features */}
-      <div className="bg-white/10 py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
-            Your Learning Journey
-          </h2>
-          <div className="grid md:grid-cols-4 gap-6">
-            {courseFeatures.map((feature, index) => (
-              <div 
-                key={index} 
-                className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 text-center hover:scale-105 transition-transform"
-              >
-                <div className="flex justify-center mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                <p className="text-gray-300">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Projects Section */}
-      <div className="container mx-auto px-4 py-16">
-        <h2 className="text-4xl font-bold text-center mb-12 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
-          Real-World Projects
-        </h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {courseProjects.map((project, index) => (
-            <div 
-              key={index} 
-              className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-8 hover:scale-105 transition-transform"
-            >
-              <div className="flex justify-center mb-6">{project.icon}</div>
-              <h3 className="text-2xl font-bold text-center mb-4">{project.title}</h3>
-              <p className="text-center text-gray-300">{project.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Certification Section */}
-      <div className="bg-white/5 py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
-            Certification & Recognition
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { icon: <Award className="w-12 h-12 text-yellow-500" />, title: "Course Completion", description: "Official certificate from Yhills" },
-              { icon: <Star className="w-12 h-12 text-blue-500" />, title: "Industry Certificate", description: "Recognized by top companies" },
-              { icon: <Trophy className="w-12 h-12 text-green-500" />, title: "Internship Certificate", description: "Post-course internship recognition" }
-            ].map((cert, index) => (
-              <div 
-                key={index} 
-                className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 text-center hover:scale-105 transition-transform"
-              >
-                <div className="flex justify-center mb-4">{cert.icon}</div>
-                <h3 className="text-xl font-semibold mb-3">{cert.title}</h3>
-                <p className="text-gray-300">{cert.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="bg-white text-gray-900">
+  {/* Hero Section */}
+  <div className="bg-white text-gray-900">
+  <div className="max-w-7xl mx-auto px-4 py-16 flex flex-col md:flex-row items-center">
+    <div className="md:w-2/3 space-y-6">
+      <h1 className="text-5xl font-bold text-gray-800">
+        Master Machine Learning in 6 Weeks
+      </h1>
+      <p className="text-xl text-gray-600 leading-relaxed">
+        Join a revolutionary course that prepares you for the AI-driven future. With a potential 
+        <span className="font-bold text-blue-600"> $15.7 trillion </span> 
+        contribution to the global economy by 2030, machine learning is your gateway to success.
+      </p>
+      <div className="flex space-x-4">
+        <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition transform hover:scale-105 shadow-lg">
+          Enroll Now
+        </button>
+        <button className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-bold py-3 px-6 rounded-full transition transform hover:scale-105">
+          Learn More
+        </button>
       </div>
     </div>
+    <div className="md:w-1/3 hidden md:block px-10">
+      <img 
+        src="https://cdn.builtin.com/cdn-cgi/image/f=auto,fit=cover,w=1200,h=635,q=80/https://builtin.com/sites/www.builtin.com/files/2021-12/machine-learning-examples-applications.png" 
+        alt="Machine Learning Illustration" 
+        className="rounded-xl shadow-md"
+      />
+    </div>
+  </div>
+</div>
+
+
+  {/* Course Features */}
+  <div className="py-16">
+    <div className="container mx-auto px-4">
+      <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
+        Your Learning Journey
+      </h2>
+      <div className="grid md:grid-cols-4 gap-6">
+        {courseFeatures.map((feature, index) => (
+          <div 
+            key={index} 
+            className="bg-white border border-gray-200 rounded-xl p-6 text-center hover:shadow-lg transition-transform hover:scale-105"
+          >
+            <div className="flex justify-center mb-4">{feature.icon}</div>
+            <h3 className="text-xl font-semibold mb-3 text-gray-700">{feature.title}</h3>
+            <p className="text-gray-600">{feature.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  {/* Projects Section */}
+  <div className="container mx-auto px-4 py-16">
+    <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
+      Real-World Projects
+    </h2>
+    <div className="grid md:grid-cols-3 gap-8">
+      {courseProjects.map((project, index) => (
+        <div 
+          key={index} 
+          className="bg-white border border-gray-200 rounded-xl p-8 hover:shadow-lg transition-transform hover:scale-105"
+        >
+          <div className="flex justify-center mb-6">{project.icon}</div>
+          <h3 className="text-2xl font-bold text-center mb-4 text-gray-700">{project.title}</h3>
+          <p className="text-center text-gray-600">{project.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Certification Section */}
+  <div className="py-16">
+    <div className="container mx-auto px-4">
+      <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
+        Certification & Recognition
+      </h2>
+      <div className="grid md:grid-cols-3 gap-6">
+        {[
+          { icon: <Award className="w-12 h-12 text-yellow-500" />, title: "Course Completion", description: "Official certificate from Yhills" },
+          { icon: <Star className="w-12 h-12 text-blue-600" />, title: "Industry Certificate", description: "Recognized by top companies" },
+          { icon: <Trophy className="w-12 h-12 text-green-500" />, title: "Internship Certificate", description: "Post-course internship recognition" }
+        ].map((cert, index) => (
+          <div 
+            key={index} 
+            className="bg-white border border-gray-200 rounded-xl p-6 text-center hover:shadow-lg transition-transform hover:scale-105"
+          >
+            <div className="flex justify-center mb-4">{cert.icon}</div>
+            <h3 className="text-xl font-semibold mb-3 text-gray-700">{cert.title}</h3>
+            <p className="text-gray-600">{cert.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white py-12 px-4 sm:px-6 lg:px-8">
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto text-center mb-12">
-        <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-          Why Learn with PrepRight Trainings?
-        </h1>
-        <p className="mt-3 text-xl text-gray-600">
-          Unlock Your Potential with Industry-Leading Education
-        </p>
-      </div>
+  <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+    Why Learn with PrepRight Trainings?
+  </h1>
+  <p className="mt-3 text-xl text-gray-600">
+    Unlock Your Potential with Industry-Leading Education
+  </p>
+</div>
 
-      {/* Comparison Table */}
-      <div className="max-w-6xl mx-auto mb-16">
-        <div className="bg-white shadow-2xl rounded-2xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-blue-600 text-white">
-                <tr>
-                  <th className="px-6 py-4 text-left font-semibold">Benefits</th>
-                  <th className="px-6 py-4 text-center font-semibold">PrepRight Trainings</th>
-                  <th className="px-6 py-4 text-center font-semibold">Other Platforms</th>
-                  <th className="px-6 py-4 text-center font-semibold">YouTube</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  "Government certified by NSDC",
-                  "Certified by IIT Madras",
-                  "Free placement assistance",
-                  "3x visibility in recruiter searches",
-                  "Direct interview invites",
-                  "Industry-ready curriculum & projects",
-                  "Real-time doubt resolution"
-                ].map((benefit, index) => (
-                  <tr 
-                    key={benefit} 
-                    className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}
-                  >
-                    <td className="px-6 py-4 text-gray-800 font-medium">{benefit}</td>
-                    <td className="px-6 py-4 text-center">
-                      <CheckCircle2 className="mx-auto text-green-600 w-6 h-6" />
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <XCircle className="mx-auto text-red-600 w-6 h-6" />
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <XCircle className="mx-auto text-red-600 w-6 h-6" />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+{/* Comparison Table */}
+<div className="max-w-6xl mx-auto mb-16">
+  <div className="bg-white shadow-2xl rounded-2xl overflow-hidden">
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead className="bg-blue-600 text-white">
+          <tr>
+            <th className="px-6 py-4 text-left font-semibold">Benefits</th>
+            <th className="px-6 py-4 text-center font-semibold bg-blue-700">PrepRight Trainings</th>
+            <th className="px-6 py-4 text-center font-semibold">Other Platforms</th>
+            <th className="px-6 py-4 text-center font-semibold">YouTube</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            "Government certified by NSDC",
+            "Certified by IIT Madras",
+            "Free placement assistance",
+            "3x visibility in recruiter searches",
+            "Direct interview invites",
+            "Industry-ready curriculum & projects",
+            "Real-time doubt resolution",
+            "Trainer from the MNC's",
+            "One-on-one interaction",
+            "Live training",
+            "100% job assistant"
+          ].map((benefit, index) => (
+            <tr
+              key={benefit}
+              className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}
+            >
+              <td className="px-6 py-4 text-gray-800 font-medium">{benefit}</td>
+              <td className="px-6 py-4 text-center bg-blue-50 font-semibold">
+                <CheckCircle2 className="mx-auto text-green-600 w-6 h-6" />
+              </td>
+              <td className="px-6 py-4 text-center">
+                <XCircle className="mx-auto text-red-600 w-6 h-6" />
+              </td>
+              <td className="px-6 py-4 text-center">
+                <XCircle className="mx-auto text-red-600 w-6 h-6" />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
       {/* Instructors Section */}
       <div className="max-w-7xl mx-auto">
