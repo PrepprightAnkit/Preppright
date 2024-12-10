@@ -1,13 +1,13 @@
-import express, { urlencoded } from "express"
 import cookieParser from "cookie-parser";
-import cors from "cors"
+import cors from "cors";
+import express, { urlencoded } from "express";
 
 
 const app = express();
 
 app.use(cors(
     {
-        origin: process.env.CORS_ORGIN,
+        origin: "*",
         credentials: true
     }
 ));
@@ -36,32 +36,32 @@ app.use("/api/v1/users", studentRouter)
 
 // app.use('/api/v1/users', authRoutes); // Mount the authRoutes under /api/v1/users
 
-import categoryRoutes from './routes/categories.routes.js'
+import categoryRoutes from './routes/categories.routes.js';
 
 app.use('/api/v1/users', categoryRoutes)
 
-import courseRoutes from './routes/courses.routes.js'
+import courseRoutes from './routes/courses.routes.js';
 
 app.use('/api/v1/users', courseRoutes)
 
-import questionRoutes from "./routes/question.routes.js"
+import questionRoutes from "./routes/question.routes.js";
 
 app.use('/api/v1/users', questionRoutes)
 
 
-import buyRoutes from "./routes/courseRoutes.js"
+import buyRoutes from "./routes/courseRoutes.js";
 
 app.use('/api/v1/users', buyRoutes) 
 
-import quizRoutes from "./routes/quiz.routes.js"
+import quizRoutes from "./routes/quiz.routes.js";
 
 app.use('/api/v1/quiz', quizRoutes) 
 
-import approveRoutes from "./routes/courseApproval.routes.js"
+import approveRoutes from "./routes/courseApproval.routes.js";
 
 app.use('/api/v1/approve',  approveRoutes);
 
-export { app }
+export { app };
 
 
 

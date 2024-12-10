@@ -1,11 +1,15 @@
+import dotenv from 'dotenv';
 import mongoose from "mongoose";
 import { DB_NAME } from '../constants.js';
-const connectDB = async () => {
-    try {
-        console.log(`Connection URI: ${process.env.MONGODB_URI}/${DB_NAME}`);
+dotenv.config();
 
-        await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`);
-        console.log(`Connection URI: ${process.env.MONGODB_URI}/${DB_NAME}`);
+const connectDB = async () => {
+    const uri = "mongodb+srv://prepRight:prepRight@cluster0.3sgvsvc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    try {
+        console.log(`Connection URI: ${uri}/${DB_NAME}`);
+
+        await mongoose.connect(`${uri}/${DB_NAME}`);
+        console.log(`Connection URI: ${uri}/${DB_NAME}`);
 
         console.log(`MongoDB connected: ${mongoose.connection.host}`);
     } catch (error) {

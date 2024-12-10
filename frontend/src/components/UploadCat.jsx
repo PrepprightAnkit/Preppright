@@ -1,25 +1,33 @@
-// src/components/UploadCat.js
+import { LogOut, Menu, Upload, User, X } from 'lucide-react';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import bg from '../assets/PreepPright.png'
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import bg from '../assets/PreepPright.png';
+
 const UploadCat = () => {
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   const [title, setTitle] = useState('');
-  const navigate = useNavigate();
   const [description, setDescription] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleFileChange = (e) => {
     setImageFile(e.target.files[0]);
   };
-  const { isAuthenticated } = useSelector((state) => state.auth)
+
+  const handleLogout = async () => {
+    await dispatch(logout());
+    navigate('/');
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true);
 
     const formData = new FormData();
     formData.append('title', title);
@@ -46,96 +54,234 @@ const UploadCat = () => {
       console.error('Error uploading category:', error);
       alert('Error uploading category.');
     } finally {
-      setLoading(false); // End loading
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Navbar */}
-      <nav className="bg-white p-4 border-b border-gray-200">
-        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-          <img src={bg}
-            className='h-12 w-auto mb-2 md:mb-0' />
-          <div className="scale-75 md:scale-100 flex space-x-4 text-2xl font-bold mb-2 md:mb-0">
-            <button onClick={() => navigate('/')} className="text-blue-800 hover:underline">Home</button>
-            <button onClick={() => navigate('/allCat')} className="text-blue-800 hover:underline">Categories</button>
-            <button onClick={() => navigate('/allCourse')} className="text-blue-800 hover:underline">Courses</button>
+    <div className="min-h-screen bg-gray-50">
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 bg-white shadow-md">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          {/* Logo */}
+          <img 
+            src={bg} 
+            alt="Preep Logo" 
+            className="h-10 w-auto"
+          />
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
+            {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
+              <button 
+                key={item} 
+                onClick={() => {
+                  if (item === 'Quiz') {
+                    navigate('/allQuiz');
+                  } else if (item === 'Home') {
+                    navigate('/');
+                  } else if (item === 'Categories') {
+                    navigate('/allCat');
+                  } else {
+                    navigate('/');
+                  }
+                }}
+                className="text-blue-800 hover:text-blue-600 transition-colors font-semibold"
+              >
+                {item}
+              </button>
+            ))}
           </div>
 
-          <div className="flex space-x-4">
+          {/* Auth Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
-              <>
-                <button className="bg-blue-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                  <Link to="/userProfile">My Profile</Link>
+              <div className="flex items-center space-x-3">
+                {user.isAdmin && (
+                  <Link 
+                    to="/uploadContent" 
+                    className="flex items-center bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-full transition-colors"
+                  >
+                    <Upload size={18} className="mr-2" /> Upload
+                  </Link>
+                )}
+                <Link 
+                  to="/userProfile" 
+                  className="flex items-center bg-blue-100 hover:bg-blue-200 px-3 py-2 rounded-full transition-colors"
+                >
+                  <User size={18} className="mr-2" /> Profile
+                </Link>
+                <button 
+                  onClick={handleLogout}
+                  className="flex items-center bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded-full transition-colors"
+                >
+                  <LogOut size={18} className="mr-2" /> Logout
                 </button>
-              </>
+              </div>
             ) : (
-              <>
-                <button className="bg-blue-500 hover:bg-blue-900 text-white px-4 py-2 rounded-full">
-                  <Link to="/login">Login</Link>
-                </button>
-                <button className="bg-green-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                  <Link to="/reg">Register</Link>
-                </button>
-              </>
+              <div className="flex space-x-3">
+                <Link 
+                  to="/login" 
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
+                >
+                  Login
+                </Link>
+                <Link 
+                  to="/reg" 
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
+                >
+                  Register
+                </Link>
+              </div>
             )}
           </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="md:hidden">
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-blue-800 focus:outline-none"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-white absolute w-full shadow-lg">
+            <div className="px-4 pt-2 pb-4 space-y-2">
+              {/* Mobile Navigation Links */}
+              {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
+                <button 
+                  key={item} 
+                  onClick={() => {
+                    if (item === 'Quiz') {
+                      navigate('/allQuiz');
+                    } else if (item === 'Home') {
+                      navigate('/');
+                    } else if (item === 'Categories') {
+                      navigate('/allCat');
+                    } else {
+                      navigate('/');
+                    }
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="block w-full text-left py-2 text-blue-800 hover:bg-blue-50"
+                >
+                  {item}
+                </button>
+              ))}
+
+              {/* Mobile Auth Buttons */}
+              {isAuthenticated ? (
+                <div className="space-y-2 mt-2">
+                  {user.isAdmin && (
+                    <Link 
+                      to="/uploadContent" 
+                      className="block w-full text-center bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full transition-colors"
+                    >
+                      Upload Content
+                    </Link>
+                  )}
+                  <Link 
+                    to="/userProfile" 
+                    className="block w-full text-center bg-blue-100 hover:bg-blue-200 px-4 py-2 rounded-full transition-colors"
+                  >
+                    My Profile
+                  </Link>
+                  <button 
+                    onClick={handleLogout}
+                    className="block w-full text-center bg-red-100 hover:bg-red-200 text-red-800 px-4 py-2 rounded-full transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2 mt-2">
+                  <Link 
+                    to="/login" 
+                    className="block w-full text-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
+                  >
+                    Login
+                  </Link>
+                  <Link 
+                    to="/reg" 
+                    className="block w-full text-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
+                  >
+                    Register
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </nav>
 
+      {/* Upload Category Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg p-6">
+          <h2 className="text-3xl font-bold mb-6 text-center text-blue-700">
+            Upload New Category
+          </h2>
 
-      <div className="flex justify-center items-center py-12">
-        <div className="w-full max-w-xl bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">Upload New Category</h2>
-
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Title */}
-            <div className="mb-4">
-              <label className="block text-gray-700 font-semibold mb-2">Title</label>
+            <div>
+              <label className="block text-gray-700 font-semibold mb-2">
+                Title
+              </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
+                placeholder="Enter category title"
               />
             </div>
 
             {/* Description */}
-            <div className="mb-4">
-              <label className="block text-gray-700 font-semibold mb-2">Description</label>
+            <div>
+              <label className="block text-gray-700 font-semibold mb-2">
+                Description
+              </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
+                placeholder="Describe the category"
+                rows="4"
               />
             </div>
 
             {/* Image */}
-            <div className="mb-4">
-              <label className="block text-gray-700 font-semibold mb-2">Image</label>
+            <div>
+              <label className="block text-gray-700 font-semibold mb-2">
+                Category Image
+              </label>
               <input
                 type="file"
                 onChange={handleFileChange}
-                className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
+                accept="image/*"
               />
             </div>
 
             {/* Loading Animation */}
             {loading && (
-              <div className="flex justify-center mb-4">
-                <div className="w-12 h-12 border-4 border-blue-600 border-dashed rounded-full animate-spin"></div>
+              <div className="flex justify-center">
+                <div className="w-10 h-10 border-4 border-blue-600 border-dashed rounded-full animate-spin"></div>
               </div>
             )}
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white p-3 rounded-lg font-semibold shadow-md hover:shadow-xl transition duration-200"
-              disabled={loading} // Disable button during loading
+              className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white py-3 rounded-lg font-semibold shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-105"
+              disabled={loading}
             >
               {loading ? 'Uploading...' : 'Upload Category'}
             </button>

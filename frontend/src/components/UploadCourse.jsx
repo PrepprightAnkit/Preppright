@@ -1,26 +1,42 @@
+import { Menu, Upload, User, X } from 'lucide-react';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import bg from '../assets/PreepPright.png'
+import { Link, useNavigate } from 'react-router-dom';
+import bg from '../assets/PreepPright.png';
+
 const UploadCourse = () => {
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
-
-  const [title, setTitle] = useState('');
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState('');
-  const [detailedDescription, setDetailedDescription] = useState('');
-  const [level, setLevel] = useState('');
-  const [category, setCategory] = useState('');
-  const [introVideo, setIntroVideo] = useState('');
-  const [freeVideo, setFreeVideo] = useState('');
-  const [freeNotes, setFreeNotes] = useState('');
-  const [lessonTitle, setLessonTitle] = useState('');
-  const [lessonNotes, setLessonNotes] = useState('');
-  const [lessonVideo, setLessonVideo] = useState('');
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    price: '',
+    description: '',
+    detailedDescription: '',
+    level: '',
+    category: '',
+    introVideo: '',
+    freeVideo: '',
+    freeNotes: '',
+    lessonTitle: '',
+    lessonNotes: '',
+    lessonVideo: '',
+  });
   const [imageFile, setImageFile] = useState(null);
   const [videos, setVideos] = useState(null);
-  const [loading, setLoading] = useState(false); // Loading state
+
+  const levels = ['Beginner', 'Intermediate', 'Advanced'];
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleFileChange = (e) => {
     if (e.target.name === 'image') {
@@ -32,49 +48,34 @@ const UploadCourse = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true);
 
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('price', price);
-    formData.append('description', description);
-    formData.append('detailedDescription', detailedDescription);
-    formData.append('level', level);
-    formData.append('category', category);
-    formData.append('introVideo', introVideo);
-    formData.append('freeVideo', freeVideo);
-    formData.append('freeNotes', freeNotes);
-    formData.append('lessonTitle', lessonTitle);
-    formData.append('lessonNotes', lessonNotes);
-    formData.append('lessonVideo', lessonVideo);
+    const formDataToSubmit = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      formDataToSubmit.append(key, value);
+    });
+
     if (imageFile) {
-      formData.append('image', imageFile);
+      formDataToSubmit.append('image', imageFile);
     }
     if (videos) {
-      Array.from(videos).forEach((file) => formData.append('videos', file));
+      Array.from(videos).forEach((file) => formDataToSubmit.append('videos', file));
     }
 
     try {
       const response = await fetch(`${apiUrl}/api/v1/users/courses`, {
         method: 'POST',
-        body: formData,
+        body: formDataToSubmit,
       });
 
       if (response.ok) {
         alert('Course uploaded successfully!');
-        // Reset form fields
-        setTitle('');
-        setPrice('');
-        setDescription('');
-        setDetailedDescription('');
-        setLevel('');
-        setCategory('');
-        setIntroVideo('');
-        setFreeVideo('');
-        setFreeNotes('');
-        setLessonTitle('');
-        setLessonNotes('');
-        setLessonVideo('');
+        // Reset form
+        setFormData({
+          title: '', price: '', description: '', detailedDescription: '',
+          level: '', category: '', introVideo: '', freeVideo: '',
+          freeNotes: '', lessonTitle: '', lessonNotes: '', lessonVideo: ''
+        });
         setImageFile(null);
         setVideos(null);
       } else {
@@ -84,234 +85,238 @@ const UploadCourse = () => {
       console.error('Error uploading course:', error);
       alert('Error uploading course.');
     } finally {
-      setLoading(false); // End loading
+      setLoading(false);
     }
   };
 
-  const levels = ['Beginner', 'Intermediate', 'Advanced'];
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
+  const renderInput = (label, name, type = 'text', required = true) => (
+    <div className="mb-4">
+      <label className="block text-gray-700 font-semibold mb-2">{label}</label>
+      {type === 'select' ? (
+        <select
+          name={name}
+          value={formData[name]}
+          onChange={handleInputChange}
+          className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+          required={required}
+        >
+          <option value="">Select {label}</option>
+          {name === 'level' 
+            ? levels.map((levelOption) => (
+                <option key={levelOption} value={levelOption}>{levelOption}</option>
+              ))
+            : null}
+        </select>
+      ) : type === 'textarea' ? (
+        <textarea
+          name={name}
+          value={formData[name]}
+          onChange={handleInputChange}
+          className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+          required={required}
+        />
+      ) : (
+        <input
+          type={type}
+          name={name}
+          value={formData[name]}
+          onChange={handleInputChange}
+          className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+          required={required}
+        />
+      )}
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Navbar */}
-      <nav className="bg-white p-4 border-b border-gray-200">
-        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-          {/* <h1 className="text-2xl font-bold mb-2 md:mb-0">LOGO</h1> */}
-          <img src={bg}
-            className='h-12 w-auto mb-2 md:mb-0' />
-          <div className="scale-75 md:scale-100 flex space-x-4 text-2xl font-bold mb-2 md:mb-0">
-            <button onClick={() => navigate('/')} className="text-blue-800 hover:underline">Home</button>
-            <button onClick={() => navigate('/allCat')} className="text-blue-800 hover:underline">Categories</button>
-            <button onClick={() => navigate('/allCourse')} className="text-blue-800 hover:underline">Courses</button>
+      <nav className="sticky top-0 z-50 bg-white shadow-md">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          {/* Logo */}
+          <img 
+            src={bg} 
+            alt="Preep Logo" 
+            className="h-10 w-auto"
+          />
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
+            {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
+              <button 
+                key={item} 
+                onClick={() => {
+                  if (item === 'Quiz') {
+                    navigate('/allQuiz');
+                  } else if (item === 'Home') {
+                    navigate('/');
+                  } else if (item === 'Categories') {
+                    navigate('/allCat');
+                  } else {
+                    navigate('/');
+                  }
+                }}
+                className="text-blue-800 hover:text-blue-600 transition-colors font-semibold"
+              >
+                {item}
+              </button>
+            ))}
           </div>
 
-          <div className="flex space-x-4">
+          {/* Auth Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
-              <>
-                <button className="bg-blue-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                  <Link to="/userProfile">My Profile</Link>
-                </button>
-              </>
+              <div className="flex items-center space-x-3">
+                {user?.isAdmin && (
+                  <Link 
+                    to="/uploadContent" 
+                    className="flex items-center bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-full transition-colors"
+                  >
+                    <Upload size={18} className="mr-2" /> Upload
+                  </Link>
+                )}
+                <Link 
+                  to="/userProfile" 
+                  className="flex items-center bg-blue-100 hover:bg-blue-200 px-3 py-2 rounded-full transition-colors"
+                >
+                  <User size={18} className="mr-2" /> Profile
+                </Link>
+              </div>
             ) : (
-              <>
-                <button className="bg-blue-500 hover:bg-blue-900 text-white px-4 py-2 rounded-full">
-                  <Link to="/login">Login</Link>
-                </button>
-                <button className="bg-green-500 hover:bg-green-900 text-white px-4 py-2 rounded-full">
-                  <Link to="/reg">Register</Link>
-                </button>
-              </>
+              <div className="flex space-x-3">
+                <Link 
+                  to="/login" 
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
+                >
+                  Login
+                </Link>
+                <Link 
+                  to="/reg" 
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
+                >
+                  Register
+                </Link>
+              </div>
             )}
           </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="md:hidden">
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-blue-800 focus:outline-none"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-white absolute w-full shadow-lg">
+            <div className="px-4 pt-2 pb-4 space-y-2">
+              {/* Mobile Navigation Links */}
+              {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
+                <button 
+                  key={item} 
+                  onClick={() => {
+                    if (item === 'Quiz') {
+                      navigate('/allQuiz');
+                    } else if (item === 'Home') {
+                      navigate('/');
+                    } else if (item === 'Categories') {
+                      navigate('/allCat');
+                    } else {
+                      navigate('/');
+                    }
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="block w-full text-left py-2 text-blue-800 hover:bg-blue-50"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Form */}
-      <div className="flex-1 flex items-center justify-center p-6">
-        <form onSubmit={handleSubmit} className="max-w-lg w-full bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-bold mb-6 text-blue-700 text-center">Upload New Course</h2>
+      <div className="flex-1 flex items-center justify-center p-6 bg-gray-50">
+        <form 
+          onSubmit={handleSubmit} 
+          className="w-full max-w-2xl bg-white rounded-xl shadow-2xl p-8 space-y-6"
+        >
+          <h2 className="text-3xl font-bold mb-6 text-blue-700 text-center">
+            Upload New Course
+          </h2>
 
-          {/* Course Title */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Title</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              required
-            />
+          <div className="grid md:grid-cols-2 gap-4">
+            {renderInput('Title', 'title')}
+            {renderInput('Price', 'price', 'number')}
           </div>
 
-          {/* Price */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Price</label>
-            <input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              required
-            />
+          {renderInput('Short Description', 'description', 'textarea')}
+          {renderInput('Detailed Description', 'detailedDescription', 'textarea')}
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {renderInput('Level', 'level', 'select')}
+            {renderInput('Category', 'category')}
           </div>
 
-          {/* Short Description */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Short Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              required
-            />
+          <div className="grid md:grid-cols-2 gap-4">
+            {renderInput('Intro Video URL', 'introVideo')}
+            {renderInput('Free Video URL', 'freeVideo')}
           </div>
 
-          {/* Detailed Description */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Detailed Description</label>
-            <textarea
-              value={detailedDescription}
-              onChange={(e) => setDetailedDescription(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              required
-            />
+          {renderInput('Free Notes URL', 'freeNotes')}
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {renderInput('Lesson Title', 'lessonTitle')}
+            {renderInput('Lesson Video URL', 'lessonVideo')}
           </div>
 
-          {/* Level */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Level</label>
-            <select
-              value={level}
-              onChange={(e) => setLevel(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              required
-            >
-              <option value="">Select Level</option>
-              {levels.map((levelOption) => (
-                <option key={levelOption} value={levelOption}>{levelOption}</option>
-              ))}
-            </select>
+          {renderInput('Lesson Notes URL', 'lessonNotes')}
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="mb-4">
+              <label className="block text-gray-700 font-semibold mb-2">
+                Upload Course Image
+              </label>
+              <input
+                type="file"
+                name="image"
+                onChange={handleFileChange}
+                className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 font-semibold mb-2">
+                Upload Lesson Videos
+              </label>
+              <input
+                type="file"
+                name="videos"
+                onChange={handleFileChange}
+                multiple
+                className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
+              />
+            </div>
           </div>
 
-          {/* Category */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Category</label>
-            <input
-              type="text"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              required
-            />
-          </div>
-
-          {/* Intro Video */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Intro Video URL</label>
-            <input
-              type="text"
-              value={introVideo}
-              onChange={(e) => setIntroVideo(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              required
-            />
-          </div>
-
-          {/* Free Video */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Free Video URL</label>
-            <input
-              type="text"
-              value={freeVideo}
-              onChange={(e) => setFreeVideo(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              required
-            />
-          </div>
-
-          {/* Free Notes */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Free Notes URL</label>
-            <input
-              type="text"
-              value={freeNotes}
-              onChange={(e) => setFreeNotes(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              required
-            />
-          </div>
-
-          {/* Lesson Title */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Lesson Title</label>
-            <input
-              type="text"
-              value={lessonTitle}
-              onChange={(e) => setLessonTitle(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              required
-            />
-          </div>
-
-          {/* Lesson Notes */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Lesson Notes URL</label>
-            <input
-              type="text"
-              value={lessonNotes}
-              onChange={(e) => setLessonNotes(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              required
-            />
-          </div>
-
-          {/* Lesson Video */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Lesson Video URL</label>
-            <input
-              type="text"
-              value={lessonVideo}
-              onChange={(e) => setLessonVideo(e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              required
-            />
-          </div>
-
-          {/* Image Upload */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Upload Course Image</label>
-            <input
-              type="file"
-              name="image"
-              onChange={handleFileChange}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-            />
-          </div>
-
-          {/* Videos Upload */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Upload Lesson Videos</label>
-            <input
-              type="file"
-              name="videos"
-              onChange={handleFileChange}
-              className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              multiple
-            />
-          </div>
-
-          {/* Loading Animation */}
           {loading && (
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center">
               <div className="w-12 h-12 border-4 border-blue-600 border-dashed rounded-full animate-spin"></div>
             </div>
           )}
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            disabled={loading} // Disable button during loading
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg 
+              transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none 
+              focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50
+              disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Uploading...' : 'Upload Course'}
           </button>

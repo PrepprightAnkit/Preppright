@@ -1,10 +1,12 @@
+import { Menu, User } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-
+import bg from '../assets/PreepPright.png';
 const ApproveCourse = () => {
   const [approvalRequests, setApprovalRequests] = useState([]);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
-
+  const user = localStorage.getItem("user");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   useEffect(() => {
     // Fetch the approval requests
     fetch(`${apiUrl}/api/v1/approve/getApproveCourse`)
@@ -40,24 +42,114 @@ const ApproveCourse = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <nav className="bg-green-700 p-4 text-white">
-        <ul className="flex space-x-4">
-          <li>
-            <Link to="/" className="hover:underline">
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/allCat" className="hover:underline">
-              Categories
-            </Link>
-          </li>
-          <li>
-            <Link to="/allCourse" className="hover:underline">
-              Courses
-            </Link>
-          </li>
-        </ul>
+       <nav className="sticky top-0 z-50 bg-white shadow-md">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          {/* Logo */}
+          <img 
+            src={bg} 
+            alt="Preep Logo" 
+            className="h-10 w-auto"
+          />
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
+            {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
+              <button 
+                key={item} 
+                onClick={() => {
+                  if (item === 'Quiz') {
+                    navigate('/allQuiz');
+                  } else if (item === 'Home') {
+                    navigate('/');
+                  } else if (item === 'Categories') {
+                    navigate('/allCat');
+                  } else {
+                    navigate('/');
+                  }
+                }}
+                className="text-blue-800 hover:text-blue-600 transition-colors font-semibold"
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+
+          {/* Auth Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
+            {user ? (
+              <div className="flex items-center space-x-3">
+                {user?.isAdmin && (
+                  <Link 
+                    to="/uploadContent" 
+                    className="flex items-center bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-full transition-colors"
+                  >
+                    <Upload size={18} className="mr-2" /> Upload
+                  </Link>
+                )}
+                <Link 
+                  to="/userProfile" 
+                  className="flex items-center bg-blue-100 hover:bg-blue-200 px-3 py-2 rounded-full transition-colors"
+                >
+                  <User size={18} className="mr-2" /> Profile
+                </Link>
+              </div>
+            ) : (
+              <div className="flex space-x-3">
+                <Link 
+                  to="/login" 
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
+                >
+                  Login
+                </Link>
+                <Link 
+                  to="/reg" 
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="md:hidden">
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-blue-800 focus:outline-none"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-white absolute w-full shadow-lg">
+            <div className="px-4 pt-2 pb-4 space-y-2">
+              {/* Mobile Navigation Links */}
+              {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
+                <button 
+                  key={item} 
+                  onClick={() => {
+                    if (item === 'Quiz') {
+                      navigate('/allQuiz');
+                    } else if (item === 'Home') {
+                      navigate('/');
+                    } else if (item === 'Categories') {
+                      navigate('/allCat');
+                    } else {
+                      navigate('/');
+                    }
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="block w-full text-left py-2 text-blue-800 hover:bg-blue-50"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
       <div className="container mx-auto py-8">
         <h1 className="text-2xl font-bold text-center mb-8">Course Approvals</h1>

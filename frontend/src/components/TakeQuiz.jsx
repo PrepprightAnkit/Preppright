@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { ArrowLeft, ArrowRight, ArrowLeft as BackIcon, BookMarked, CheckCircle2, ClipboardList } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-
-
-import {  useSelector } from 'react-redux';
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const TakeQuiz = () => {
@@ -107,111 +107,159 @@ const TakeQuiz = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 flex flex-col lg:flex-row">
-      <div className="w-full lg:w-3/4 lg:pr-4 mb-4 lg:mb-0">
-        <h1 className="text-2xl font-bold mb-4">Take a Quiz</h1>
+    <div className="min-h-screen bg-gray-100 p-4 md:p-8">
+      <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+        {/* Header with Back Button */}
+        <div className="bg-blue-600 text-white p-4 flex items-center">
+          <Link 
+            to="/allQuiz" 
+            className="mr-4 hover:bg-blue-700 p-2 rounded-full transition-colors"
+          >
+            <BackIcon className="h-6 w-6" />
+          </Link>
+          <h1 className="text-2xl font-bold flex-grow flex items-center">
+            <ClipboardList className="mr-3 h-6 w-6" />
+            Take a Quiz
+          </h1>
+        </div>
 
-        {/* Quiz Selection */}
-        {!selectedQuiz ? (
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold mb-2">Select a Quiz:</h2>
-            <ul>
-              {quizzes.map((quiz) => (
-                <li key={quiz._id} className="mb-2">
-                  <button
-                    className="p-2 bg-blue-500 text-white rounded"
-                    onClick={() => setSelectedQuiz(quiz._id)}
-                  >
-                    {quiz.title}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <div>
-            {/* Display Questions */}
-            {questions.length > 0 && (
+        <div className="flex flex-col md:flex-row">
+          {/* Main Content Area */}
+          <div className="w-full md:w-3/4 p-6">
+            {/* Quiz Selection */}
+            {!selectedQuiz ? (
               <div>
-                <h2 className="text-xl font-semibold mb-2">
-                  {questions[currentQuestionIndex].question}
-                </h2>
-                {questions[currentQuestionIndex].options.map((option) => (
-                  <div key={option._id} className="mb-2">
-                    <label>
-                      <input
-                        type="radio"
-                        name={`question-${questions[currentQuestionIndex]._id}`}
-                        value={option._id}
-                        checked={answers[questions[currentQuestionIndex]._id] === option._id}
-                        onChange={() => handleOptionChange(questions[currentQuestionIndex]._id, option._id)}
-                        className="mr-2"
-                      />
-                      {option.text}
-                    </label>
+                <h2 className="text-xl font-semibold mb-4 text-gray-700">Select a Quiz:</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {quizzes.map((quiz) => (
+                    <button
+                      key={quiz._id}
+                      className="bg-blue-500 text-white p-4 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-between"
+                      onClick={() => setSelectedQuiz(quiz._id)}
+                    >
+                      <span>{quiz.title}</span>
+                      <ArrowRight className="ml-2" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div>
+                {/* Display Questions */}
+                {questions.length > 0 && (
+                  <div>
+                    <div className="bg-gray-100 p-4 rounded-lg mb-4">
+                      <h2 className="text-xl font-semibold text-gray-800">
+                        Question {currentQuestionIndex + 1}
+                      </h2>
+                      <p className="text-gray-600 mt-2">
+                        {questions[currentQuestionIndex].question}
+                      </p>
+                    </div>
+
+                    <div className="space-y-3">
+                      {questions[currentQuestionIndex].options.map((option) => (
+                        <label 
+                          key={option._id} 
+                          className={`block p-3 border rounded-lg cursor-pointer transition-colors ${
+                            answers[questions[currentQuestionIndex]._id] === option._id
+                              ? 'bg-blue-100 border-blue-500'
+                              : 'hover:bg-gray-50'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name={`question-${questions[currentQuestionIndex]._id}`}
+                            value={option._id}
+                            checked={answers[questions[currentQuestionIndex]._id] === option._id}
+                            onChange={() => handleOptionChange(questions[currentQuestionIndex]._id, option._id)}
+                            className="mr-3 sr-only"
+                          />
+                          <span className="flex items-center">
+                            <span className={`mr-3 h-5 w-5 rounded-full border-2 ${
+                              answers[questions[currentQuestionIndex]._id] === option._id
+                                ? 'bg-blue-500 border-blue-500'
+                                : 'border-gray-300'
+                            }`}></span>
+                            {option.text}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+
+                    <div className="flex justify-between mt-6">
+                      <button
+                        onClick={handlePrevious}
+                        disabled={currentQuestionIndex === 0}
+                        className="flex items-center bg-gray-300 text-gray-700 p-2 rounded-lg disabled:opacity-50"
+                      >
+                        <ArrowLeft className="mr-2" /> Previous
+                      </button>
+                      <div className="flex space-x-3">
+                        <button
+                          onClick={handleMarkForLater}
+                          className="flex items-center bg-yellow-500 text-white p-2 rounded-lg hover:bg-yellow-600"
+                        >
+                          <BookMarked className="mr-2" /> Mark for Later
+                        </button>
+                        <button
+                          onClick={handleNext}
+                          disabled={currentQuestionIndex === questions.length - 1}
+                          className="flex items-center bg-blue-500 text-white p-2 rounded-lg disabled:opacity-50 hover:bg-blue-600"
+                        >
+                          Next <ArrowRight className="ml-2" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                ))}
-                <div className="flex justify-between mt-4">
+                )}
+
+                <div className="mt-6">
                   <button
-                    onClick={handlePrevious}
-                    disabled={currentQuestionIndex === 0}
-                    className="p-2 bg-gray-500 text-white rounded"
+                    onClick={handleSubmit}
+                    className="w-full flex items-center justify-center bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 transition-colors"
                   >
-                    Previous
-                  </button>
-                  <button
-                    onClick={handleNext}
-                    disabled={currentQuestionIndex === questions.length - 1}
-                    className="p-2 bg-blue-500 text-white rounded"
-                  >
-                    Next
+                    <CheckCircle2 className="mr-3" /> Submit Quiz
                   </button>
                 </div>
-                <button
-                  onClick={handleMarkForLater}
-                  className="mt-4 p-2 bg-yellow-500 text-white rounded"
-                >
-                  Mark for Later
-                </button>
               </div>
             )}
-            <div className="mt-4">
-              <button
-                onClick={handleSubmit}
-                className="p-2 bg-green-500 text-white rounded"
-              >
-                Submit Quiz
-              </button>
+
+            {/* Display message */}
+            {message && (
+              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-800">
+                {message}
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar for question navigation */}
+          {selectedQuiz && (
+            <div className="w-full md:w-1/4 bg-gray-100 p-4 border-l">
+              <h2 className="text-xl font-semibold mb-4 text-gray-700">Questions:</h2>
+              <div className="space-y-2">
+                {questions.map((question, index) => (
+                  <button
+                    key={question._id}
+                    className={`w-full text-left p-2 rounded-lg flex items-center ${
+                      markedForLater.has(question._id) 
+                        ? 'bg-yellow-100 text-yellow-800' 
+                        : 'bg-gray-200 text-gray-700'
+                    } ${
+                      currentQuestionIndex === index 
+                        ? 'ring-2 ring-blue-500 font-bold' 
+                        : 'hover:bg-gray-300'
+                    }`}
+                    onClick={() => handleQuestionClick(index)}
+                  >
+                    <span className="mr-3 font-bold">{index + 1}</span>
+                    <span className="truncate">{question.question}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-
-        {/* Display message */}
-        {message && (
-          <div className="mt-4 p-2 border border-gray-300 rounded">
-            {message}
-          </div>
-        )}
-      </div>
-
-      {/* Sidebar for question navigation */}
-      <div className="w-full lg:w-1/4">
-        <h2 className="text-xl font-semibold mb-2">Questions:</h2>
-        <ul className="space-y-2">
-          {questions.map((question, index) => (
-            <li key={question._id} className="flex items-center">
-              <button
-                className={`p-2 rounded ${markedForLater.has(question._id) ? 'bg-yellow-500' : 'bg-gray-300'} ${
-                  currentQuestionIndex === index ? 'text-blue-500 font-bold' : 'text-black'
-                }`}
-                onClick={() => handleQuestionClick(index)}
-              >
-                {index + 1}
-              </button>
-              <span className="ml-2">{question.question}</span>
-            </li>
-          ))}
-        </ul>
+          )}
+        </div>
       </div>
     </div>
   );
