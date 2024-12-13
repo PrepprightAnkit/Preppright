@@ -288,6 +288,167 @@ import {
   Zap
 } from 'lucide-react';
 import React, { useState } from 'react';
+
+import {
+  BookOpen,
+  ChevronDown,
+  Database,
+  PieChart,
+  Target
+} from 'lucide-react';
+
+const SyllabusAccordion = ({ title, modules, icon: Icon }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden mb-4 shadow-sm transition-all duration-300 hover:shadow-md">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between p-6 bg-gray-50 hover:bg-gray-100 transition-colors"
+      >
+        <div className="flex items-center space-x-4">
+          <Icon className="w-8 h-8 text-blue-600" />
+          <h3 className="text-xl font-semibold text-gray-800">{title}</h3>
+        </div>
+        <ChevronDown 
+          className={`w-6 h-6 text-gray-600 transition-transform ${isOpen ? 'rotate-180' : ''}`} 
+        />
+      </button>
+      
+      {isOpen && (
+        <div className="p-6 bg-white">
+          {modules.map((module, index) => (
+            <div 
+              key={index} 
+              className="mb-4 pb-4 border-b last:border-b-0 border-gray-200"
+            >
+              <div className="flex items-center space-x-3 mb-2">
+                <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
+                  {index + 1}
+                </div>
+                <h4 className="text-lg font-medium text-gray-800">{module.name}</h4>
+              </div>
+              <p className="text-gray-600 ml-11">{module.description}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const Syllabus = () => {
+  const syllabusData = [
+    {
+      title: "Python Fundamentals",
+      icon: BookOpen,
+      modules: [
+        { 
+          name: "Python Basics", 
+          description: "Variables, data types, operators, and basic syntax" 
+        },
+        { 
+          name: "Control Structures", 
+          description: "Conditional statements, loops, and functions" 
+        },
+        { 
+          name: "Data Structures", 
+          description: "Lists, tuples, dictionaries, and set operations" 
+        }
+      ]
+    },
+    {
+      title: "Machine Learning Foundations",
+      icon: PieChart,
+      modules: [
+        { 
+          name: "Statistical Concepts", 
+          description: "Probability, hypothesis testing, and statistical inference" 
+        },
+        { 
+          name: "ML Algorithms", 
+          description: "Regression, classification, and clustering techniques" 
+        },
+        { 
+          name: "Model Evaluation", 
+          description: "Performance metrics, cross-validation, and model tuning" 
+        }
+      ]
+    },
+    {
+      title: "Advanced Data Science",
+      icon: Database,
+      modules: [
+        { 
+          name: "Deep Learning", 
+          description: "Neural networks, TensorFlow, and Keras implementation" 
+        },
+        { 
+          name: "Natural Language Processing", 
+          description: "Text preprocessing, sentiment analysis, and language models" 
+        },
+        { 
+          name: "Computer Vision", 
+          description: "Image recognition, CNN architectures, and practical applications" 
+        }
+      ]
+    },
+    {
+      title: "Real-World Projects",
+      icon: Target,
+      modules: [
+        { 
+          name: "Property Price Prediction", 
+          description: "End-to-end ML project using real estate datasets" 
+        },
+        { 
+          name: "Customer Churn Analysis", 
+          description: "Predictive modeling for telecom industry retention" 
+        },
+        { 
+          name: "Healthcare ML Application", 
+          description: "Early disease detection using medical imaging" 
+        }
+      ]
+    }
+  ];
+
+  return (
+    <div className="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen py-16 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+            Course Syllabus
+          </h2>
+          <p className="text-xl text-gray-600">
+            Comprehensive curriculum designed to transform you into a skilled Data Scientist
+          </p>
+        </div>
+
+        {syllabusData.map((section, index) => (
+          <SyllabusAccordion 
+            key={index}
+            title={section.title}
+            modules={section.modules}
+            icon={section.icon}
+          />
+        ))}
+
+        <div className="mt-8 text-center">
+          <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+            <div className="flex items-center justify-center space-x-4">
+              <Zap className="w-10 h-10 text-yellow-500" />
+              <p className="text-lg text-gray-700">
+                Hands-on learning with industry-relevant projects and expert guidance
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ReviewCarousel = () => {
   const reviews = [
     {
@@ -528,6 +689,10 @@ return (
       />
     </div>
   </div>
+</div>
+
+<div>
+  <Syllabus/>
 </div>
 
 

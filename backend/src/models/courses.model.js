@@ -1,82 +1,215 @@
-import mongoose from "mongoose";
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
 
-// Lesson Schema
-const LessonSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  videoLink: {
-    type: String,
-    required: true, // YouTube or other video hosting link
-  },
-  image: {
-    type: String, // Optional image link for the lesson
-  },
-  notes: {
-    type: String, // Google Drive link or other document link
-    required: true,
-  },
-  isCompleted: {
-    type: Boolean,
-    default: false, // Track if the lesson is completed by the user
-  },
-});
 
-// Course Schema
-const CourseSchema = new Schema({
-  title: {
+// Predefined Icon Enum for Syllabus Sections
+const SyllabusIconEnum = [
+  'BookOpen',
+  'PieChart',
+  'Database',
+  'Target',
+  'Code',
+  'Globe',
+  'Trophy',
+  'Users',
+  'CheckCircle',
+  'Zap',
+  'Star',
+  'Award'
+  // Add more icons from Lucide React library as needed
+];
+
+// Syllabus Module Schema
+const SyllabusModuleSchema = new mongoose.Schema({
+  name: {
     type: String,
-    required: true,
-    trim: true,
-  },
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
-    required: true,
+    required: true
   },
   description: {
     type: String,
-    required: true, // Small description
-  },
-  detailedDescription: {
-    type: String,
-    required: true, // Detailed description
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  courseImage: {
-    type: String,
-    required: true, // URL to course image
-  },
-  introVideo: {
-    type: String,
-    required: true, // Free unlisted YouTube video link for course intro
-  },
-  freeVideo: {
-    type: String,
-    required: true, // Free video link for the course
-  },
-  freeNotes: {
-    type: String,
-    required: true, // Google Drive link to free notes
-  },
-  lessons: {
-    type: [LessonSchema], // Array of lessons
-    required: true,
-  },
-  progress: {
-    type: Number,
-    default: 0, // Starts at 0 and increases as lessons are completed
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    required: true,
-  },
+    required: true
+  }
 });
 
-export const Course = mongoose.model("Course", CourseSchema);
+// Syllabus Section Schema
+const SyllabusSectionSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  icon: {
+    type: String,
+    enum: SyllabusIconEnum, // Restrict to predefined icons
+    required: true
+  },
+  modules: [SyllabusModuleSchema]
+});
+
+// Similar approach for other schemas with icons
+const CourseFeatureSchema = new mongoose.Schema({
+  icon: {
+    type: String,
+    enum: SyllabusIconEnum,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  }
+});
+
+const CourseProjectSchema = new mongoose.Schema({
+  icon: {
+    type: String,
+    enum: SyllabusIconEnum,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  }
+});
+
+const CertificationSchema = new mongoose.Schema({
+  icon: {
+    type: String,
+    enum: SyllabusIconEnum,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  }
+});
+
+// Instructor Schema
+const InstructorSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  role: {
+    type: String,
+    required: true
+  },
+  bio: {
+    type: String,
+    required: true
+  },
+  image: {
+    type: String
+  }
+});
+
+// Review Schema
+const ReviewSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  role: {
+    type: String,
+    required: true
+  },
+  text: {
+    type: String,
+    required: true
+  },
+  rating: {
+    type: Number,
+    min: 1,
+    max: 5,
+    required: true
+  },
+  image: {
+    type: String
+  }
+});
+
+// Main Course Schema
+const CourseSchema = new mongoose.Schema({
+  // Hero Section Details
+  title: {
+    type: String,
+    required: true
+  },
+  tagline: {
+    type: String,
+    required: true
+  },
+  courseType: {
+    type: String,
+    default: 'Machine Learning'
+  },
+  rating: {
+    type: Number,
+    default: 4.8
+  },
+  duration: {
+    type: String,
+    default: '6 Months'
+  },
+  totalCourseFee: {
+    type: Number,
+    required: true
+  },
+  projectCount: {
+    type: Number,
+    default: 3
+  },
+  placementAssistance: {
+    type: Boolean,
+    default: true
+  },
+  economicImpact: {
+    type: String,
+    default: '$15.7 trillion'
+  },
+
+  // Syllabus
+  syllabus: [SyllabusSectionSchema],
+
+  // Learning Journey Features
+  courseFeatures: [CourseFeatureSchema],
+
+  // Projects
+  courseProjects: [CourseProjectSchema],
+
+  // Certifications
+  certifications: [CertificationSchema],
+
+  // Instructors
+  instructors: [InstructorSchema],
+
+  // Reviews
+  reviews: [ReviewSchema],
+
+  // Additional Course Metadata
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  lastUpdated: {
+    type: Date,
+    default: Date.now
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
+}, { 
+  timestamps: true 
+});
+
+export const Course = mongoose.model('Course', CourseSchema);
