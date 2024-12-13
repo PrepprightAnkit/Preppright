@@ -277,15 +277,130 @@ import {
   Book,
   CheckCircle,
   CheckCircle2,
+  ChevronLeft, ChevronRight,
   Code,
   Globe,
+  Quote,
   Star,
   Trophy,
   Users,
   XCircle,
   Zap
 } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
+const ReviewCarousel = () => {
+  const reviews = [
+    {
+      name: "Sarah Johnson",
+      role: "Data Scientist at Google",
+      text: "This course transformed my career. The practical approach and expert guidance were game-changers in my machine learning journey.",
+      rating: 5,
+      image: "/api/placeholder/100/100"
+    },
+    {
+      name: "Michael Chen",
+      role: "Software Engineer at Microsoft",
+      text: "Incredibly comprehensive curriculum. The hands-on projects gave me real-world skills that directly translated to my professional work.",
+      rating: 5,
+      image: "/api/placeholder/100/100"
+    },
+    {
+      name: "Emily Rodriguez",
+      role: "AI Research Associate",
+      text: "The instructors are world-class. Their deep industry knowledge and personalized mentorship made all the difference in my learning.",
+      rating: 4,
+      image: "/api/placeholder/100/100"
+    }
+  ];
+
+  const [currentReview, setCurrentReview] = useState(0);
+
+  const handleNext = () => {
+    setCurrentReview((prev) => (prev + 1) % reviews.length);
+  };
+
+  const handlePrevious = () => {
+    setCurrentReview((prev) => (prev - 1 + reviews.length) % reviews.length);
+  };
+
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, index) => (
+      <Star 
+        key={index} 
+        className={`w-6 h-6 ${index < rating ? 'text-yellow-400' : 'text-gray-300'}`} 
+        fill={index < rating ? 'currentColor' : 'none'}
+      />
+    ));
+  };
+
+  return (
+    <div className="bg-gradient-to-br from-blue-50 to-blue-100 min-h-[500px] flex items-center justify-center p-4">
+      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:scale-105">
+        <div className="relative p-8 md:p-12">
+          {/* Quote Icon */}
+          <Quote className="absolute top-4 left-4 text-blue-200 w-16 h-16 opacity-50" />
+          
+          {/* Review Content */}
+          <div className="text-center relative z-10">
+            <div className="flex justify-center mb-6">
+              <img 
+                src={reviews[currentReview].image} 
+                alt={reviews[currentReview].name}
+                className="w-24 h-24 rounded-full border-4 border-blue-500 object-cover"
+              />
+            </div>
+            
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              {reviews[currentReview].name}
+            </h3>
+            <p className="text-blue-600 mb-4">
+              {reviews[currentReview].role}
+            </p>
+            
+            <div className="flex justify-center mb-4">
+              {renderStars(reviews[currentReview].rating)}
+            </div>
+            
+            <p className="text-gray-600 italic text-lg mb-6">
+              "{reviews[currentReview].text}"
+            </p>
+          </div>
+          
+          {/* Navigation Buttons */}
+          <div className="flex justify-between mt-8">
+            <button 
+              onClick={handlePrevious}
+              className="bg-blue-100 text-blue-600 p-3 rounded-full hover:bg-blue-200 transition-colors group"
+            >
+              <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+            </button>
+            <button 
+              onClick={handleNext}
+              className="bg-blue-100 text-blue-600 p-3 rounded-full hover:bg-blue-200 transition-colors group"
+            >
+              <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+          
+          {/* Pagination Dots */}
+          <div className="flex justify-center mt-4 space-x-2">
+            {reviews.map((_, index) => (
+              <button 
+                key={index}
+                onClick={() => setCurrentReview(index)}
+                className={`w-3 h-3 rounded-full transition-all ${
+                  index === currentReview 
+                    ? 'bg-blue-600 w-6' 
+                    : 'bg-blue-200 hover:bg-blue-300'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 const CourseDetails = () => {
 
     const courseFeatures = [
@@ -579,6 +694,9 @@ return (
           ))}
         </div>
       </div>
+    </div>
+    <div>
+      <ReviewCarousel/>
     </div>
 
 </>
