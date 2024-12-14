@@ -1,23 +1,5 @@
 import mongoose from 'mongoose';
 
-
-// Predefined Icon Enum for Syllabus Sections
-const SyllabusIconEnum = [
-  'BookOpen',
-  'PieChart',
-  'Database',
-  'Target',
-  'Code',
-  'Globe',
-  'Trophy',
-  'Users',
-  'CheckCircle',
-  'Zap',
-  'Star',
-  'Award'
-  // Add more icons from Lucide React library as needed
-];
-
 // Syllabus Module Schema
 const SyllabusModuleSchema = new mongoose.Schema({
   name: {
@@ -36,21 +18,11 @@ const SyllabusSectionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  icon: {
-    type: String,
-    enum: SyllabusIconEnum, // Restrict to predefined icons
-    required: true
-  },
   modules: [SyllabusModuleSchema]
 });
 
-// Similar approach for other schemas with icons
+// Course Feature Schema
 const CourseFeatureSchema = new mongoose.Schema({
-  icon: {
-    type: String,
-    enum: SyllabusIconEnum,
-    required: true
-  },
   title: {
     type: String,
     required: true
@@ -61,12 +33,8 @@ const CourseFeatureSchema = new mongoose.Schema({
   }
 });
 
+// Course Project Schema
 const CourseProjectSchema = new mongoose.Schema({
-  icon: {
-    type: String,
-    enum: SyllabusIconEnum,
-    required: true
-  },
   title: {
     type: String,
     required: true
@@ -77,12 +45,8 @@ const CourseProjectSchema = new mongoose.Schema({
   }
 });
 
+// Certification Schema
 const CertificationSchema = new mongoose.Schema({
-  icon: {
-    type: String,
-    enum: SyllabusIconEnum,
-    required: true
-  },
   title: {
     type: String,
     required: true

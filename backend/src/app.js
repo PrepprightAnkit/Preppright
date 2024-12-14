@@ -40,9 +40,10 @@ import categoryRoutes from './routes/categories.routes.js';
 
 app.use('/api/v1/users', categoryRoutes)
 
-import courseRoutes from './routes/courses.routes.js';
+import courseRoutes from './routes/courseRoutes.js';
 
-app.use('/api/v1/users', courseRoutes)
+// After your other middleware
+app.use('/api/v1/users/courses', courseRoutes);
 
 import questionRoutes from "./routes/question.routes.js";
 

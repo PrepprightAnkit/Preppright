@@ -3,12 +3,14 @@ import {
   BarChart,
   Book,
   ChevronRight,
-  Clock
+  Clock,
+  Star,
+  TrendingUp
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const Courses = ({ c1, c2, c3 }) => {
+const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -20,7 +22,8 @@ const Courses = ({ c1, c2, c3 }) => {
         
         if (response.ok) {
           const data = await response.json();
-          setCourses(data.data);
+          // Use data directly if it's an array, or data[0] if it's a document-like response
+          setCourses(Array.isArray(data) ? data : (data[0] || []));
         } else {
           console.error('Failed to fetch courses');
         }
@@ -35,20 +38,34 @@ const Courses = ({ c1, c2, c3 }) => {
   }, []);
 
   const courseCardVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
+    hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
-      scale: 1,
-      transition: { duration: 0.3 }
+      y: 0,
+      transition: { 
+        duration: 0.3,
+        ease: "easeOut" 
+      }
     },
     hover: { 
-      scale: 1.05,
+      scale: 1.03,
       transition: { duration: 0.2 }
     }
   };
 
+  const renderStarRating = (rating) => {
+    return [...Array(5)].map((_, index) => (
+      <Star 
+        key={index} 
+        size={16} 
+        className={`${index < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-300'}`} 
+        fill={index < Math.floor(rating) ? '#FFC107' : 'none'}
+      />
+    ));
+  };
+
   return (
-    <section className="bg-gradient-to-br from-blue-50 to-white min-h-screen py-16 px-4">
+    <div className="bg-gradient-to-br from-blue-50 to-white min-h-screen py-16 px-4">
       <div className="container mx-auto">
         {/* Header */}
         <motion.div 
@@ -58,32 +75,21 @@ const Courses = ({ c1, c2, c3 }) => {
         >
           <div>
             <h2 className="text-3xl md:text-5xl font-bold text-blue-700 mb-2">
-              Popular Courses
+              Explore Our Courses
             </h2>
             <p className="text-xl text-gray-600">
-              Discover Courses to Boost Your Skills
+              Transform Your Skills, Advance Your Career
             </p>
           </div>
-          
-          <Link to="/allCourse">
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-all"
-            >
-              View All Courses
-              <ChevronRight className="ml-2" />
-            </motion.button>
-          </Link>
         </motion.div>
 
         {/* Loading State */}
         {isLoading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 animate-pulse">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-pulse">
             {[...Array(4)].map((_, index) => (
               <div 
                 key={index} 
-                className="bg-gray-200 rounded-xl h-80 w-full"
+                className="bg-gray-200 rounded-xl h-96 w-full"
               />
             ))}
           </div>
@@ -102,9 +108,9 @@ const Courses = ({ c1, c2, c3 }) => {
                 }
               }
             }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
           >
-            {courses.length === 0 ? (
+            {!courses ? (
               <div className="col-span-full text-center text-gray-500 py-12">
                 <Book className="mx-auto mb-4 text-blue-400" size={64} />
                 <p className="text-xl">No courses available</p>
@@ -115,38 +121,53 @@ const Courses = ({ c1, c2, c3 }) => {
                   key={course._id}
                   variants={courseCardVariants}
                   whileHover="hover"
-                  className="bg-white rounded-xl shadow-lg overflow-hidden"
+                  className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all"
                 >
                   <Link to={`/courses/${course._id}`}>
                     <div className="relative">
                       <img
-                        src={course.courseImage}
+                        src={course.image || 'https://via.placeholder.com/400x250'}
                         alt={course.title}
                         className="w-full h-48 object-cover"
                       />
+                      <div className="absolute top-4 right-4 bg-white/80 rounded-full px-3 py-1 flex items-center">
+                        {renderStarRating(course.rating)}
+                        <span className="ml-2 text-sm text-gray-600">
+                          ({course.rating.toFixed(1)})
+                        </span>
+                      </div>
                     </div>
                     <div className="p-5 bg-blue-50">
                       <h3 className="text-xl font-semibold text-blue-700 mb-2 line-clamp-1">
                         {course.title}
                       </h3>
-                      <p className="text-gray-600 mb-4 line-clamp-3">
-                        {course.description}
+                      <p className="text-gray-600 mb-4 line-clamp-2">
+                        {course.tagline}
                       </p>
                       
-                      <div className="flex justify-between items-center text-gray-600">
-                        <div className="flex items-center">
-                          <Book className="mr-2 text-blue-500" size={20} />
-                          <span>{course.lessons.length} Lessons</span>
+                      <div className="flex flex-wrap justify-between items-center text-gray-600 mb-4">
+                        <div className="flex items-center mr-2 mb-2">
+                          <Clock className="mr-2 text-blue-500" size={16} />
+                          <span className="text-sm">{course.duration}</span>
                         </div>
-                        <div className="flex items-center">
-                          <Clock className="mr-2 text-blue-500" size={20} />
-                          <span>23 hrs</span>
+                        <div className="flex items-center mr-2 mb-2">
+                          <BarChart className="mr-2 text-blue-500" size={16} />
+                          <span className="text-sm">{course.courseType}</span>
                         </div>
-                        <div className="flex items-center">
-                          <BarChart className="mr-2 text-blue-500" size={20} />
-                          <span>{course.level}</span>
+                        <div className="flex items-center mr-2 mb-2">
+                          <TrendingUp className="mr-2 text-blue-500" size={16} />
+                          <span className="text-sm">₹{course.totalCourseFee.toLocaleString()}</span>
                         </div>
                       </div>
+
+                      <motion.div 
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="bg-blue-600 text-white px-4 py-2 rounded-full text-center flex items-center justify-center"
+                      >
+                        View Course Details
+                        <ChevronRight className="ml-2" size={16} />
+                      </motion.div>
                     </div>
                   </Link>
                 </motion.div>
@@ -155,7 +176,7 @@ const Courses = ({ c1, c2, c3 }) => {
           </motion.div>
         )}
       </div>
-    </section>
+    </div>
   );
 };
 

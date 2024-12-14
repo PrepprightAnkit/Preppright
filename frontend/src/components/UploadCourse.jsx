@@ -1,327 +1,667 @@
-import { Menu, Upload, User, X } from 'lucide-react';
+import axios from 'axios';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import bg from '../assets/PreepPright.png';
 
 const UploadCourse = () => {
-  const apiUrl = import.meta.env.VITE_API_BASE_URL;
-  const navigate = useNavigate();
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
-  
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  // Main Course Details State
+  const [courseDetails, setCourseDetails] = useState({
     title: '',
-    price: '',
-    description: '',
-    detailedDescription: '',
-    level: '',
-    category: '',
-    introVideo: '',
-    freeVideo: '',
-    freeNotes: '',
-    lessonTitle: '',
-    lessonNotes: '',
-    lessonVideo: '',
+    tagline: '',
+    courseType: 'Machine Learning',
+    totalCourseFee: '',
+    duration: '6 Months',
+    placementAssistance: true,
+    projectCount: 3,
+    economicImpact: '$15.7 trillion',
+    rating: 4.8
   });
-  const [imageFile, setImageFile] = useState(null);
-  const [videos, setVideos] = useState(null);
 
-  const levels = ['Beginner', 'Intermediate', 'Advanced'];
+  // Syllabus State
+  const [syllabus, setSyllabus] = useState([
+    {
+      title: '',
+      modules: [{ name: '', description: '' }]
+    }
+  ]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
+  // Course Features State
+  const [courseFeatures, setCourseFeatures] = useState([
+    { title: '', description: '' }
+  ]);
+
+  // Course Projects State
+  const [courseProjects, setCourseProjects] = useState([
+    { title: '', description: '' }
+  ]);
+
+  // Certifications State
+  const [certifications, setCertifications] = useState([
+    { title: '', description: '' }
+  ]);
+
+  // Instructors State
+  const [instructors, setInstructors] = useState([
+    { name: '', role: '', bio: '', image: '' }
+  ]);
+
+  // Reviews State
+  const [reviews, setReviews] = useState([
+    { 
+      name: '', 
+      role: '', 
+      text: '', 
+      rating: 5, 
+      image: '' 
+    }
+  ]);
+
+  // Generic handler for course details
+  const handleCourseDetailsChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setCourseDetails(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : 
+              type === 'number' ? Number(value) : value
     }));
   };
 
-  const handleFileChange = (e) => {
-    if (e.target.name === 'image') {
-      setImageFile(e.target.files[0]);
-    } else if (e.target.name === 'videos') {
-      setVideos(e.target.files);
-    }
+  // Dynamic section management helpers
+  const addSection = (setter, defaultItem) => {
+    setter(prev => [...prev, defaultItem]);
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
+  const removeSection = (setter, index) => {
+    setter(prev => prev.filter((_, i) => i !== index));
+  };
 
-    const formDataToSubmit = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      formDataToSubmit.append(key, value);
-    });
+  const updateSection = (setter, index, updates) => {
+    setter(prev => 
+      prev.map((item, i) => 
+        i === index ? { ...item, ...updates } : item
+      )
+    );
+  };
 
-    if (imageFile) {
-      formDataToSubmit.append('image', imageFile);
-    }
-    if (videos) {
-      Array.from(videos).forEach((file) => formDataToSubmit.append('videos', file));
-    }
-
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  // Submission handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch(`${apiUrl}/api/v1/users/courses`, {
-        method: 'POST',
-        body: formDataToSubmit,
-      });
+      const courseData = {
+        ...courseDetails,
+        syllabus,
+        courseFeatures,
+        courseProjects,
+        certifications,
+        instructors,
+        reviews
+      };
 
-      if (response.ok) {
-        alert('Course uploaded successfully!');
-        // Reset form
-        setFormData({
-          title: '', price: '', description: '', detailedDescription: '',
-          level: '', category: '', introVideo: '', freeVideo: '',
-          freeNotes: '', lessonTitle: '', lessonNotes: '', lessonVideo: ''
-        });
-        setImageFile(null);
-        setVideos(null);
-      } else {
-        alert('Failed to upload course.');
-      }
+      const response = await axios.post(`${apiUrl}/api/v1/users/courses`, courseData);
+      
+      alert('Course uploaded successfully!');
+      console.log(response.data);
     } catch (error) {
       console.error('Error uploading course:', error);
-      alert('Error uploading course.');
-    } finally {
-      setLoading(false);
+      alert('Failed to upload course. Please check your inputs.');
     }
   };
 
-  const renderInput = (label, name, type = 'text', required = true) => (
-    <div className="mb-4">
-      <label className="block text-gray-700 font-semibold mb-2">{label}</label>
-      {type === 'select' ? (
-        <select
-          name={name}
-          value={formData[name]}
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-          required={required}
-        >
-          <option value="">Select {label}</option>
-          {name === 'level' 
-            ? levels.map((levelOption) => (
-                <option key={levelOption} value={levelOption}>{levelOption}</option>
-              ))
-            : null}
-        </select>
-      ) : type === 'textarea' ? (
-        <textarea
-          name={name}
-          value={formData[name]}
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-          required={required}
-        />
-      ) : (
-        <input
-          type={type}
-          name={name}
-          value={formData[name]}
-          onChange={handleInputChange}
-          className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-          required={required}
-        />
-      )}
-    </div>
-  );
-
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white shadow-md">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          {/* Logo */}
-          <img 
-            src={bg} 
-            alt="Preep Logo" 
-            className="h-10 w-auto"
-          />
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
-              <button 
-                key={item} 
-                onClick={() => {
-                  if (item === 'Quiz') {
-                    navigate('/allQuiz');
-                  } else if (item === 'Home') {
-                    navigate('/');
-                  } else if (item === 'Categories') {
-                    navigate('/allCat');
-                  } else {
-                    navigate('/');
-                  }
-                }}
-                className="text-blue-800 hover:text-blue-600 transition-colors font-semibold"
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-
-          {/* Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-3">
-                {user?.isAdmin && (
-                  <Link 
-                    to="/uploadContent" 
-                    className="flex items-center bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-full transition-colors"
-                  >
-                    <Upload size={18} className="mr-2" /> Upload
-                  </Link>
-                )}
-                <Link 
-                  to="/userProfile" 
-                  className="flex items-center bg-blue-100 hover:bg-blue-200 px-3 py-2 rounded-full transition-colors"
-                >
-                  <User size={18} className="mr-2" /> Profile
-                </Link>
-              </div>
-            ) : (
-              <div className="flex space-x-3">
-                <Link 
-                  to="/login" 
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
-                >
-                  Login
-                </Link>
-                <Link 
-                  to="/reg" 
-                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
-                >
-                  Register
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <div className="md:hidden">
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-blue-800 focus:outline-none"
+    <div className="container mx-auto p-8 bg-gray-50">
+      <h1 className="text-4xl font-bold text-center mb-12 text-gray-800">
+        Upload New Course
+      </h1>
+      
+      <form onSubmit={handleSubmit} className="space-y-12">
+        {/* Course Basic Details */}
+        <div className="bg-white shadow-md rounded-lg p-8">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-700">
+            Course Details
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <input
+              type="text"
+              name="title"
+              value={courseDetails.title}
+              onChange={handleCourseDetailsChange}
+              placeholder="Course Title"
+              className="w-full p-3 border rounded-lg"
+              required
+            />
+            <input
+              type="text"
+              name="tagline"
+              value={courseDetails.tagline}
+              onChange={handleCourseDetailsChange}
+              placeholder="Course Tagline"
+              className="w-full p-3 border rounded-lg"
+              required
+            />
+            <input
+              type="number"
+              name="totalCourseFee"
+              value={courseDetails.totalCourseFee}
+              onChange={handleCourseDetailsChange}
+              placeholder="Total Course Fee"
+              className="w-full p-3 border rounded-lg"
+              required
+            />
+            <select
+              name="courseType"
+              value={courseDetails.courseType}
+              onChange={handleCourseDetailsChange}
+              className="w-full p-3 border rounded-lg"
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+              <option value="Machine Learning">Machine Learning</option>
+              <option value="Data Science">Data Science</option>
+              <option value="Artificial Intelligence">Artificial Intelligence</option>
+            </select>
+            <input
+              type="number"
+              name="projectCount"
+              value={courseDetails.projectCount}
+              onChange={handleCourseDetailsChange}
+              placeholder="Number of Projects"
+              className="w-full p-3 border rounded-lg"
+            />
+            <input
+              type="text"
+              name="duration"
+              value={courseDetails.duration}
+              onChange={handleCourseDetailsChange}
+              placeholder="Course Duration"
+              className="w-full p-3 border rounded-lg"
+            />
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                name="placementAssistance"
+                checked={courseDetails.placementAssistance}
+                onChange={handleCourseDetailsChange}
+                className="mr-2"
+              />
+              <label>Placement Assistance</label>
+            </div>
+            <input
+              type="text"
+              name="economicImpact"
+              value={courseDetails.economicImpact}
+              onChange={handleCourseDetailsChange}
+              placeholder="Economic Impact"
+              className="w-full p-3 border rounded-lg"
+            />
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-white absolute w-full shadow-lg">
-            <div className="px-4 pt-2 pb-4 space-y-2">
-              {/* Mobile Navigation Links */}
-              {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
-                <button 
-                  key={item} 
+        {/* Syllabus Section */}
+        <div className="bg-white shadow-md rounded-lg p-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-700">
+              Course Syllabus
+            </h2>
+            <button 
+              type="button"
+              onClick={() => addSection(setSyllabus, {
+                title: '', 
+                modules: [{ name: '', description: '' }]
+              })}
+              className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
+            >
+              +
+            </button>
+          </div>
+
+          {syllabus.map((section, sectionIndex) => (
+            <div 
+              key={sectionIndex} 
+              className="border p-4 rounded-lg mb-4 relative"
+            >
+              <button
+                type="button"
+                onClick={() => removeSection(setSyllabus, sectionIndex)}
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+              >
+                X
+              </button>
+              <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <input
+                  type="text"
+                  value={section.title}
+                  onChange={(e) => updateSection(
+                    setSyllabus, 
+                    sectionIndex, 
+                    { title: e.target.value }
+                  )}
+                  placeholder="Section Title"
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              
+              {/* Modules Management */}
+              <div>
+                <h3 className="text-lg font-medium mb-2">Modules</h3>
+                {section.modules.map((module, moduleIndex) => (
+                  <div 
+                    key={moduleIndex} 
+                    className="flex gap-2 mb-2"
+                  >
+                    <input
+                      type="text"
+                      value={module.name}
+                      onChange={(e) => {
+                        const updatedModules = [...section.modules];
+                        updatedModules[moduleIndex].name = e.target.value;
+                        updateSection(setSyllabus, sectionIndex, { 
+                          modules: updatedModules 
+                        });
+                      }}
+                      placeholder="Module Name"
+                      className="w-1/2 p-2 border rounded"
+                    />
+                    <input
+                      type="text"
+                      value={module.description}
+                      onChange={(e) => {
+                        const updatedModules = [...section.modules];
+                        updatedModules[moduleIndex].description = e.target.value;
+                        updateSection(setSyllabus, sectionIndex, { 
+                          modules: updatedModules 
+                        });
+                      }}
+                      placeholder="Module Description"
+                      className="w-1/2 p-2 border rounded"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updatedModules = section.modules.filter((_, i) => i !== moduleIndex);
+                        updateSection(setSyllabus, sectionIndex, { modules: updatedModules });
+                      }}
+                      className="text-red-500"
+                    >
+                      X
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
                   onClick={() => {
-                    if (item === 'Quiz') {
-                      navigate('/allQuiz');
-                    } else if (item === 'Home') {
-                      navigate('/');
-                    } else if (item === 'Categories') {
-                      navigate('/allCat');
-                    } else {
-                      navigate('/');
-                    }
-                    setIsMobileMenuOpen(false);
+                    const updatedModules = [...section.modules, { name: '', description: '' }];
+                    updateSection(setSyllabus, sectionIndex, { modules: updatedModules });
                   }}
-                  className="block w-full text-left py-2 text-blue-800 hover:bg-blue-50"
+                  className="bg-green-500 text-white p-2 rounded mt-2"
                 >
-                  {item}
+                  Add Module
                 </button>
-              ))}
+              </div>
             </div>
-          </div>
-        )}
-      </nav>
+          ))}
+        </div>
 
-      {/* Form */}
-      <div className="flex-1 flex items-center justify-center p-6 bg-gray-50">
-        <form 
-          onSubmit={handleSubmit} 
-          className="w-full max-w-2xl bg-white rounded-xl shadow-2xl p-8 space-y-6"
-        >
-          <h2 className="text-3xl font-bold mb-6 text-blue-700 text-center">
-            Upload New Course
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            {renderInput('Title', 'title')}
-            {renderInput('Price', 'price', 'number')}
-          </div>
-
-          {renderInput('Short Description', 'description', 'textarea')}
-          {renderInput('Detailed Description', 'detailedDescription', 'textarea')}
-
-          <div className="grid md:grid-cols-2 gap-4">
-            {renderInput('Level', 'level', 'select')}
-            {renderInput('Category', 'category')}
+        {/* Course Features */}
+        <div className="bg-white shadow-md rounded-lg p-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-700">
+              Course Features
+            </h2>
+            <button 
+              type="button"
+              onClick={() => addSection(setCourseFeatures, {
+                title: '', 
+                description: '' 
+              })}
+              className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
+            >
+              +
+            </button>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            {renderInput('Intro Video URL', 'introVideo')}
-            {renderInput('Free Video URL', 'freeVideo')}
-          </div>
-
-          {renderInput('Free Notes URL', 'freeNotes')}
-
-          <div className="grid md:grid-cols-2 gap-4">
-            {renderInput('Lesson Title', 'lessonTitle')}
-            {renderInput('Lesson Video URL', 'lessonVideo')}
-          </div>
-
-          {renderInput('Lesson Notes URL', 'lessonNotes')}
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="mb-4">
-              <label className="block text-gray-700 font-semibold mb-2">
-                Upload Course Image
-              </label>
-              <input
-                type="file"
-                name="image"
-                onChange={handleFileChange}
-                className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              />
+          {courseFeatures.map((feature, index) => (
+            <div 
+              key={index} 
+              className="border p-4 rounded-lg mb-4 relative"
+            >
+              <button
+                type="button"
+                onClick={() => removeSection(setCourseFeatures, index)}
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+              >
+                X
+              </button>
+              <div className="grid md:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  value={feature.title}
+                  onChange={(e) => updateSection(
+                    setCourseFeatures, 
+                    index, 
+                    { title: e.target.value }
+                  )}
+                  placeholder="Feature Title"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={feature.description}
+                  onChange={(e) => updateSection(
+                    setCourseFeatures, 
+                    index, 
+                    { description: e.target.value }
+                  )}
+                  placeholder="Feature Description"
+                  className="w-full p-2 border rounded"
+                />
+              </div>
             </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 font-semibold mb-2">
-                Upload Lesson Videos
-              </label>
-              <input
-                type="file"
-                name="videos"
-                onChange={handleFileChange}
-                multiple
-                className="w-full p-3 border rounded-lg focus:outline-none ring-2 ring-black focus:ring-2 focus:ring-blue-700"
-              />
-            </div>
+          ))}
+        </div>
+
+        {/* Course Projects Section */}
+        <div className="bg-white shadow-md rounded-lg p-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-700">
+              Course Projects
+            </h2>
+            <button 
+              type="button"
+              onClick={() => addSection(setCourseProjects, {
+                title: '', 
+                description: '' 
+              })}
+              className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
+            >
+              +
+            </button>
           </div>
 
-          {loading && (
-            <div className="flex justify-center">
-              <div className="w-12 h-12 border-4 border-blue-600 border-dashed rounded-full animate-spin"></div>
+          {courseProjects.map((project, index) => (
+            <div 
+              key={index} 
+              className="border p-4 rounded-lg mb-4 relative"
+            >
+              <button
+                type="button"
+                onClick={() => removeSection(setCourseProjects, index)}
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+              >
+                X
+              </button>
+              <div className="grid md:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  value={project.title}
+                  onChange={(e) => updateSection(
+                    setCourseProjects, 
+                    index, 
+                    { title: e.target.value }
+                  )}
+                  placeholder="Project Title"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={project.description}
+                  onChange={(e) => updateSection(
+                    setCourseProjects, 
+                    index, 
+                    { description: e.target.value }
+                  )}
+                  placeholder="Project Description"
+                  className="w-full p-2 border rounded"
+                />
+              </div>
             </div>
-          )}
+          ))}
+        </div>
 
+        {/* Certifications Section */}
+        <div className="bg-white shadow-md rounded-lg p-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-700">
+              Certifications
+            </h2>
+            <button 
+              type="button"
+              onClick={() => addSection(setCertifications, {
+                title: '', 
+                description: '' 
+              })}
+              className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
+            >
+              +
+            </button>
+          </div>
+
+          {certifications.map((certification, index) => (
+            <div 
+              key={index} 
+              className="border p-4 rounded-lg mb-4 relative"
+            >
+              <button
+                type="button"
+                onClick={() => removeSection(setCertifications, index)}
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+              >
+                X
+              </button>
+              <div className="grid md:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  value={certification.title}
+                  onChange={(e) => updateSection(
+                    setCertifications, 
+                    index, 
+                    { title: e.target.value }
+                  )}
+                  placeholder="Certification Title"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={certification.description}
+                  onChange={(e) => updateSection(
+                    setCertifications, 
+                    index, 
+                    { description: e.target.value }
+                  )}
+                  placeholder="Certification Description"
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Instructors Section */}
+        <div className="bg-white shadow-md rounded-lg p-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-700">
+              Course Instructors
+            </h2>
+            <button 
+              type="button"
+              onClick={() => addSection(setInstructors, {
+                name: '', 
+                role: '', 
+                bio: '', 
+                image: '' 
+              })}
+              className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
+            >
+              +
+            </button>
+          </div>
+
+          {instructors.map((instructor, index) => (
+            <div 
+              key={index} 
+              className="border p-4 rounded-lg mb-4 relative"
+            >
+              <button
+                type="button"
+                onClick={() => removeSection(setInstructors, index)}
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+              >
+                X
+              </button>
+              <div className="grid md:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  value={instructor.name}
+                  onChange={(e) => updateSection(
+                    setInstructors, 
+                    index, 
+                    { name: e.target.value }
+                  )}
+                  placeholder="Instructor Name"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={instructor.role}
+                  onChange={(e) => updateSection(
+                    setInstructors, 
+                    index, 
+                    { role: e.target.value }
+                  )}
+                  placeholder="Role"
+                  className="w-full p-2 border rounded"
+                />
+                <textarea
+                  value={instructor.bio}
+                  onChange={(e) => updateSection(
+                    setInstructors, 
+                    index, 
+                    { bio: e.target.value }
+                  )}
+                  placeholder="Instructor Bio"
+                  className="w-full p-2 border rounded col-span-2"
+                  rows="3"
+                />
+                <input
+                  type="text"
+                  value={instructor.image}
+                  onChange={(e) => updateSection(
+                    setInstructors, 
+                    index, 
+                    { image: e.target.value }
+                  )}
+                  placeholder="Image URL"
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Reviews Section */}
+        <div className="bg-white shadow-md rounded-lg p-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-700">
+              Course Reviews
+            </h2>
+            <button 
+              type="button"
+              onClick={() => addSection(setReviews, {
+                name: '', 
+                role: '', 
+                text: '', 
+                rating: 5, 
+                image: '' 
+              })}
+              className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
+            >
+              +
+            </button>
+          </div>
+
+          {reviews.map((review, index) => (
+            <div 
+              key={index} 
+              className="border p-4 rounded-lg mb-4 relative"
+            >
+              <button
+                type="button"
+                onClick={() => removeSection(setReviews, index)}
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+              >
+                X
+              </button>
+              <div className="grid md:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  value={review.name}
+                  onChange={(e) => updateSection(
+                    setReviews, 
+                    index, 
+                    { name: e.target.value }
+                  )}
+                  placeholder="Reviewer Name"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={review.role}
+                  onChange={(e) => updateSection(
+                    setReviews, 
+                    index, 
+                    { role: e.target.value }
+                  )}
+                  placeholder="Reviewer Role"
+                  className="w-full p-2 border rounded"
+                />
+                <textarea
+                  value={review.text}
+                  onChange={(e) => updateSection(
+                    setReviews, 
+                    index, 
+                    { text: e.target.value }
+                  )}
+                  placeholder="Review Text"
+                  className="w-full p-2 border rounded col-span-2"
+                  rows="3"
+                />
+                <div className="flex items-center">
+                  <label className="mr-2">Rating:</label>
+                  <select
+                    value={review.rating}
+                    onChange={(e) => updateSection(
+                      setReviews, 
+                      index, 
+                      { rating: Number(e.target.value) }
+                    )}
+                    className="w-full p-2 border rounded"
+                  >
+                    {[1, 2, 3, 4, 5].map(rating => (
+                      <option key={rating} value={rating}>{rating}</option>
+                    ))}
+                  </select>
+                </div>
+                <input
+                  type="text"
+                  value={review.image}
+                  onChange={(e) => updateSection(
+                    setReviews, 
+                    index, 
+                    { image: e.target.value }
+                  )}
+                  placeholder="Reviewer Image URL"
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="text-center">
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg 
-              transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none 
-              focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50
-              disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-blue-600 text-white px-12 py-3 rounded-lg hover:bg-blue-700 transition"
           >
-            {loading ? 'Uploading...' : 'Upload Course'}
+            Upload Course
           </button>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   );
 };
