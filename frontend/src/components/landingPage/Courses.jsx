@@ -126,7 +126,7 @@ const Courses = () => {
                   <Link to={`/courses/${course._id}`}>
                     <div className="relative">
                       <img
-                        src={course.image || 'https://via.placeholder.com/400x250'}
+                        src={course.aboutImgUrl}
                         alt={course.title}
                         className="w-full h-48 object-cover"
                       />

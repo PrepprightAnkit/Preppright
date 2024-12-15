@@ -21,41 +21,7 @@ const SyllabusSectionSchema = new mongoose.Schema({
   modules: [SyllabusModuleSchema]
 });
 
-// Course Feature Schema
-const CourseFeatureSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  }
-});
 
-// Course Project Schema
-const CourseProjectSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  }
-});
-
-// Certification Schema
-const CertificationSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  }
-});
 
 // Instructor Schema
 const InstructorSchema = new mongoose.Schema({
@@ -112,17 +78,19 @@ const CourseSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  courseType: {
-    type: String,
-    default: 'Machine Learning'
+  // category
+  courseType: { 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: true // make it required if you want every course to have a category
   },
   rating: {
     type: Number,
     default: 4.8
   },
   duration: {
-    type: String,
-    default: '6 Months'
+    type: Number,
+    default: '6'
   },
   totalCourseFee: {
     type: Number,
@@ -136,22 +104,26 @@ const CourseSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
-  economicImpact: {
+ 
+  aboutTitle:{
     type: String,
-    default: '$15.7 trillion'
+    required: true
   },
+  aboutDescription:{
+    type: String,
+    required: true
+  },
+  aboutImgUrl:{
+    type: String,
+    required: true
+  },
+
+
 
   // Syllabus
   syllabus: [SyllabusSectionSchema],
 
-  // Learning Journey Features
-  courseFeatures: [CourseFeatureSchema],
-
-  // Projects
-  courseProjects: [CourseProjectSchema],
-
-  // Certifications
-  certifications: [CertificationSchema],
+ 
 
   // Instructors
   instructors: [InstructorSchema],

@@ -1,19 +1,43 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const UploadCourse = () => {
+  const [categories, setCategories] = useState([]);
+  // About Course Section State
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const [aboutSection, setAboutSection] = useState({
+    aboutTitle: '',
+    aboutDescription: '',
+    aboutImgUrl: ''
+  });
+
   // Main Course Details State
   const [courseDetails, setCourseDetails] = useState({
     title: '',
     tagline: '',
-    courseType: 'Machine Learning',
+    courseType: '',
     totalCourseFee: '',
-    duration: '6 Months',
+    duration: 0,
     placementAssistance: true,
-    projectCount: 3,
-    economicImpact: '$15.7 trillion',
-    rating: 4.8
+    projectCount: 0,
+    rating: 0
   });
+
+  // Fetch categories from the API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/api/v1/users/cat`);
+        console.log(response.data.data)
+        setCategories(response.data.data); // Assuming the response is an array
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        alert('Failed to load categories. Please try again later.');
+      }
+    };
+
+    fetchCategories();
+  }, [apiUrl]);
 
   // Syllabus State
   const [syllabus, setSyllabus] = useState([
@@ -21,21 +45,6 @@ const UploadCourse = () => {
       title: '',
       modules: [{ name: '', description: '' }]
     }
-  ]);
-
-  // Course Features State
-  const [courseFeatures, setCourseFeatures] = useState([
-    { title: '', description: '' }
-  ]);
-
-  // Course Projects State
-  const [courseProjects, setCourseProjects] = useState([
-    { title: '', description: '' }
-  ]);
-
-  // Certifications State
-  const [certifications, setCertifications] = useState([
-    { title: '', description: '' }
   ]);
 
   // Instructors State
@@ -64,6 +73,15 @@ const UploadCourse = () => {
     }));
   };
 
+  // Handler for about section
+  const handleAboutSectionChange = (e) => {
+    const { name, value } = e.target;
+    setAboutSection(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   // Dynamic section management helpers
   const addSection = (setter, defaultItem) => {
     setter(prev => [...prev, defaultItem]);
@@ -81,23 +99,23 @@ const UploadCourse = () => {
     );
   };
 
-  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  
+  
   // Submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const courseData = {
         ...courseDetails,
+        ...aboutSection,
         syllabus,
-        courseFeatures,
-        courseProjects,
-        certifications,
         instructors,
         reviews
       };
 
       const response = await axios.post(`${apiUrl}/api/v1/users/courses`, courseData);
-      
+      // In your course creation route
+      console.log('Received Course Data:', response);
       alert('Course uploaded successfully!');
       console.log(response.data);
     } catch (error) {
@@ -147,29 +165,43 @@ const UploadCourse = () => {
               required
             />
             <select
-              name="courseType"
-              value={courseDetails.courseType}
+  name="courseType"
+  value={courseDetails.courseType}
+  onChange={handleCourseDetailsChange}
+  className="w-full p-3 border rounded-lg"
+  required
+>
+  <option value="" disabled>
+    Select Course Type
+  </option>
+  {categories.map((category) => (
+    <option key={category._id} value={category.title}>
+      {category.title}
+    </option>
+  ))}
+</select>
+
+            <input
+              type="number"
+              name="rating"
+              
               onChange={handleCourseDetailsChange}
+              placeholder="rating"
               className="w-full p-3 border rounded-lg"
-            >
-              <option value="Machine Learning">Machine Learning</option>
-              <option value="Data Science">Data Science</option>
-              <option value="Artificial Intelligence">Artificial Intelligence</option>
-            </select>
+            />
             <input
               type="number"
               name="projectCount"
-              value={courseDetails.projectCount}
+              
               onChange={handleCourseDetailsChange}
               placeholder="Number of Projects"
               className="w-full p-3 border rounded-lg"
             />
             <input
-              type="text"
+              type="number"
               name="duration"
-              value={courseDetails.duration}
               onChange={handleCourseDetailsChange}
-              placeholder="Course Duration"
+              placeholder="Course Duration (Months)"
               className="w-full p-3 border rounded-lg"
             />
             <div className="flex items-center">
@@ -182,13 +214,41 @@ const UploadCourse = () => {
               />
               <label>Placement Assistance</label>
             </div>
+          </div>
+        </div>
+
+        {/* About Course Section */}
+        <div className="bg-white shadow-md rounded-lg p-8">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-700">
+            About Course
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
             <input
               type="text"
-              name="economicImpact"
-              value={courseDetails.economicImpact}
-              onChange={handleCourseDetailsChange}
-              placeholder="Economic Impact"
+              name="aboutTitle"
+              value={aboutSection.aboutTitle}
+              onChange={handleAboutSectionChange}
+              placeholder="About Title"
               className="w-full p-3 border rounded-lg"
+              required
+            />
+            <input
+              type="text"
+              name="aboutImgUrl"
+              value={aboutSection.aboutImgUrl}
+              onChange={handleAboutSectionChange}
+              placeholder="About Image URL"
+              className="w-full p-3 border rounded-lg"
+              required
+            />
+            <textarea
+              name="aboutDescription"
+              value={aboutSection.aboutDescription}
+              onChange={handleAboutSectionChange}
+              placeholder="About Description"
+              className="w-full p-3 border rounded-lg col-span-2"
+              rows="4"
+              required
             />
           </div>
         </div>
@@ -234,6 +294,7 @@ const UploadCourse = () => {
                   )}
                   placeholder="Section Title"
                   className="w-full p-2 border rounded"
+                  required
                 />
               </div>
               
@@ -257,6 +318,7 @@ const UploadCourse = () => {
                       }}
                       placeholder="Module Name"
                       className="w-1/2 p-2 border rounded"
+                      required
                     />
                     <input
                       type="text"
@@ -270,6 +332,7 @@ const UploadCourse = () => {
                       }}
                       placeholder="Module Description"
                       className="w-1/2 p-2 border rounded"
+                      required
                     />
                     <button
                       type="button"
@@ -293,180 +356,6 @@ const UploadCourse = () => {
                 >
                   Add Module
                 </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Course Features */}
-        <div className="bg-white shadow-md rounded-lg p-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold text-gray-700">
-              Course Features
-            </h2>
-            <button 
-              type="button"
-              onClick={() => addSection(setCourseFeatures, {
-                title: '', 
-                description: '' 
-              })}
-              className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
-            >
-              +
-            </button>
-          </div>
-
-          {courseFeatures.map((feature, index) => (
-            <div 
-              key={index} 
-              className="border p-4 rounded-lg mb-4 relative"
-            >
-              <button
-                type="button"
-                onClick={() => removeSection(setCourseFeatures, index)}
-                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
-              >
-                X
-              </button>
-              <div className="grid md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  value={feature.title}
-                  onChange={(e) => updateSection(
-                    setCourseFeatures, 
-                    index, 
-                    { title: e.target.value }
-                  )}
-                  placeholder="Feature Title"
-                  className="w-full p-2 border rounded"
-                />
-                <input
-                  type="text"
-                  value={feature.description}
-                  onChange={(e) => updateSection(
-                    setCourseFeatures, 
-                    index, 
-                    { description: e.target.value }
-                  )}
-                  placeholder="Feature Description"
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Course Projects Section */}
-        <div className="bg-white shadow-md rounded-lg p-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold text-gray-700">
-              Course Projects
-            </h2>
-            <button 
-              type="button"
-              onClick={() => addSection(setCourseProjects, {
-                title: '', 
-                description: '' 
-              })}
-              className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
-            >
-              +
-            </button>
-          </div>
-
-          {courseProjects.map((project, index) => (
-            <div 
-              key={index} 
-              className="border p-4 rounded-lg mb-4 relative"
-            >
-              <button
-                type="button"
-                onClick={() => removeSection(setCourseProjects, index)}
-                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
-              >
-                X
-              </button>
-              <div className="grid md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  value={project.title}
-                  onChange={(e) => updateSection(
-                    setCourseProjects, 
-                    index, 
-                    { title: e.target.value }
-                  )}
-                  placeholder="Project Title"
-                  className="w-full p-2 border rounded"
-                />
-                <input
-                  type="text"
-                  value={project.description}
-                  onChange={(e) => updateSection(
-                    setCourseProjects, 
-                    index, 
-                    { description: e.target.value }
-                  )}
-                  placeholder="Project Description"
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Certifications Section */}
-        <div className="bg-white shadow-md rounded-lg p-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold text-gray-700">
-              Certifications
-            </h2>
-            <button 
-              type="button"
-              onClick={() => addSection(setCertifications, {
-                title: '', 
-                description: '' 
-              })}
-              className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
-            >
-              +
-            </button>
-          </div>
-
-          {certifications.map((certification, index) => (
-            <div 
-              key={index} 
-              className="border p-4 rounded-lg mb-4 relative"
-            >
-              <button
-                type="button"
-                onClick={() => removeSection(setCertifications, index)}
-                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
-              >
-                X
-              </button>
-              <div className="grid md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  value={certification.title}
-                  onChange={(e) => updateSection(
-                    setCertifications, 
-                    index, 
-                    { title: e.target.value }
-                  )}
-                  placeholder="Certification Title"
-                  className="w-full p-2 border rounded"
-                />
-                <input
-                  type="text"
-                  value={certification.description}
-                  onChange={(e) => updateSection(
-                    setCertifications, 
-                    index, 
-                    { description: e.target.value }
-                  )}
-                  placeholder="Certification Description"
-                  className="w-full p-2 border rounded"
-                />
               </div>
             </div>
           ))}
@@ -515,6 +404,7 @@ const UploadCourse = () => {
                   )}
                   placeholder="Instructor Name"
                   className="w-full p-2 border rounded"
+                  required
                 />
                 <input
                   type="text"
@@ -526,6 +416,7 @@ const UploadCourse = () => {
                   )}
                   placeholder="Role"
                   className="w-full p-2 border rounded"
+                  required
                 />
                 <textarea
                   value={instructor.bio}
@@ -537,6 +428,7 @@ const UploadCourse = () => {
                   placeholder="Instructor Bio"
                   className="w-full p-2 border rounded col-span-2"
                   rows="3"
+                  required
                 />
                 <input
                   type="text"
@@ -598,6 +490,7 @@ const UploadCourse = () => {
                   )}
                   placeholder="Reviewer Name"
                   className="w-full p-2 border rounded"
+                  required
                 />
                 <input
                   type="text"
@@ -609,17 +502,18 @@ const UploadCourse = () => {
                   )}
                   placeholder="Reviewer Role"
                   className="w-full p-2 border rounded"
+                  required
                 />
                 <textarea
                   value={review.text}
-                  onChange={(e) => updateSection(
-                    setReviews, 
+                  onChange={(e) => updateSection(setReviews, 
                     index, 
                     { text: e.target.value }
                   )}
                   placeholder="Review Text"
                   className="w-full p-2 border rounded col-span-2"
                   rows="3"
+                  required
                 />
                 <div className="flex items-center">
                   <label className="mr-2">Rating:</label>
