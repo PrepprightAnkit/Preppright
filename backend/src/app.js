@@ -58,9 +58,9 @@ import quizRoutes from "./routes/quiz.routes.js";
 
 app.use('/api/v1/quiz', quizRoutes) 
 
-import approveRoutes from "./routes/courseApproval.routes.js";
+import approveRoutes from "./routes/courseApprovalRoutes.js";
 
-app.use('/api/v1/approve',  approveRoutes);
+app.use('/api/v1/approve',  approveRoutes); 
 
 export { app };
 

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 const UploadCourse = () => {
   const [categories, setCategories] = useState([]);
+  const currentUserId = JSON.parse(localStorage.getItem("user"))._id;
   // About Course Section State
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const [aboutSection, setAboutSection] = useState({
@@ -66,6 +67,24 @@ const UploadCourse = () => {
   // Generic handler for course details
   const handleCourseDetailsChange = (e) => {
     const { name, value, type, checked } = e.target;
+    
+    // Special handling for courseType to ensure it's the category _id
+    if (name === 'courseType') {
+      const selectedCategory = categories.find(cat => cat._id === value);
+      
+      if (!selectedCategory) {
+        console.error('No matching category found for value:', value);
+        return;
+      }
+  
+      setCourseDetails(prev => ({
+        ...prev,
+        courseType: value // This should be the _id
+      }));
+      return;
+    }
+  
+    // Existing logic for other fields
     setCourseDetails(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : 
@@ -104,23 +123,48 @@ const UploadCourse = () => {
   // Submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate courseType
+    console.log('Course Details Before Submit:', {
+      courseType: courseDetails.courseType,
+      courseTypeType: typeof courseDetails.courseType,
+      categories: categories.map(cat => ({
+        _id: cat._id,
+        title: cat.title
+      }))
+    });
+  
+    // Ensure courseType is a valid ObjectId
+    if (!courseDetails.courseType) {
+      alert('Please select a course type');
+      return;
+    }
+  
     try {
       const courseData = {
         ...courseDetails,
         ...aboutSection,
         syllabus,
         instructors,
-        reviews
+        reviews,
+        submittedBy: currentUserId
       };
-
+  
+      console.log('Final Course Data Being Sent:', {
+        ...courseData,
+        courseTypeId: courseData.courseType
+      });
+  
       const response = await axios.post(`${apiUrl}/api/v1/users/courses`, courseData);
-      // In your course creation route
-      console.log('Received Course Data:', response);
+      console.log('Course uploaded successfully:', response.data);
       alert('Course uploaded successfully!');
-      console.log(response.data);
     } catch (error) {
-      console.error('Error uploading course:', error);
-      alert('Failed to upload course. Please check your inputs.');
+      console.error('Course Upload Error:', {
+        errorResponse: error.response?.data,
+        errorMessage: error.message,
+        fullError: error
+      });
+      alert(`Failed to upload course: ${error.response?.data?.message || 'Unknown error'}`);
     }
   };
 
@@ -164,7 +208,7 @@ const UploadCourse = () => {
               className="w-full p-3 border rounded-lg"
               required
             />
-            <select
+           <select
   name="courseType"
   value={courseDetails.courseType}
   onChange={handleCourseDetailsChange}
@@ -175,8 +219,11 @@ const UploadCourse = () => {
     Select Course Type
   </option>
   {categories.map((category) => (
-    <option key={category._id} value={category.title}>
-      {category.title}
+    <option 
+      key={category._id} 
+      value={category._id}
+    >
+      {category._id}
     </option>
   ))}
 </select>

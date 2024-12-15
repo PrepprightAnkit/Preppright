@@ -3,8 +3,8 @@ import AddLessons from "./components/AddLessons";
 import AllCat from "./components/AllCat";
 import AllCourses from "./components/AllCourses";
 import AllQuiz from "./components/AllQuiz";
-import ApproveCourse from "./components/ApproveCourse";
 import Certificate from "./components/Certificate";
+import CourseApprovalPage from "./components/CourseApprovalPage";
 import CourseDetails from "./components/CourseDetails";
 import Home from './components/Home';
 import LoginPage from "./components/LoginPage";
@@ -48,7 +48,7 @@ function App() {
               <Route path="allQuiz" element={<AllQuiz />} />
               <Route path="allCat" element={<AllCat />} />
               <Route path="allCourses" element={<AllCourses />} />
-              <Route path="approveCourse" element={<ApproveCourse />} />
+              <Route path="approveCourse" element={<CourseApprovalPage />} />
               <Route path="uploadCourseApproval" element={<UploadCourseApproval />} />
               <Route path="test" element={<Test />} />
             </Route>

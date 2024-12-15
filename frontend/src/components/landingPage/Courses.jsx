@@ -22,8 +22,12 @@ const Courses = () => {
         
         if (response.ok) {
           const data = await response.json();
-          // Use data directly if it's an array, or data[0] if it's a document-like response
-          setCourses(Array.isArray(data) ? data : (data[0] || []));
+          // Filter courses to only include approved courses
+          const approvedCourses = Array.isArray(data) 
+            ? data.filter(course => course.isApproved) 
+            : (data[0] && data[0].filter(course => course.isApproved)) || [];
+          
+          setCourses(approvedCourses);
         } else {
           console.error('Failed to fetch courses');
         }
@@ -110,10 +114,10 @@ const Courses = () => {
             }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
           >
-            {!courses ? (
+            {courses.length === 0 ? (
               <div className="col-span-full text-center text-gray-500 py-12">
                 <Book className="mx-auto mb-4 text-blue-400" size={64} />
-                <p className="text-xl">No courses available</p>
+                <p className="text-xl">No approved courses available</p>
               </div>
             ) : (
               courses.map((course) => (

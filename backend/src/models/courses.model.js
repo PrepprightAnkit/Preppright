@@ -143,6 +143,24 @@ const CourseSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
+  },
+  isApproved: {
+    type: Boolean,
+    default: false  // By default, courses are not approved
+  },
+  approvedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',  // Assumes you have a User model for admins
+    default: null
+  },
+  approvedAt: {
+    type: Date,
+    default: null
+  },
+  submittedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',  // Who submitted the course
+    required: true
   }
 }, { 
   timestamps: true 
