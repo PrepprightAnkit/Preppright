@@ -66,7 +66,7 @@ const Categories = () => {
             </p>
           </div>
           
-          <Link to="/allCat">
+          <Link to="/allCourse">
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
