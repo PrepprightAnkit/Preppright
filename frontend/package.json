@@ -15,7 +15,7 @@
     "axios": "^1.7.9",
     "firebase": "^10.12.2",
     "firebaseui": "^6.1.0",
-    "framer-motion": "^11.13.1",
+    "framer-motion": "^11.15.0",
     "lucide-react": "^0.465.0",
     "react": "^18.2.0",
     "react-awesome-reveal": "^4.2.13",
