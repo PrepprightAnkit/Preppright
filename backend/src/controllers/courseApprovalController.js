@@ -26,7 +26,7 @@ export const getUnapprovedCourses = async (req, res) => {
 export const approveCourse = async (req, res) => {
   try {
     const { courseId } = req.params;
-    const adminId = req.user._id;  // Assuming you have authentication middleware
+    const adminId = req._id;  // Assuming you have authentication middleware
 
     const course = await Course.findByIdAndUpdate(
       courseId, 
@@ -53,7 +53,7 @@ export const approveCourse = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: 'Server error while approving course'
+      error: `Server error while approving course ${error}`
     });
   }
 };

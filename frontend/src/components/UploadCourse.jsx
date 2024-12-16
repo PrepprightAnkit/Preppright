@@ -223,7 +223,7 @@ const UploadCourse = () => {
       key={category._id} 
       value={category._id}
     >
-      {category._id}
+      {category.title}
     </option>
   ))}
 </select>
