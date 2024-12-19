@@ -522,6 +522,7 @@ const handleLogout = async () => {
       </div>
     </div>
   </div>
+  <CoursePrices course={course}/>
 {/* table section */}
 <div className="max-w-7xl mx-auto text-center mb-12">
   <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
@@ -682,6 +683,7 @@ const ContactFooter = () => {
   
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
+import CoursePrices from './Courseprices';
 import SearchComponent from './Search';
 
 const ReviewCarousel = ({ reviews }) => {
