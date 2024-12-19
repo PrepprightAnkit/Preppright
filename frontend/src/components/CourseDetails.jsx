@@ -383,9 +383,12 @@ const handleLogout = async () => {
               <button className="bg-white text-blue-900 px-6 py-3 rounded-lg font-bold hover:bg-blue-100 transition transform hover:scale-105 shadow-lg">
                 Enroll Now
               </button>
-              <button className="border-2 border-white text-white px-6 py-3 rounded-lg font-bold hover:bg-white hover:text-blue-900 transition transform hover:scale-105">
-                Download Brochure
-              </button>
+              <button
+  className="border-2 border-white text-white px-6 py-3 rounded-lg font-bold hover:bg-white hover:text-blue-900 transition transform hover:scale-105"
+  onClick={() => document.getElementById('course-prices-section').scrollIntoView({ behavior: 'smooth' })}
+>
+  View Brochure
+</button>
             </div>
           </div>
           <div className="hidden md:block">
@@ -427,7 +430,8 @@ const handleLogout = async () => {
         <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition transform hover:scale-105 shadow-lg">
           Enroll Now
         </button>
-        <button className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-bold py-3 px-6 rounded-full transition transform hover:scale-105">
+        <button className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-bold py-3 px-6 rounded-full transition transform hover:scale-105"
+        onClick={() => document.getElementById('course-about-section').scrollIntoView({ behavior: 'smooth' })}>
           Learn More
         </button>
       </div>
@@ -442,7 +446,7 @@ const handleLogout = async () => {
   </div>
 </div>
       {/* Syllabus Component */}
-<div>
+<div id="course-about-section">
   <Syllabus syllabusData={course.syllabus}/>
 </div>
       
@@ -522,7 +526,9 @@ const handleLogout = async () => {
       </div>
     </div>
   </div>
-  <CoursePrices course={course}/>
+  <div id="course-prices-section">
+  <CoursePrices course={course} />
+</div>
 {/* table section */}
 <div className="max-w-7xl mx-auto text-center mb-12">
   <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
