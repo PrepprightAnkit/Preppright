@@ -126,3 +126,51 @@ export const getCourseByType = async (req, res) => {
     });
   }
 };
+
+export const bulkCreateCourses = async (req, res) => {
+  try {
+    // Validate that request body is an array
+    if (!Array.isArray(req.body)) {
+      return res.status(400).json({
+        message: 'Request body must be an array of courses'
+      });
+    }
+
+    // Array to store results
+    const results = {
+      successful: [],
+      failed: []
+    };
+
+    // Process each course
+    for (const courseData of req.body) {
+      try {
+        const newCourse = new Course(courseData);
+        const savedCourse = await newCourse.save();
+        results.successful.push({
+          id: savedCourse._id,
+          title: savedCourse.title
+        });
+      } catch (error) {
+        results.failed.push({
+          title: courseData.title || 'Unknown',
+          error: error.message
+        });
+      }
+    }
+
+    // Determine response status based on results
+    const status = results.failed.length === 0 ? 201 : 207; // Use 207 Multi-Status if some failed
+
+    res.status(status).json({
+      message: `Processed ${req.body.length} courses. ${results.successful.length} succeeded, ${results.failed.length} failed.`,
+      results
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error processing bulk course upload',
+      error: error.message
+    });
+  }
+};

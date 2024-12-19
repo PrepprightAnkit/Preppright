@@ -12,13 +12,9 @@ const UploadCat = () => {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [imageFile, setImageFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const handleFileChange = (e) => {
-    setImageFile(e.target.files[0]);
-  };
 
   const handleLogout = async () => {
     await dispatch(logout());
@@ -29,26 +25,29 @@ const UploadCat = () => {
     event.preventDefault();
     setLoading(true);
 
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    if (imageFile) {
-      formData.append('image', imageFile);
-    }
-
     try {
       const response = await fetch(`${apiUrl}/api/v1/users/cat`, {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          imageUrl
+        }),
       });
+
+      console.log(response);
 
       if (response.ok) {
         alert('Category uploaded successfully!');
         setTitle('');
         setDescription('');
-        setImageFile(null);
+        setImageUrl('');
       } else {
-        alert('Failed to upload category.');
+        const errorData = await response.json();
+        alert(errorData.message || 'Failed to upload category.');
       }
     } catch (error) {
       console.error('Error uploading category:', error);
@@ -218,76 +217,77 @@ const UploadCat = () => {
         )}
       </nav>
 
-      {/* Upload Category Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-3xl font-bold mb-6 text-center text-blue-700">
-            Upload New Category
-          </h2>
+       {/* Upload Category Content */}
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg p-6">
+        <h2 className="text-3xl font-bold mb-6 text-center text-blue-700">
+          Upload New Category
+        </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Title */}
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">
-                Title
-              </label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-                placeholder="Enter category title"
-              />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Title */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Title
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              placeholder="Enter category title"
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Description
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              placeholder="Describe the category"
+              rows="4"
+            />
+          </div>
+
+          {/* Image URL Input */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Image URL
+            </label>
+            <input
+              type="url"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              placeholder="Enter image URL"
+            />
+          </div>
+
+          {/* Loading Animation */}
+          {loading && (
+            <div className="flex justify-center">
+              <div className="w-10 h-10 border-4 border-blue-600 border-dashed rounded-full animate-spin"></div>
             </div>
+          )}
 
-            {/* Description */}
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">
-                Description
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-                placeholder="Describe the category"
-                rows="4"
-              />
-            </div>
-
-            {/* Image */}
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">
-                Category Image
-              </label>
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-                accept="image/*"
-              />
-            </div>
-
-            {/* Loading Animation */}
-            {loading && (
-              <div className="flex justify-center">
-                <div className="w-10 h-10 border-4 border-blue-600 border-dashed rounded-full animate-spin"></div>
-              </div>
-            )}
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white py-3 rounded-lg font-semibold shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-105"
-              disabled={loading}
-            >
-              {loading ? 'Uploading...' : 'Upload Category'}
-            </button>
-          </form>
-        </div>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white py-3 rounded-lg font-semibold shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-105"
+            disabled={loading}
+          >
+            {loading ? 'Uploading...' : 'Upload Category'}
+          </button>
+        </form>
       </div>
+    </div>
     </div>
   );
 };

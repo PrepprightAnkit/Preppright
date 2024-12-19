@@ -228,14 +228,21 @@ const UploadCourse = () => {
   ))}
 </select>
 
-            <input
-              type="number"
-              name="rating"
-              
-              onChange={handleCourseDetailsChange}
-              placeholder="rating"
-              className="w-full p-3 border rounded-lg"
-            />
+<input
+  type="text"
+  name="rating"
+  value={courseDetails.rating}
+  onChange={(e) => {
+    let newValue = parseFloat(e.target.value); // Convert input to decimal
+    if (!isNaN(newValue)) {
+      newValue = Math.min(5, Math.max(1, newValue)); // Ensure it is between 1 and 5
+      handleCourseDetailsChange(e, newValue); // Pass new value to the handler
+    }
+  }}
+  placeholder="rating"
+  className="w-full p-3 border rounded-lg"
+/>
+
             <input
               type="number"
               name="projectCount"

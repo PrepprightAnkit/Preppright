@@ -24,4 +24,6 @@ router.get('/type/:courseType', courseController.getCourseByType);
 // Partial update of a course
 router.patch('/:id', courseController.partialUpdateCourse);
 
+router.post('/bulk', courseController.bulkCreateCourses);
+
 export default router;

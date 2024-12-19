@@ -1,4 +1,4 @@
-import mongoose from "mongoose"; 
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const CategorySchema = new Schema({
@@ -13,7 +13,8 @@ const CategorySchema = new Schema({
   },
   image: {
     type: String,
-    required: true,
+    default: '../../uploads/images/PreepPright.png', // Add a default placeholder image
+    
   },
   createdAt: {
     type: Date,
@@ -26,5 +27,3 @@ const CategorySchema = new Schema({
 });
 
 export const Category = mongoose.model('Category', CategorySchema);
-
-

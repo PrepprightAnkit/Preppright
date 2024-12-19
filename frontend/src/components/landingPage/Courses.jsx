@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import {
-  BarChart,
   Book,
   ChevronRight,
   Clock,
@@ -145,19 +144,16 @@ const Courses = () => {
                       <h3 className="text-xl font-semibold text-blue-700 mb-2 line-clamp-1">
                         {course.title}
                       </h3>
-                      <p className="text-gray-600 mb-4 line-clamp-2">
+                      <p className="text-gray-600 mb-4 line-clamp-2 ">
                         {course.tagline}
                       </p>
                       
                       <div className="flex flex-wrap justify-between items-center text-gray-600 mb-4">
                         <div className="flex items-center mr-2 mb-2">
                           <Clock className="mr-2 text-blue-500" size={16} />
-                          <span className="text-sm">{course.duration}</span>
+                          <span className="text-sm">{course.duration} Months</span>
                         </div>
-                        <div className="flex items-center mr-2 mb-2">
-                          <BarChart className="mr-2 text-blue-500" size={16} />
-                          <span className="text-sm">{course.courseType}</span>
-                        </div>
+                        
                         <div className="flex items-center mr-2 mb-2">
                           <TrendingUp className="mr-2 text-blue-500" size={16} />
                           <span className="text-sm">₹{course.totalCourseFee.toLocaleString()}</span>

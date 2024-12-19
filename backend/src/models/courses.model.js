@@ -1,5 +1,17 @@
 import mongoose from 'mongoose';
 
+// Project Schema
+const ProjectSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  }
+});
+
 // Syllabus Module Schema
 const SyllabusModuleSchema = new mongoose.Schema({
   name: {
@@ -20,8 +32,6 @@ const SyllabusSectionSchema = new mongoose.Schema({
   },
   modules: [SyllabusModuleSchema]
 });
-
-
 
 // Instructor Schema
 const InstructorSchema = new mongoose.Schema({
@@ -82,7 +92,7 @@ const CourseSchema = new mongoose.Schema({
   courseType: { 
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
-    required: true // make it required if you want every course to have a category
+    required: true
   },
   rating: {
     type: Number,
@@ -104,26 +114,25 @@ const CourseSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
- 
-  aboutTitle:{
+
+  aboutTitle: {
     type: String,
     required: true
   },
-  aboutDescription:{
+  aboutDescription: {
     type: String,
     required: true
   },
-  aboutImgUrl:{
+  aboutImgUrl: {
     type: String,
     required: true
   },
 
-
+  // Projects
+  projects: [ProjectSchema],
 
   // Syllabus
   syllabus: [SyllabusSectionSchema],
-
- 
 
   // Instructors
   instructors: [InstructorSchema],
@@ -146,11 +155,11 @@ const CourseSchema = new mongoose.Schema({
   },
   isApproved: {
     type: Boolean,
-    default: false  // By default, courses are not approved
+    default: false
   },
   approvedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',  // Assumes you have a User model for admins
+    ref: 'User',
     default: null
   },
   approvedAt: {
@@ -159,7 +168,7 @@ const CourseSchema = new mongoose.Schema({
   },
   submittedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',  // Who submitted the course
+    ref: 'User',
     required: true
   }
 }, { 

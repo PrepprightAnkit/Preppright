@@ -9,11 +9,13 @@ import {
   ChevronRight,
   Code,
   Globe,
+  Layout,
   Link,
   LogOut,
   Menu,
   Plus,
   Send,
+  Server,
   Star,
   Trophy,
   Users,
@@ -24,7 +26,6 @@ import { default as React, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import bg from '../assets/PreepPright.png';
 import { courseService } from './courseApiService';
-
 const SyllabusAccordion = ({ title, modules, icon: Icon }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -152,6 +153,13 @@ const handleLogout = async () => {
   if (error) return <div>Error loading course details</div>;
   if (!course) return <div>No course found</div>;
   
+
+  const icons = [
+    <Code className="h-10 w-10 text-blue-500" />, // Blue for coding
+    <Layout className="h-10 w-10 text-green-500" />, // Green for layout/design
+    <Server className="h-10 w-10 text-purple-500" />, // Purple for backend/server
+  ];
+  
  const courseFeatures = [
         {
           icon: <Book className="w-10 h-10 text-blue-500" />,
@@ -175,23 +183,6 @@ const handleLogout = async () => {
         }
       ];
 
-      const courseProjects = [
-        {
-          icon: <Globe className="w-10 h-10 text-blue-600" />,
-          title: "Property Price Prediction",
-          description: "Develop predictive models for real estate valuation using advanced ML techniques"
-        },
-        {
-          icon: <Code className="w-10 h-10 text-green-600" />,
-          title: "Customer Churn Prediction",
-          description: "Build classification models to predict customer retention in telecom industry"
-        },
-        {
-          icon: <Trophy className="w-10 h-10 text-purple-600" />,
-          title: "Early Disease Detection",
-          description: "Create ML models for early medical diagnosis using patient data"
-        }
-      ];
   return (
     <>
     {/* Hero Section */}
@@ -480,22 +471,32 @@ const handleLogout = async () => {
 
   {/* Projects Section */}
   <div className="container mx-auto px-4 py-16">
-    <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
-      Real-World Projects
-    </h2>
-    <div className="grid md:grid-cols-3 gap-8">
-      {courseProjects.map((project, index) => (
-        <div 
-          key={index} 
-          className="bg-white border border-gray-200 rounded-xl p-8 hover:shadow-lg transition-transform hover:scale-105"
-        >
-          <div className="flex justify-center mb-6">{project.icon}</div>
-          <h3 className="text-2xl font-bold text-center mb-4 text-gray-700">{project.title}</h3>
-          <p className="text-center text-gray-600">{project.description}</p>
+      <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
+        Real-World Projects
+      </h2>
+      {/* Key changes are in these classes */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
+        {/* Center the grid items within their columns */}
+        <div className="col-span-full md:col-span-3 flex flex-wrap justify-center gap-8">
+          {course.projects.map((project, index) => (
+            <div
+              key={index}
+              className="bg-white border border-gray-200 rounded-xl p-8 hover:shadow-lg transition-transform hover:scale-105 w-full md:w-80"
+            >
+              <div className="flex justify-center mb-6">
+                {icons[index % icons.length]}
+              </div>
+              <h3 className="text-2xl font-bold text-center mb-4 text-gray-700">
+                {project.name}
+              </h3>
+              <p className="text-center text-gray-600">{project.description}</p>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
     </div>
-  </div>
+
+
 
   {/* Certification Section */}
   <div className="py-16">
