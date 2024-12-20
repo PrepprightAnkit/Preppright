@@ -15,6 +15,7 @@ import Quiz from "./components/Quiz";
 import Register from "./components/Register";
 import RegisterCompany from "./components/RegisterCompany";
 import TakeQuiz from "./components/TakeQuiz";
+import Techlab from "./components/Techlab";
 import Test from "./components/Test";
 import UploadCat from "./components/UploadCat";
 import UploadContent from "./components/UploadContent";
@@ -53,6 +54,7 @@ function App() {
               <Route path="uploadCourseApproval" element={<UploadCourseApproval />} />
               <Route path="test" element={<Test />} />
               <Route path="placements" element={<PlacementPage />} />
+              <Route path="techlab" element={<Techlab />} />
             </Route>
           </Routes>
         </BrowserRouter>
