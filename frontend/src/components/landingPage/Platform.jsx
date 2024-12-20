@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import {
-    ChevronRight,
-    CreditCard,
-    FileText,
-    PieChart
+  ChevronRight,
+  CreditCard,
+  FileText,
+  PieChart
 } from 'lucide-react';
 import React from "react";
 import p1 from "./assets/p1.png";
@@ -13,12 +13,12 @@ import p3 from "./assets/p3.png";
 const Platform = () => {
   const platformCardVariants = {
     hidden: { opacity: 0, scale: 0.9 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       scale: 1,
       transition: { duration: 0.3 }
     },
-    hover: { 
+    hover: {
       scale: 1.05,
       transition: { duration: 0.2 }
     }
@@ -49,7 +49,7 @@ const Platform = () => {
     <section className="bg-gradient-to-br from-blue-50 to-white min-h-screen py-16 px-4">
       <div className="container mx-auto">
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
@@ -63,7 +63,7 @@ const Platform = () => {
         </motion.div>
 
         {/* Platform Features Grid */}
-        <motion.div 
+        <motion.div
           initial="hidden"
           animate="visible"
           variants={{
@@ -74,14 +74,14 @@ const Platform = () => {
               }
             }
           }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto max-w-7xl"
         >
           {platformFeatures.map((feature, index) => (
             <motion.div
               key={index}
               variants={platformCardVariants}
               whileHover="hover"
-              className="bg-white rounded-xl shadow-lg overflow-hidden"
+              className="bg-white rounded-xl shadow-xl overflow-hidden mx-auto"
             >
               <div className="relative">
                 <img
@@ -100,7 +100,7 @@ const Platform = () => {
                 <p className="text-gray-600 mb-4 text-lg">
                   {feature.description}
                 </p>
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"

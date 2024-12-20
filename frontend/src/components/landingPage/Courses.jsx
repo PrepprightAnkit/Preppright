@@ -23,8 +23,8 @@ const Courses = () => {
           const data = await response.json();
           // Filter courses to only include approved courses
           const approvedCourses = Array.isArray(data) 
-            ? data.filter(course => course.isApproved) 
-            : (data[0] && data[0].filter(course => course.isApproved)) || [];
+            ? data.filter(course => course.isApproved).slice(0, 4) 
+            : (data[0] && data[0].filter(course => course.isApproved).slice(0, 4)) || [];
           
           setCourses(approvedCourses);
         } else {
@@ -68,8 +68,8 @@ const Courses = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-white min-h-screen py-16 px-4">
-      <div className="container mx-auto">
+    <section className="bg-gradient-to-br from-blue-50 to-white min-h-auto py-16 px-4">
+      <div className="container mx-auto max-w-7xl">
         {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: -50 }}
@@ -84,6 +84,16 @@ const Courses = () => {
               Transform Your Skills, Advance Your Career
             </p>
           </div>
+          <Link to="/allCourse">
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-all font-semibold"
+            >
+              View All Courses
+              <ChevronRight className="ml-2" />
+            </motion.button>
+          </Link>
         </motion.div>
 
         {/* Loading State */}
@@ -144,30 +154,19 @@ const Courses = () => {
                       <h3 className="text-xl font-semibold text-blue-700 mb-2 line-clamp-1">
                         {course.title}
                       </h3>
-                      <p className="text-gray-600 mb-4 line-clamp-2 ">
+                      <p className="text-gray-600 mb-4 line-clamp-2">
                         {course.tagline}
                       </p>
-                      
                       <div className="flex flex-wrap justify-between items-center text-gray-600 mb-4">
                         <div className="flex items-center mr-2 mb-2">
                           <Clock className="mr-2 text-blue-500" size={16} />
                           <span className="text-sm">{course.duration} Months</span>
                         </div>
-                        
                         <div className="flex items-center mr-2 mb-2">
                           <TrendingUp className="mr-2 text-blue-500" size={16} />
                           <span className="text-sm">₹{course.totalCourseFee.toLocaleString()}</span>
                         </div>
                       </div>
-
-                      <motion.div 
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-full text-center flex items-center justify-center"
-                      >
-                        View Course Details
-                        <ChevronRight className="ml-2" size={16} />
-                      </motion.div>
                     </div>
                   </Link>
                 </motion.div>
@@ -176,7 +175,7 @@ const Courses = () => {
           </motion.div>
         )}
       </div>
-    </div>
+    </section>
   );
 };
 

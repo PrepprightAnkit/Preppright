@@ -9,6 +9,7 @@ import CourseDetails from "./components/CourseDetails";
 import Home from './components/Home';
 import LoginPage from "./components/LoginPage";
 import LoginPageProp from "./components/LoginPageProp";
+import PlacementPage from "./components/Placement";
 import ProfilePage from "./components/ProfilePage";
 import Quiz from "./components/Quiz";
 import Register from "./components/Register";
@@ -51,6 +52,7 @@ function App() {
               <Route path="approveCourse" element={<CourseApprovalPage />} />
               <Route path="uploadCourseApproval" element={<UploadCourseApproval />} />
               <Route path="test" element={<Test />} />
+              <Route path="placements" element={<PlacementPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -16,7 +16,7 @@ const Categories = () => {
           imageUrl: category.image,
           name: category.title,
           description: category.description,
-        }));
+        })).slice(0, 4); 
         setCategories(mappedCategories);
         setIsLoading(false);
       })
@@ -48,7 +48,7 @@ const Categories = () => {
   };
 
   return (
-    <section className="bg-gradient-to-br from-blue-50 to-white min-h-screen py-16 px-4">
+    <section className="bg-gradient-to-br from-blue-50 to-white min-h-auto py-16 px-4">
       <div className="container mx-auto max-w-7xl">
         {/* Header */}
         <motion.div 
