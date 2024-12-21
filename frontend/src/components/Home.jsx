@@ -259,6 +259,9 @@ const Home = () => {
                 <div id="platform" className="pt-6">
                     <Platform />
                 </div>
+                <div id="World map" className="pt-6">
+                    <WorldMapSection />
+                </div>
                 <div id="reviews" className="pt-6">
                     <HomeReviews/>
                 </div>
@@ -270,4 +273,30 @@ const Home = () => {
     );
 }
 
+const WorldMapSection = () => {
+  return (
+    <section className="w-full bg-white">
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        {/* Header Content */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-blue-700 mb-4">
+            Students Around the World Choose PreppRight to Upskill
+          </h1>
+          <p className="text-lg text-gray-600">
+            We dedicate ourselves to helping every student improve in every place.
+          </p>
+        </div>
+
+        {/* Map Image */}
+        <div className="w-full">
+          <img 
+            src="../../src/assets/map.avif" 
+            alt="World Map showing YHills students worldwide" 
+            className="w-full h-auto object-contain"
+          />
+        </div>
+      </div>
+    </section>
+  );
+};
 export default Home;
