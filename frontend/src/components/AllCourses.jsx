@@ -49,6 +49,23 @@ const AllCourses = () => {
   
 
   const handleCategoryClick = (categoryId) => {
+    // Find the selected category to get its title
+    const selectedCat = categories.find(cat => cat._id === categoryId);
+    
+    if (selectedCat) {
+      const categoryTitle = selectedCat.title.toLowerCase();
+      
+      // Special routing for Tech Lab and Job Orientation
+      if (categoryTitle === 'tech lab') {
+        navigate('/techlab');
+        return;
+      } else if (categoryTitle === 'job orientation') {
+        navigate('/placements');
+        return;
+      }
+    }
+
+    // Default behavior for other categories
     setSelectedCategory(categoryId);
     filterCoursesByCategory(categoryId, allCourses);
   };
