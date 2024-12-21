@@ -12,16 +12,19 @@ import {
   Lightbulb,
   Link2,
   LogOut,
+  Menu,
   MessageSquare,
   Network,
+  Send,
   Target,
-  TrendingUp,Menu,Send
+  TrendingUp,X
 } from 'lucide-react';
-import React,{useState} from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { logoutUser } from '../actions/authActions';
 import bg from '../assets/PreepPright.png';
 import SearchComponent from './Search';
-import { useNavigate } from 'react-router-dom';
 
 const LabCard = ({ icon: Icon, title }) => (
 <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl flex items-center gap-4 hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-100">
@@ -53,6 +56,8 @@ const StatCard = ({ value, label }) => (
 
 const Techlab = () => {
     const { user, isAuthenticated } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+
     const handleLogout = async () => {
       await dispatch(logoutUser());
       navigate('/');

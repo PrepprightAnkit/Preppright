@@ -20,12 +20,13 @@ import {
   Trophy,
   Users,
   XCircle,
-  Zap
+  Zap,X
 } from 'lucide-react';
 import { default as React, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import bg from '../assets/PreepPright.png';
 import { courseService } from './courseApiService';
+import { logoutUser } from '../actions/authActions';
 const SyllabusAccordion = ({ title, modules, icon: Icon }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -110,6 +111,7 @@ const CourseDetails = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const dispatch = useDispatch();
 const handleLogout = async () => {
         await dispatch(logoutUser());
         navigate('/');
@@ -688,7 +690,7 @@ const ContactFooter = () => {
 };
   
 import { AnimatePresence, motion } from 'framer-motion';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CoursePrices from './Courseprices';
 import SearchComponent from './Search';
 
