@@ -14,6 +14,7 @@ import Discuss from './landingPage/Discuss';
 import Hero from "./landingPage/Hero";
 import Platform from './landingPage/Platform';
 // Import logo
+import { MapPin } from 'lucide-react';
 import bg from '../assets/PreepPright.png';
 import HomeReviews from './HomeReviews';
 import LeverageEdu from './milestones';
@@ -274,6 +275,18 @@ const Home = () => {
 }
 
 const WorldMapSection = () => {
+  // Strategic locations around the world
+  const locations = [
+    { id: 1, lat: "35%", long: "25%", label: "North America" },    // USA
+    { id: 2, lat: "55%", long: "30%", label: "South America" },    // Brazil
+    { id: 3, lat: "30%", long: "55%", label: "Europe" },          // UK
+    { id: 4, lat: "45%", long: "55%", label: "Africa" },          // Central Africa
+    { id: 5, lat: "45%", long: "68%", label: "India" },           // India
+    { id: 6, lat: "35%", long: "70%", label: "Asia" },            // China
+    { id: 7, lat: "65%", long: "85%", label: "Australia" },       // Australia
+    { id: 8, lat: "40%", long: "60%", label: "Middle East" },    // Southeast Asia
+  ];
+
   return (
     <section className="w-full bg-white">
       <div className="max-w-7xl mx-auto px-4 py-16">
@@ -287,13 +300,36 @@ const WorldMapSection = () => {
           </p>
         </div>
 
-        {/* Map Image */}
-        <div className="w-full">
+        {/* Map Container */}
+        <div className="relative w-full">
+          {/* Map Image */}
           <img 
-            src="../../src/assets/map.avif" 
-            alt="World Map showing YHills students worldwide" 
+            src="https://www.pngarc.com/wp-content/uploads/2023/08/Flat-world-map-with-transparent-background.png" 
+            alt="World Map showing PreppRight students worldwide" 
             className="w-full h-auto object-contain"
           />
+          
+          {/* Location Markers */}
+          <div className="absolute inset-0">
+            {locations.map((location) => (
+              <div
+                key={location.id}
+                className="absolute animate-pulse transition-transform hover:scale-110 group"
+                style={{
+                  top: location.lat,
+                  left: location.long,
+                }}
+              >
+                <MapPin 
+                  className="text-blue-600 w-6 h-6 -translate-x-1/2 -translate-y-1/2" 
+                  fill="rgba(37, 99, 235, 0.2)"
+                />
+                <span className="hidden group-hover:block absolute -top-8 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-2 py-1 rounded text-sm whitespace-nowrap">
+                  {location.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
