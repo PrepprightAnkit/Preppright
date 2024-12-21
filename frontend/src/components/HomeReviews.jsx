@@ -1,6 +1,108 @@
-import { Star } from 'lucide-react';
-import React from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Star,ChevronLeft, ChevronRight } from 'lucide-react';
+import React,{useState} from 'react';
 
+const ReviewCarousel = ({ reviews }) => {
+  const [currentReview, setCurrentReview] = useState(0);
+
+  const handleNext = () => {
+    setCurrentReview((prev) => (prev + 1) % reviews.length);
+  };
+
+  const handlePrevious = () => {
+    setCurrentReview((prev) => (prev - 1 + reviews.length) % reviews.length);
+  };
+
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, index) => (
+      <Star 
+        key={index} 
+        className={`w-5 h-5 ${index < rating ? 'text-amber-400' : 'text-gray-300'}`} 
+        fill={index < rating ? 'currentColor' : 'none'}
+      />
+    ));
+  };
+
+  if (!reviews || reviews.length === 0) return null;
+
+  return (
+    <div className="bg-white py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto relative">
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={currentReview}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.4 }}
+            className="text-center"
+          >
+            <div className="flex justify-center mb-6">
+              <motion.img 
+                src={reviews[currentReview].image || "/api/placeholder/100/100"} 
+                alt={reviews[currentReview].name}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="w-32 h-32 rounded-full object-cover shadow-lg ring-4 ring-white"
+              />
+            </div>
+            
+            <h3 className="text-3xl font-semibold text-gray-800 mb-2">
+              {reviews[currentReview].name}
+            </h3>
+            <p className="text-indigo-600 text-lg mb-4">
+              {reviews[currentReview].role}
+            </p>
+            
+            <div className="flex justify-center mb-4">
+              {renderStars(reviews[currentReview].rating)}
+            </div>
+            
+            <p className="text-gray-600 text-xl italic max-w-2xl mx-auto mb-8">
+              "{reviews[currentReview].review}"
+            </p>
+          </motion.div>
+        </AnimatePresence>
+        
+        {/* Navigation Buttons */}
+        <div className="absolute top-1/2 transform -translate-y-1/2 w-full flex justify-between">
+          <motion.button 
+            onClick={handlePrevious}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="bg-white/50 hover:bg-white/75 backdrop-blur-sm p-3 rounded-full shadow-md"
+          >
+            <ChevronLeft className="w-7 h-7 text-gray-700" />
+          </motion.button>
+          <motion.button 
+            onClick={handleNext}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="bg-white/50 hover:bg-white/75 backdrop-blur-sm p-3 rounded-full shadow-md"
+          >
+            <ChevronRight className="w-7 h-7 text-gray-700" />
+          </motion.button>
+        </div>
+        
+        {/* Pagination Dots */}
+        <div className="flex justify-center mt-10 space-x-2">
+          {reviews.map((_, index) => (
+            <motion.button 
+              key={index}
+              onClick={() => setCurrentReview(index)}
+              animate={{ 
+                scale: index === currentReview ? 1.2 : 1,
+                backgroundColor: index === currentReview ? '#4f46e5' : '#cbd5e1'
+              }}
+              className="w-3 h-3 rounded-full transition-all"
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 const HomeReviews = () => {
   const reviews = [
     {
@@ -43,26 +145,10 @@ const HomeReviews = () => {
           </a> */}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {reviews.map((review, index) => (
-            <div key={index} className="bg-white border-2 border-blue-100 rounded-xl shadow-lg overflow-hidden transform transition-all hover:scale-105">
-              <div className="p-6 text-center">
-                <img src={review.image} alt={review.name} className="mx-auto h-24 w-24 mb-4 object-contain" />
-                <h3 className="text-2xl font-bold text-blue-700 mb-3">{review.name}</h3>
-                <div className="flex justify-center text-yellow-500 mb-3">
-                  {[...Array(Math.floor(review.rating))].map((_, i) => (
-                    <Star key={i} size={18} />
-                  ))}
-                  {review.rating % 1 !== 0 && (
-                    <Star size={18} className="text-gray-400" />
-                  )}
-                </div>
-                <p className="text-gray-600 line-clamp-3">{review.review}</p>
-              </div>
-            </div>
-          ))}
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"> */}
+          <ReviewCarousel reviews={reviews} />
+          {/* </div>s */}
         </div>
-      </div>
     </div>
   );
 };
