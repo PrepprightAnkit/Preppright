@@ -19,14 +19,15 @@ import {
   Star,
   Trophy,
   Users,
+  X,
   XCircle,
-  Zap,X
+  Zap
 } from 'lucide-react';
 import { default as React, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { logoutUser } from '../actions/authActions';
 import bg from '../assets/PreepPright.png';
 import { courseService } from './courseApiService';
-import { logoutUser } from '../actions/authActions';
 const SyllabusAccordion = ({ title, modules, icon: Icon }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -382,9 +383,11 @@ const handleLogout = async () => {
             <p className="text-xl text-blue-100 leading-relaxed">
             {course.tagline}            </p>
             <div className="flex space-x-4">
+             <a href='https://goto.now/I6Pui' target='_blank'>
               <button className="bg-white text-blue-900 px-6 py-3 rounded-lg font-bold hover:bg-blue-100 transition transform hover:scale-105 shadow-lg">
                 Enroll Now
               </button>
+              </a>
               <button
   className="border-2 border-white text-white px-6 py-3 rounded-lg font-bold hover:bg-white hover:text-blue-900 transition transform hover:scale-105"
   onClick={() => document.getElementById('course-prices-section').scrollIntoView({ behavior: 'smooth' })}
@@ -429,9 +432,11 @@ const handleLogout = async () => {
       <p className="text-xl text-gray-600 leading-relaxed">
        {course.aboutDescription} </p>
       <div className="flex space-x-4">
+      <a href='https://goto.now/I6Pui' target='_blank'>
         <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition transform hover:scale-105 shadow-lg">
           Enroll Now
         </button>
+        </a>
         <button className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-bold py-3 px-6 rounded-full transition transform hover:scale-105"
         onClick={() => document.getElementById('course-about-section').scrollIntoView({ behavior: 'smooth' })}>
           Learn More
