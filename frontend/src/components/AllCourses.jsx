@@ -1,7 +1,72 @@
-import { ArrowLeft, Eye } from 'lucide-react';
+import { ArrowLeft, Eye, Send } from 'lucide-react';
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+const ContactFooter = () => {
+    const googleFormUrl = "https://forms.gle/DMx8f1irRLF9vZM29";
+  
+    return (
+      <footer className="bg-gradient-to-br from-gray-50 to-gray-100 py-16">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Contact Information */}
+            <div>
+              <h2 className="text-4xl font-bold text-gray-800 mb-6">
+                Let's Connect
+              </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                Have a question, suggestion, or just want to say hello? 
+                We'd love to hear from you. Fill out our quick contact form 
+                and we'll get back to you as soon as possible.
+              </p>
+              
+              {/* Contact Details */}
+              <div className="space-y-4 text-gray-700">
+                <div className="flex items-center space-x-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <span>support@preppright.com</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h3m-3-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                  <span>+91 9456183297</span>
+                </div>
+              </div>
+            </div>
+  
+            {/* Contact Button */}
+            <div className="flex justify-center">
+              <a 
+                href={googleFormUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center 
+                           px-8 py-4 text-lg font-medium tracking-tighter 
+                           text-white bg-blue-600 rounded-lg 
+                           hover:bg-blue-700 transition duration-300 
+                           transform hover:-translate-y-1 hover:shadow-xl 
+                           focus:outline-none focus:ring-2 focus:ring-blue-500 
+                           focus:ring-offset-2"
+              >
+                <span className="absolute inset-0 bg-blue-700 opacity-50 rounded-lg blur-lg transition-all duration-300 group-hover:opacity-70"></span>
+                <span className="relative flex items-center space-x-3">
+                  <Send className="w-6 h-6 transition-transform group-hover:rotate-6" />
+                  <span>Submit a Query</span>
+                </span>
+              </a>
+            </div>
+          </div>
+  
+          {/* Bottom Footer Line */}
+          <div className="mt-16 pt-8 border-t border-gray-200 text-center text-gray-500">
+            © {new Date().getFullYear()} Preppright. All Rights Reserved.
+          </div>
+        </div>
+      </footer>
+    );
+  };
 const AllCourses = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -98,7 +163,7 @@ const AllCourses = () => {
 
       <main className="container mx-auto max-w-7xl flex flex-grow flex-col md:flex-row mt-8 space-x-0 md:space-x-6">
         {/* Sidebar - Categories */}
-        <aside className="w-full md:w-1/4 bg-white shadow-lg rounded-lg p-6 mb-6 md:mb-0">
+        <aside className="className=w-full md:w-64 bg-white shadow-lg rounded-lg p-6 mb-6 md:mb-0">
           <h2 className="text-xl font-bold text-blue-800 mb-4 flex items-center">
             <span className="mr-2">📂</span> Course Categories
           </h2>
@@ -172,6 +237,7 @@ const AllCourses = () => {
           )}
         </section>
       </main>
+      <ContactFooter/>
     </div>
   );
 };

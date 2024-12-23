@@ -311,6 +311,7 @@ const AllCat = () => {
                     </div>
                 )}
             </main>
+            <ContactFooter/>
         </div>
     );
 };

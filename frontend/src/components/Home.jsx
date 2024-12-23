@@ -14,7 +14,7 @@ import Discuss from './landingPage/Discuss';
 import Hero from "./landingPage/Hero";
 import Platform from './landingPage/Platform';
 // Import logo
-import { MapPin } from 'lucide-react';
+import { Award, Clock, Globe, Handshake, MapPin, TrendingUp, Users } from 'lucide-react';
 import bg from '../assets/PreepPright.png';
 import HomeReviews from './HomeReviews';
 import LeverageEdu from './milestones';
@@ -257,6 +257,9 @@ const Home = () => {
                 <div id="courses" className="pt-6">
                     <Courses />
                 </div>
+                <div id="learner benefits" className="pt-6">
+                    <LearnerBenefits/>
+                </div>
                 <div id="platform" className="pt-6">
                     <Platform />
                 </div>
@@ -274,6 +277,92 @@ const Home = () => {
     );
 }
 
+const LearnerBenefits = () => {
+  const benefits = [
+    {
+      title: "World Class Pedagogy",
+      items: [
+        "Learn from the World's Best Faculty & Industry Experts",
+        "Learn with fun Hands-on Exercises & Assignments",
+        "Participate in Hackathons & Group Activities"
+      ],
+      image: "https://intellipaat.com/course-image/2021/10/learner-pic-1.png",
+      stats: [
+        { icon: <Award />, text: "4.8/5 Rating" },
+        { icon: <Users />, text: "Gamified Learning" }
+      ]
+    },
+    {
+      title: "Personalized Guidance with 24×7 Support",
+      items: [
+        "Dedicated Learning Managers",
+        "24/7 Learning Support",
+        "Network with Peers & Interact with Industry Leaders"
+      ],
+      image: "https://intellipaat.com/course-image/2021/10/learner-pic-2.png",
+      stats: [
+        { icon: <Clock />, text: "24 x 7 Support" },
+        { icon: <Handshake />, text: "1:1 Mentorship" }
+      ]
+    },
+    {
+      title: "Career Assistance",
+      items: [
+        "Resume Building & Mock Interview Prep",
+        "Exclusive access to IntelliPaat Job Portal",
+        "400+ Hiring Partners"
+      ],
+      image: "https://intellipaat.com/course-image/2021/10/learner-pic-3.png",
+      stats: [
+        { icon: <TrendingUp />, text: "85,000 Career Transition" },
+        { icon: <Globe />, text: "400+ Hiring Partners" }
+      ]
+    }
+  ];
+
+  return (
+    <div className="bg-gray-100 py-12 px-6">
+      <h2 className="text-3xl font-bold text-center mb-12">Learner Benefits</h2>
+      
+      <div className="max-w-6xl mx-auto space-y-12">
+        {benefits.map((benefit, index) => (
+          <div key={index} className="flex flex-col md:flex-row items-start gap-8">
+            <div className="w-full md:w-1/3">
+              <img
+                src={benefit.image}
+                alt={benefit.title}
+                className="rounded-lg shadow-lg w-1/2"
+              />
+            </div>
+            
+            <div className="w-full md:w-2/3">
+              <h3 className="text-2xl font-semibold mb-4">{benefit.title}</h3>
+              <ul className="space-y-3 mb-8">
+                {benefit.items.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-1">•</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              
+              <div className="grid grid-cols-2 gap-4">
+                {benefit.stats.map((stat, idx) => (
+                  <div key={idx} className="bg-white p-4 rounded-lg shadow flex flex-col items-center justify-center text-center">
+                    <span className="text-orange-500 mb-2">
+                      {stat.icon}
+                    </span>
+                    <span className="text-sm font-medium">{stat.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 const WorldMapSection = () => {
   // Strategic locations around the world
   const locations = [
