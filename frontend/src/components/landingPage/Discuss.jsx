@@ -389,7 +389,7 @@ const Discuss = () => {
       {/* Footer */}
       <footer className="bg-white shadow-md py-4 mt-8">
         <div className="max-w-6xl mx-auto px-4 text-center text-gray-600">
-          © 2024 DiscussHub. All rights reserved.
+          © 2024 PreppRight. All rights reserved.
         </div>
       </footer>
     </div>
