@@ -10,7 +10,7 @@ import {
   X,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-
+import theme from '../theme';
 const Discuss = () => {
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const QUESTIONS_PER_PAGE = 7;
@@ -238,7 +238,7 @@ const Discuss = () => {
               />
               <button
                 type="submit"
-                className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2"
+                className={`w-full bg-blue-500 ${theme.components.button.base} ${theme.components.button.primary} text-white py-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2`}
               >
                 <Send size={20} />
                 <span>Post Question</span>
@@ -289,7 +289,7 @@ const Discuss = () => {
                         : question
                     )
                   }
-                  className="text-blue-600 hover:text-blue-800 font-medium flex items-center"
+                  className={ `text-indigo-500 hover:text-indigo-800 font-medium flex items-center`}
                 >
                   {selectedQuestion && selectedQuestion._id === question._id
                     ? "Close Answers"
@@ -311,7 +311,7 @@ const Discuss = () => {
                           />
                           <button
                             type="submit"
-                            className="bg-blue-500 text-white rounded-full p-3 hover:bg-blue-600 transition-colors"
+                            className={`${theme.components.button.base} ${theme.components.button.primary} bg-blue-500 text-white rounded-full p-3 hover:bg-blue-600 transition-colors`}
                           >
                             <Send size={20} />
                           </button>

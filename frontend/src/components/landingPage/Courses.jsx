@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import theme from '../theme';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -21,7 +22,6 @@ const Courses = () => {
         
         if (response.ok) {
           const data = await response.json();
-          // Filter courses to only include approved courses
           const approvedCourses = Array.isArray(data) 
             ? data.filter(course => course.isApproved).slice(0, 4) 
             : (data[0] && data[0].filter(course => course.isApproved).slice(0, 4)) || [];
@@ -46,13 +46,18 @@ const Courses = () => {
       opacity: 1, 
       y: 0,
       transition: { 
-        duration: 0.3,
-        ease: "easeOut" 
+        duration: 0.4,
+        ease: "easeOut"
       }
     },
     hover: { 
       scale: 1.03,
-      transition: { duration: 0.2 }
+      boxShadow: `0 20px 25px -5px ${theme.colors.primary.main}25, 0 10px 10px -5px ${theme.colors.primary.main}15`,
+      transition: { 
+        duration: 0.3,
+        type: "spring",
+        stiffness: 300
+      }
     }
   };
 
@@ -68,27 +73,28 @@ const Courses = () => {
   };
 
   return (
-    <section className="bg-gradient-to-br from-blue-50 to-white min-h-auto py-16 px-4">
+    <section className={`bg-gradient-to-br from-${theme.colors.primary.light} to-white min-h-auto py-16 px-4`}>
       <div className="container mx-auto max-w-7xl">
-        {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col md:flex-row justify-between items-center mb-12 space-y-4 md:space-y-0"
         >
           <div>
-            <h2 className="text-3xl md:text-5xl font-bold text-blue-700 mb-2">
+            <h2 className={`text-3xl md:text-5xl font-extrabold ${theme.typography.hero} ${theme.typography.gradient} mb-2 tracking-tight`}>
               Explore Our Courses
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 flex items-center">
+              <TrendingUp className={`mr-2 text-${theme.colors.primary.main}`} size={24} />
               Transform Your Skills, Advance Your Career
             </p>
           </div>
+          
           <Link to="/allCourse">
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-all font-semibold"
+              className={`flex items-center ${theme.components.button.base} ${theme.components.button.primary} text-white px-6 py-3 rounded-full shadow-lg hover:bg-${theme.colors.primary.hover} transition-all font-semibold`}
             >
               View All Courses
               <ChevronRight className="ml-2" />
@@ -96,19 +102,17 @@ const Courses = () => {
           </Link>
         </motion.div>
 
-        {/* Loading State */}
         {isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-pulse">
             {[...Array(4)].map((_, index) => (
               <div 
                 key={index} 
-                className="bg-gray-200 rounded-xl h-96 w-full"
+                className={`bg-${theme.colors.gray[200]} rounded-2xl h-96 w-full`}
               />
             ))}
           </div>
         )}
 
-        {/* Courses Grid */}
         {!isLoading && (
           <motion.div 
             initial="hidden"
@@ -125,7 +129,7 @@ const Courses = () => {
           >
             {courses.length === 0 ? (
               <div className="col-span-full text-center text-gray-500 py-12">
-                <Book className="mx-auto mb-4 text-blue-400" size={64} />
+                <Book className={`mx-auto mb-4 text-${theme.colors.primary.main}`} size={64} />
                 <p className="text-xl">No approved courses available</p>
               </div>
             ) : (
@@ -134,7 +138,7 @@ const Courses = () => {
                   key={course._id}
                   variants={courseCardVariants}
                   whileHover="hover"
-                  className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all"
+                  className={`bg-white border-2 border-${theme.colors.primary.light} rounded-2xl shadow-lg overflow-hidden transform transition-all group`}
                 >
                   <Link to={`/courses/${course._id}`}>
                     <div className="relative">
@@ -150,8 +154,8 @@ const Courses = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="p-5 bg-blue-50">
-                      <h3 className="text-xl font-semibold text-blue-700 mb-2 line-clamp-1">
+                    <div className={`p-5 bg-${theme.colors.primary.light}`}>
+                      <h3 className={`text-xl font-semibold text-${theme.colors.primary.dark} mb-2 line-clamp-1 group-hover:text-${theme.colors.primary.hover} transition-colors`}>
                         {course.title}
                       </h3>
                       <p className="text-gray-600 mb-4 line-clamp-2">
@@ -159,11 +163,11 @@ const Courses = () => {
                       </p>
                       <div className="flex flex-wrap justify-between items-center text-gray-600 mb-4">
                         <div className="flex items-center mr-2 mb-2">
-                          <Clock className="mr-2 text-blue-500" size={16} />
+                          <Clock className={`mr-2 text-${theme.colors.primary.main}`} size={16} />
                           <span className="text-sm">{course.duration} Months</span>
                         </div>
                         <div className="flex items-center mr-2 mb-2">
-                          <TrendingUp className="mr-2 text-blue-500" size={16} />
+                          <TrendingUp className={`mr-2 text-${theme.colors.primary.main}`} size={16} />
                           <span className="text-sm">₹{course.totalCourseFee.toLocaleString()}</span>
                         </div>
                       </div>

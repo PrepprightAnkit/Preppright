@@ -1,14 +1,31 @@
 import { motion } from 'framer-motion';
-import {
-  ChevronRight,
-  CreditCard,
-  FileText,
-  PieChart
-} from 'lucide-react';
+import { ChevronRight, CreditCard, FileText, PieChart } from 'lucide-react';
 import React from "react";
+import theme from '../theme';
 import p1 from "./assets/p1.png";
 import p2 from "./assets/p2.png";
 import p3 from "./assets/p3.png";
+
+const platformFeatures = [
+  {
+    image: p1,
+    icon: CreditCard,
+    title: "Online Billing & Invoicing",
+    description: "Simple and secure control of financial transactions. Send customized invoices and contracts."
+  },
+  {
+    image: p2,
+    icon: FileText,
+    title: "Comprehensive Reporting",
+    description: "Advanced analytics and detailed insights into your organization's performance and growth."
+  },
+  {
+    image: p3,
+    icon: PieChart,
+    title: "Learning Management",
+    description: "Integrated platform for course delivery, student tracking, and comprehensive educational management."
+  }
+];
 
 const Platform = () => {
   const platformCardVariants = {
@@ -24,45 +41,22 @@ const Platform = () => {
     }
   };
 
-  const platformFeatures = [
-    {
-      image: p1,
-      icon: CreditCard,
-      title: "Online Billing & Invoicing",
-      description: "Simple and secure control of financial transactions. Send customized invoices and contracts."
-    },
-    {
-      image: p2,
-      icon: FileText,
-      title: "Comprehensive Reporting",
-      description: "Advanced analytics and detailed insights into your organization's performance and growth."
-    },
-    {
-      image: p3,
-      icon: PieChart,
-      title: "Learning Management",
-      description: "Integrated platform for course delivery, student tracking, and comprehensive educational management."
-    }
-  ];
-
   return (
-    <section className="bg-gradient-to-br from-blue-50 to-white min-h-screen py-16 px-4">
-      <div className="container mx-auto">
-        {/* Header */}
+    <section className={`${theme.spacing.section} bg-gradient-to-b ${theme.colors.gray[50]}`}>
+      <div className={theme.spacing.container}>
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-5xl font-bold text-blue-700 mb-4">
-            All-In-One <span className="text-blue-800">Learning Platform</span>
+          <h2 className={`${theme.typography.hero} ${theme.typography.gradient} mb-4`}>
+            All-In-One Learning Platform
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className={theme.typography.body}>
             Skilline is one powerful online software suite that combines all the tools needed to run a successful school or office.
           </p>
         </motion.div>
 
-        {/* Platform Features Grid */}
         <motion.div
           initial="hidden"
           animate="visible"
@@ -74,14 +68,14 @@ const Platform = () => {
               }
             }
           }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto max-w-7xl"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {platformFeatures.map((feature, index) => (
             <motion.div
               key={index}
               variants={platformCardVariants}
               whileHover="hover"
-              className="bg-white rounded-xl shadow-xl overflow-hidden mx-auto"
+              className={`${theme.components.card.base} ${theme.components.card.hover} overflow-hidden`}
             >
               <div className="relative">
                 <img
@@ -90,20 +84,22 @@ const Platform = () => {
                   className="w-full h-64 object-contain"
                 />
               </div>
-              <div className="p-6 bg-blue-50">
+              <div className={`${theme.components.card.padding} bg-indigo-50`}>
                 <div className="flex items-center mb-4">
-                  <feature.icon className="mr-3 text-blue-600" size={32} />
-                  <h3 className="text-2xl font-semibold text-blue-700">
+                  <div className={`${theme.components.icon.base} ${theme.components.icon.size} p-2`}>
+                    <feature.icon className={theme.components.icon.color} size={24} />
+                  </div>
+                  <h3 className={`${theme.typography.subheading} ml-4`}>
                     {feature.title}
                   </h3>
                 </div>
-                <p className="text-gray-600 mb-4 text-lg">
+                <p className={`${theme.typography.body} mb-4`}>
                   {feature.description}
                 </p>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+                  className={`${theme.components.button.base} inline-flex items-center text-indigo-600 hover:text-indigo-700 py-2 px-4`}
                 >
                   Learn More
                   <ChevronRight className="ml-2" />
