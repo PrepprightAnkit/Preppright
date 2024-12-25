@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Book, ChevronLeft, ChevronRight, ClipboardList, FileText, Menu, Upload, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import theme from '../theme';
 
 const slides = [
@@ -76,7 +76,7 @@ const Hero = ({ companiesHero }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (isAutoPlaying) {
       const interval = setInterval(() => {
@@ -126,8 +126,7 @@ const Hero = ({ companiesHero }) => {
                 ))}
               </div>
             )}
-
-            <button className={`${theme.components.button.base} ${theme.components.button.primary}`}>
+            <button onClick={()=>{navigate("/allCourses")}} className={`${theme.components.button.base} ${theme.components.button.primary}`}>
               {slide.buttonText}
             </button>
           </div>
