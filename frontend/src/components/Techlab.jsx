@@ -476,7 +476,7 @@ return (
                 <ul className="space-y-3">
                   <li><a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">Help Center</a></li>
                   <li><a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">Terms of Service</a></li>
-                  <li><a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">Privacy Policy</a></li>
+                  <li><Link to="/privacypolicy" className='text-gray-600 hover:text-blue-600 transition-colors'>Privacy Policy</Link></li>
                   <li><a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">Contact Us</a></li>
                 </ul>
               </div>

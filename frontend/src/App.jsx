@@ -22,6 +22,7 @@ import UploadContent from "./components/UploadContent";
 import UploadCourse from "./components/UploadCourse";
 import UploadCourseApproval from "./components/UploadCourseApproval";
 import { AuthProvider } from "./contexts/AuthContext";
+import PrivacyPolicy from "./components/Policy";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
               <Route path="test" element={<Test />} />
               <Route path="placements" element={<PlacementPage />} />
               <Route path="techlab" element={<Techlab />} />
+              <Route path="privacypolicy" element={<PrivacyPolicy />} />
             </Route>
           </Routes>
         </BrowserRouter>

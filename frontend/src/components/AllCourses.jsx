@@ -1,6 +1,6 @@
 import { ArrowLeft, Award, Clock, Eye, Globe, Handshake, Phone, Send, TrendingUp, Users } from 'lucide-react';
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import theme from './theme';
 
 import { Book, CheckCircle, Target } from 'lucide-react';
@@ -168,7 +168,7 @@ const ContactFooter = () => {
                 <ul className="space-y-3">
                   <li><a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors">Help Center</a></li>
                   <li><a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors">Terms of Service</a></li>
-                  <li><a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors">Privacy Policy</a></li>
+                  <li><Link to="/privacypolicy" className='text-gray-600 hover:text-blue-600 transition-colors'>Privacy Policy</Link></li>
                   <li><a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors">Contact Us</a></li>
                 </ul>
               </div>
