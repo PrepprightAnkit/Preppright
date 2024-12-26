@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import theme from '../theme';
 const Discuss = () => {
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
-  const QUESTIONS_PER_PAGE = 7;
+  const QUESTIONS_PER_PAGE = 2;
 
   const [questions, setQuestions] = useState([]);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
@@ -374,7 +374,7 @@ const Discuss = () => {
               <span className="self-center">
                 Page {currentPage} of {totalPages}
               </span>
-              <button
+              <button 
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
                 className={`${theme.components.button.base} ${theme.components.button.primary}bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50`}

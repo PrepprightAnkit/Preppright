@@ -1,29 +1,29 @@
 import { motion } from 'framer-motion';
-import { ChevronRight, CreditCard, FileText, PieChart } from 'lucide-react';
+import { ChevronRight, Book, Users, ClipboardList } from 'lucide-react';
 import React from "react";
 import theme from '../theme';
-import p1 from "./assets/p1.png";
-import p2 from "./assets/p2.png";
-import p3 from "./assets/p3.png";
+import learningImage from "./assets/p1.png";
+import trackingImage from "./assets/p2.png";
+import analyticsImage from "./assets/p3.png";
 
 const platformFeatures = [
   {
-    image: p1,
-    icon: CreditCard,
-    title: "Online Billing & Invoicing",
-    description: "Simple and secure control of financial transactions. Send customized invoices and contracts."
+    image: learningImage,
+    icon: Book,
+    title: "Interactive Learning Modules",
+    description: "Engage students with interactive courses, quizzes, and multimedia content tailored for effective learning."
   },
   {
-    image: p2,
-    icon: FileText,
-    title: "Comprehensive Reporting",
-    description: "Advanced analytics and detailed insights into your organization's performance and growth."
+    image: trackingImage,
+    icon: Users,
+    title: "Student Performance Tracking",
+    description: "Monitor individual and group progress with detailed insights and personalized feedback."
   },
   {
-    image: p3,
-    icon: PieChart,
-    title: "Learning Management",
-    description: "Integrated platform for course delivery, student tracking, and comprehensive educational management."
+    image: analyticsImage,
+    icon: ClipboardList,
+    title: "Advanced Analytics & Reporting",
+    description: "Gain actionable insights with performance metrics, attendance reports, and learning trends."
   }
 ];
 
@@ -50,10 +50,10 @@ const Platform = () => {
           className="text-center mb-12"
         >
           <h2 className={`${theme.typography.hero} ${theme.typography.gradient} mb-4`}>
-            All-In-One Learning Platform
+            Empowering Education with Preppright
           </h2>
           <p className={theme.typography.body}>
-            Skilline is one powerful online software suite that combines all the tools needed to run a successful school or office.
+            Preppright is your comprehensive platform for modern education, combining tools for learning, analytics, and student engagement.
           </p>
         </motion.div>
 
