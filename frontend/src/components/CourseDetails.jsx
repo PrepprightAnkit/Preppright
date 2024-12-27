@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Code,
+  Download,
   Globe,
   Layout,
   Link,
@@ -534,6 +535,7 @@ const handleLogout = async () => {
     </div>
   </div>
   <div id="course-prices-section">
+    <CertificateShowcase/>
   <CoursePrices course={course} />
 </div>
 {/* table section */}
@@ -627,6 +629,78 @@ const handleLogout = async () => {
 
 export default CourseDetails;
 
+const CertificateShowcase = () => {
+  const certificates = [
+    {
+      title: "Course Completion",
+      description: "Awarded upon successful completion of the program curriculum and assessments",
+      image: "../../public/cert1.png"
+    },
+    {
+      title: "Industry Project",
+      description: "Recognizes completion of real-world industry projects and practical applications",
+      image: "../../public/cert2.png"
+    },
+    {
+      title: "Professional Certification",
+      description: "Industry-recognized certification validating your expertise and skills",
+      image: "../../public/cert3.png"
+    }
+  ];
+
+  return (
+    <div className="bg-gray-50 py-16">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            Sample Certificates
+          </h2>
+          <p className="text-xl text-gray-600">
+            Industry-recognized certifications to validate your expertise
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {certificates.map((cert, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.2 }}
+              className="bg-white rounded-xl shadow-lg overflow-hidden"
+            >
+              <div className="relative group">
+                <img
+                  src={cert.image}
+                  alt={cert.title}
+                  className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                  <Download className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <div className="flex items-center mb-4">
+                  <Award className="w-6 h-6 text-blue-600 mr-2" />
+                  <h3 className="text-xl font-semibold text-gray-800">{cert.title}</h3>
+                </div>
+                <p className="text-gray-600">{cert.description}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <p className="text-gray-500 text-sm">
+            *Sample certificates shown. Actual certificates may vary.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ContactFooter = () => {
   const googleFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLScOFaALLkOnFhOG68XtrikDhuRgKEFJvOu-EXoHiO5ghqFgZg/viewform";
 
@@ -687,7 +761,7 @@ const ContactFooter = () => {
 
         {/* Bottom Footer Line */}
         <div className="mt-16 pt-8 border-t border-gray-200 text-center text-gray-500">
-          © {new Date().getFullYear()} Preppright. All Rights Reserved.
+          © {new Date().getFullYear()} PreppRight. All Rights Reserved.
         </div>
       </div>
     </footer>

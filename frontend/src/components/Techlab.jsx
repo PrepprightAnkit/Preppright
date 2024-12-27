@@ -1,23 +1,23 @@
 import {
-  BookOpen as Book,
-  BookOpen,
-  Calculator,
-  Cloud,
-  Code,
-  Cpu,
-  DollarSign,
-  FileCode,
-  Globe,
-  Laptop,
-  Lightbulb,
-  Link2,
-  LogOut,
-  Menu,
-  MessageSquare,
-  Network,
-  Send,
-  Target,
-  TrendingUp, X
+    BookOpen as Book,
+    BookOpen,
+    Calculator,
+    Cloud,
+    Code,
+    Cpu,
+    DollarSign,
+    FileCode,
+    Globe,
+    Laptop,
+    Lightbulb,
+    Link2,
+    LogOut,
+    Menu,
+    MessageSquare,
+    Network,
+    Send,
+    Target,
+    TrendingUp, X
 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -508,7 +508,7 @@ return (
             </div>
             
             <div className="text-center text-gray-500 text-sm pt-8 border-t border-gray-200">
-              <p>© {new Date().getFullYear()} Preppright. All Rights Reserved.</p>
+              <p>© {new Date().getFullYear()} PreppRight. All Rights Reserved.</p>
               <p className="mt-2">Designed with ❤️ for aspiring students</p>
             </div>
           </div>

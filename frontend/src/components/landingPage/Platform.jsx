@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ChevronRight, Book, Users, ClipboardList } from 'lucide-react';
+import { Book, ChevronRight, ClipboardList, Users } from 'lucide-react';
 import React from "react";
 import theme from '../theme';
 import learningImage from "./assets/p1.png";
@@ -50,10 +50,10 @@ const Platform = () => {
           className="text-center mb-12"
         >
           <h2 className={`${theme.typography.hero} ${theme.typography.gradient} mb-4`}>
-            Empowering Education with Preppright
+            Empowering Education with PreppRight
           </h2>
           <p className={theme.typography.body}>
-            Preppright is your comprehensive platform for modern education, combining tools for learning, analytics, and student engagement.
+            PreppRight is your comprehensive platform for modern education, combining tools for learning, analytics, and student engagement.
           </p>
         </motion.div>
 

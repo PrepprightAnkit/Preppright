@@ -126,7 +126,7 @@ const HomeReviews = () => {
   ];
 
   return (
-    <div className="bg-gradient-to-br from-primary-light to-white py-16 px-4">
+    <div className="bg-gradient-to-br from-primary-light to-white px-4">
       <div className="container mx-auto max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-center mb-12 space-y-4 md:space-y-0">
           <div>

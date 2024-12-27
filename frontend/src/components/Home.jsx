@@ -287,12 +287,12 @@ const WorldMapSection = () => {
 
     return (
         <section className="w-full bg-white">
-            <div className="container mx-auto px-4 py-16">
+            <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-indigo-800 mb-4">
+                    <h1 className={`text-3xl md:text-5xl font-extrabold overflow-visible ${theme.typography.hero} ${theme.typography.gradient} mb-2 tracking-tight`}>
                         Students Around the World Choose PreppRight to Upskill
                     </h1>
-                    <p className="text-gray-600">
+                    <p className="text-xl text-gray-600 flex items-center justify-center">
                         We dedicate ourselves to helping every student improve in every place.
                     </p>
                 </div>

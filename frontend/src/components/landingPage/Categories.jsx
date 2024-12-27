@@ -57,9 +57,10 @@ const Categories = () => {
           className="flex flex-col md:flex-row justify-between items-center mb-12 space-y-4 md:space-y-0"
         >
           <div>
-            <h2 className={`text-3xl md:text-5xl font-extrabold ${theme.typography.hero} ${theme.typography.gradient} mb-2 tracking-tight`}>
-              Top Categories
-            </h2>
+          <h2 className={`text-3xl md:text-5xl font-extrabold overflow-visible ${theme.typography.hero} ${theme.typography.gradient} mb-2 tracking-tight`}>
+  Top Categories
+</h2>
+
             <p className="text-xl text-gray-600 flex items-center">
               <TrendingUp className={`mr-2 text-${theme.colors.primary.main}`} size={24} />
               Explore Learning Paths Tailored to Your Goals

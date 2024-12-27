@@ -41,7 +41,7 @@ const theme = {
     heading: 'text-4xl font-bold',
     subheading: 'text-2xl font-bold',
     body: 'text-gray-600 text-lg leading-relaxed',
-    gradient: 'bg-gradient-to-r from-indigo-600 to-indigo-800 bg-clip-text text-transparent'
+    gradient: 'bg-gradient-to-r from-indigo-600 to-indigo-800 bg-clip-text text-transparent py-2'
   },
   components: {
     button: {
