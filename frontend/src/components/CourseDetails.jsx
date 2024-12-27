@@ -634,17 +634,17 @@ const CertificateShowcase = () => {
     {
       title: "Course Completion",
       description: "Awarded upon successful completion of the program curriculum and assessments",
-      image: "../../public/cert1.png"
+      image: ".https://preppright.com/cert1.png"
     },
     {
       title: "Industry Project",
       description: "Recognizes completion of real-world industry projects and practical applications",
-      image: "../../public/cert2.png"
+      image: "https://preppright.com/cert1.png"
     },
     {
       title: "Professional Certification",
       description: "Industry-recognized certification validating your expertise and skills",
-      image: "../../public/cert3.png"
+      image: "https://preppright.com/cert1.png"
     }
   ];
 
