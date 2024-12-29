@@ -247,13 +247,14 @@ const Discuss = () => {
               Ask a Question
             </h2>
             <form onSubmit={handleQuestionSubmit}>
-              <textarea
-                className="w-full rounded-lg border-2 border-gray-200 p-3 mb-4 focus:border-blue-500 transition-all"
-                placeholder="What's on your mind?"
-                value={questionText}
-                onChange={(e) => setQuestionText(e.target.value)}
-                rows={4}
-              />
+            <textarea
+  className="w-full rounded-lg border-2 border-gray-200 p-3 mb-4 focus:border-blue-500 transition-all resize-none"
+  placeholder="What's on your mind?"
+  value={questionText}
+  onChange={(e) => setQuestionText(e.target.value)}
+  rows={4}
+/>
+
               <button
                 type="submit"
                 className={`w-full bg-blue-500 ${theme.components.button.base} ${theme.components.button.primary} text-white py-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2`}
