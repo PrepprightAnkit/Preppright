@@ -1,6 +1,7 @@
 import { Brain, Building2, Clock, FileEdit, History, Send, Users } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from './Navbar';
 
 const companies = [
   { name: 'Acuity', logo: 'https://cdn.worldvectorlogo.com/logos/acuity-1.svg' },
@@ -47,6 +48,7 @@ const googleFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLScOFaALLkOnFhOG6
 const PlacementPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <Navbar/>
       {/* Top Banner */}
       {/* <div className="bg-gradient-to-r from-red-600 to-red-500 text-white py-4 px-6 flex justify-between items-center shadow-lg">
         <p className="text-lg font-medium">Christmas Comes Early at TWSS: 15% Off All Pre-Recorded Courses!</p>
