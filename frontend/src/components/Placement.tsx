@@ -48,12 +48,12 @@ const PlacementPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-red-600 to-red-500 text-white py-4 px-6 flex justify-between items-center shadow-lg">
+      {/* <div className="bg-gradient-to-r from-red-600 to-red-500 text-white py-4 px-6 flex justify-between items-center shadow-lg">
         <p className="text-lg font-medium">Christmas Comes Early at TWSS: 15% Off All Pre-Recorded Courses!</p>
         <button className="bg-white text-red-600 px-6 py-2 rounded-full font-semibold hover:bg-red-50 transition-all transform hover:-translate-y-0.5">
           Enroll Now
         </button>
-      </div>
+      </div> */}
 
       {/* Hero Section */}
       <div className="w-full bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 py-20 px-6">

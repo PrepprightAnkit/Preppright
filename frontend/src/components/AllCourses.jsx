@@ -442,7 +442,7 @@ const LearnerBenefits = () => {
       title: "Career Assistance",
       items: [
         "Resume Building & Mock Interview Prep",
-        "Exclusive access to IntelliPaat Job Portal",
+        "Exclusive access to PreppRight Job Portal",
         "400+ Hiring Partners"
       ],
       image: "https://intellipaat.com/course-image/2021/10/learner-pic-3.png",

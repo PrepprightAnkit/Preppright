@@ -462,7 +462,7 @@ return (
       </h2>
       <div className="grid md:grid-cols-3 gap-6">
         {[
-          { icon: <Award className="w-12 h-12 text-yellow-500" />, title: "Course Completion", description: "Official certificate from Yhills" },
+          { icon: <Award className="w-12 h-12 text-yellow-500" />, title: "Course Completion", description: "Official certificate from PreppRight" },
           { icon: <Star className="w-12 h-12 text-blue-600" />, title: "Industry Certificate", description: "Recognized by top companies" },
           { icon: <Trophy className="w-12 h-12 text-green-500" />, title: "Internship Certificate", description: "Post-course internship recognition" }
         ].map((cert, index) => (
@@ -484,7 +484,7 @@ return (
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto text-center mb-12">
   <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-    Why Learn with PrepRight Trainings?
+    Why Learn with PreppRight Trainings?
   </h1>
   <p className="mt-3 text-xl text-gray-600">
     Unlock Your Potential with Industry-Leading Education
@@ -499,7 +499,7 @@ return (
         <thead className="bg-blue-600 text-white">
           <tr>
             <th className="px-6 py-4 text-left font-semibold">Benefits</th>
-            <th className="px-6 py-4 text-center font-semibold bg-blue-700">PrepRight Trainings</th>
+            <th className="px-6 py-4 text-center font-semibold bg-blue-700">PreppRight Trainings</th>
             <th className="px-6 py-4 text-center font-semibold">Other Platforms</th>
             <th className="px-6 py-4 text-center font-semibold">YouTube</th>
           </tr>

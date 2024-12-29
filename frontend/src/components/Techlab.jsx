@@ -246,7 +246,7 @@ return (
     <section className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-5xl font-bold text-center mb-6 bg-gradient-to-r from-indigo-600 to-indigo-800 bg-clip-text text-transparent">
-          Why Must You Choose uCertify As
+          Why Must You Choose PreppRight As
           <br />Your Training Partner?
         </h1>
         <p className="text-center text-gray-600 text-lg mb-20 max-w-3xl mx-auto">
@@ -317,7 +317,7 @@ return (
               </span>
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-8">
-              uCertify LABS can be mapped to any course, textbook, or training program to provide a "hands-on" learning experience. The objective of these simulated environments is to improve comprehension and retention by adding a practical element.
+              PreppRight LABS can be mapped to any course, textbook, or training program to provide a "hands-on" learning experience. The objective of these simulated environments is to improve comprehension and retention by adding a practical element.
             </p>
             <button className="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300">
               Find Lab-Rich Courses
@@ -333,12 +333,12 @@ return (
         <h2 className="text-4xl font-bold text-center mb-6">
           Types of{' '}
           <span className="bg-gradient-to-r from-indigo-600 to-indigo-800 bg-clip-text text-transparent">
-            uCertify Labs
+            PreppRight Labs
           </span>{' '}
           You Can Benefit From
         </h2>
         <p className="text-center text-gray-600 text-lg mb-16 max-w-3xl mx-auto">
-          Recognize and correct your mistakes with our uCertify Labs to reduce errors reoccurring while on the job.
+          Recognize and correct your mistakes with our PreppRight Labs to reduce errors reoccurring while on the job.
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6">

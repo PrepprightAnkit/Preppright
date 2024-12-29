@@ -406,7 +406,7 @@ const handleLogout = async () => {
                 </div>
                 <div className="bg-white/10 p-4 rounded-xl">
                   <h3 className="text-2xl font-bold text-green-300">{course.totalCourseFee}</h3>
-                  <p className="text-sm text-blue-100">Total Course Fee</p>
+                  <p className="text-sm text-blue-100">Courses start from</p>
                 </div>
                 <div className="bg-white/10 p-4 rounded-xl">
                   <h3 className="text-2xl font-bold text-purple-300">{course.projectCount}</h3>
@@ -518,7 +518,7 @@ const handleLogout = async () => {
       </h2>
       <div className="grid md:grid-cols-3 gap-6">
         {[
-          { icon: <Award className="w-12 h-12 text-yellow-500" />, title: "Course Completion", description: "Official certificate from Yhills" },
+          { icon: <Award className="w-12 h-12 text-yellow-500" />, title: "Course Completion", description: "Official certificate from PreppRight" },
           { icon: <Star className="w-12 h-12 text-blue-600" />, title: "Industry Certificate", description: "Recognized by top companies" },
           { icon: <Trophy className="w-12 h-12 text-green-500" />, title: "Internship Certificate", description: "Post-course internship recognition" }
         ].map((cert, index) => (
@@ -541,7 +541,7 @@ const handleLogout = async () => {
 {/* table section */}
 <div className="max-w-7xl mx-auto text-center mb-12">
   <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-    Why Learn with PrepRight Trainings?
+    Why Learn with PreppRight Trainings?
   </h1>
   <p className="mt-3 text-xl text-gray-600">
     Unlock Your Potential with Industry-Leading Education
@@ -554,15 +554,16 @@ const handleLogout = async () => {
         <thead className="bg-blue-600 text-white">
           <tr>
             <th className="px-6 py-4 text-left font-semibold">Benefits</th>
-            <th className="px-6 py-4 text-center font-semibold bg-blue-700">PrepRight Trainings</th>
+            <th className="px-6 py-4 text-center font-semibold bg-blue-700">PreppRight Trainings</th>
             <th className="px-6 py-4 text-center font-semibold">Other Platforms</th>
             <th className="px-6 py-4 text-center font-semibold">YouTube</th>
           </tr>
         </thead>
         <tbody>
           {[
-            "Government certified by NSDC",
-            "Certified by IIT Madras",
+            "Government certified by ISO",
+            "Certified by MSME",
+            "Certified by WIPRO dice id",
             "Free placement assistance",
             "3x visibility in recruiter searches",
             "Direct interview invites",
@@ -629,24 +630,40 @@ const handleLogout = async () => {
 
 export default CourseDetails;
 
+
+
 const CertificateShowcase = () => {
   const certificates = [
     {
       title: "Course Completion",
       description: "Awarded upon successful completion of the program curriculum and assessments",
-      image: ".https://preppright.com/cert1.png"
+      image: "https://preppright.com/cert1.png",
     },
     {
       title: "Industry Project",
       description: "Recognizes completion of real-world industry projects and practical applications",
-      image: "https://preppright.com/cert1.png"
+      image: "https://preppright.com/cert2.png",
     },
     {
       title: "Professional Certification",
       description: "Industry-recognized certification validating your expertise and skills",
-      image: "https://preppright.com/cert1.png"
-    }
+      image: "https://preppright.com/cert3.png",
+    },
   ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? certificates.length - 1 : prevIndex - 1
+    );
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === certificates.length - 1 ? 0 : prevIndex + 1
+    );
+  };
 
   return (
     <div className="bg-gray-50 py-16">
@@ -660,34 +677,66 @@ const CertificateShowcase = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {certificates.map((cert, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2 }}
-              className="bg-white rounded-xl shadow-lg overflow-hidden"
+        <div className="relative">
+          {/* Carousel */}
+          <div className="overflow-hidden">
+            <div
+              className="flex transition-transform duration-500"
+              style={{
+                width: `${certificates.length * 100}%`,
+                transform: `translateX(-${currentIndex * (100 / certificates.length)}%)`,
+              }}
             >
-              <div className="relative group">
-                <img
-                  src={cert.image}
-                  alt={cert.title}
-                  className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-                  <Download className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {certificates.map((cert, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 w-full max-w-lg mx-auto"
+                  style={{ width: "100%" }}
+                >
+                  <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <img
+                      src={cert.image}
+                      alt={cert.title}
+                      className="w-full object-contain"
+                    />
+                    <div className="p-6">
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                        {cert.title}
+                      </h3>
+                      <p className="text-gray-600">{cert.description}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <Award className="w-6 h-6 text-blue-600 mr-2" />
-                  <h3 className="text-xl font-semibold text-gray-800">{cert.title}</h3>
-                </div>
-                <p className="text-gray-600">{cert.description}</p>
-              </div>
-            </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Navigation Buttons */}
+          <button
+            onClick={handlePrev}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-200 hover:bg-gray-300 p-2 rounded-full shadow-lg"
+          >
+            <ChevronLeft className="w-6 h-6 text-gray-700" />
+          </button>
+          <button
+            onClick={handleNext}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-200 hover:bg-gray-300 p-2 rounded-full shadow-lg"
+          >
+            <ChevronRight className="w-6 h-6 text-gray-700" />
+          </button>
+        </div>
+
+        <div className="mt-6 flex justify-center space-x-2">
+          {certificates.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`w-3 h-3 rounded-full ${
+                currentIndex === index
+                  ? "bg-blue-600"
+                  : "bg-gray-300 hover:bg-gray-400"
+              }`}
+            ></button>
           ))}
         </div>
 
@@ -700,6 +749,7 @@ const CertificateShowcase = () => {
     </div>
   );
 };
+
 
 const ContactFooter = () => {
   const googleFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLScOFaALLkOnFhOG68XtrikDhuRgKEFJvOu-EXoHiO5ghqFgZg/viewform";

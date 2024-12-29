@@ -11,10 +11,11 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import theme from '../theme';
+import ContentModerator from "./contentModerator";
 const Discuss = () => {
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const QUESTIONS_PER_PAGE = 2;
-
+  const contentModerator = new ContentModerator(import.meta.env.VITE_GEMINI_API_KEY);
   const [questions, setQuestions] = useState([]);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [questionText, setQuestionText] = useState("");
@@ -40,7 +41,16 @@ const Discuss = () => {
 
   const handleQuestionSubmit = async (e) => {
     e.preventDefault();
+    
     try {
+      // Check content before submission
+      const isContentSafe = await contentModerator.isContentSafe(questionText);
+      
+      if (!isContentSafe) {
+        alert("Your question contains inappropriate content. Please revise and try again.");
+        return;
+      }
+
       const response = await fetch(`${apiUrl}/api/v1/users/questionPublic`, {
         method: "POST",
         headers: {
@@ -48,10 +58,11 @@ const Discuss = () => {
         },
         body: JSON.stringify({ questionText }),
       });
+      
       if (response.ok) {
         setQuestionText("");
         setReload(!reload);
-        setCurrentPage(1); // Reset to first page after adding a question
+        setCurrentPage(1);
       }
     } catch (error) {
       console.error("Error submitting question", error);
@@ -63,6 +74,14 @@ const Discuss = () => {
     if (!selectedQuestion) return;
 
     try {
+      // Check content before submission
+      const isContentSafe = await contentModerator.isContentSafe(answerText);
+      
+      if (!isContentSafe) {
+        alert("Your answer contains inappropriate content. Please revise and try again.");
+        return;
+      }
+
       const response = await fetch(
         `${apiUrl}/api/v1/users/answer/${selectedQuestion._id}`,
         {
@@ -76,6 +95,7 @@ const Discuss = () => {
           }),
         }
       );
+      
       if (response.ok) {
         setAnswerText("");
         setSelectedQuestion(null);
@@ -86,8 +106,6 @@ const Discuss = () => {
     }
   };
 
-  // Other handler methods remain the same as in the previous implementation...
-  // (handleLikeQuestion, handleDislikeQuestion, handleLikeAnswer, handleDislikeAnswer)
   const handleLikeQuestion = async (id) => {
     try {
       const response = await fetch(
