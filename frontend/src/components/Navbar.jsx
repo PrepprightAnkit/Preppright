@@ -50,8 +50,9 @@ const Navbar = () => {
         case 'Quiz':
           navigate('/allQuiz');
           break;
-        default:
-          scrollToSection(`/${item.toLowerCase()}`);
+          default:
+            navigate('/');
+          scrollToSection(`${item.toLowerCase()}`);
       }
     }}
   >

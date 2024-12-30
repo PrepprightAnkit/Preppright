@@ -322,7 +322,7 @@ const Discuss = () => {
                       <form onSubmit={handleAnswerSubmit} className="mb-4">
                         <div className="flex space-x-2">
                           <textarea
-                            className="flex-grow rounded-lg border-2 border-gray-200 p-3 focus:border-blue-500 transition-all"
+                            className="flex-grow rounded-lg border-2 border-gray-200 p-3 focus:border-blue-500 transition-all resize-none"
                             placeholder="Write your answer..."
                             value={answerText}
                             onChange={(e) => setAnswerText(e.target.value)}
