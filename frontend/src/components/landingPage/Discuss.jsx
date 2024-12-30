@@ -322,12 +322,14 @@ const Discuss = () => {
                       <form onSubmit={handleAnswerSubmit} className="mb-4">
                         <div className="flex space-x-2">
                           <textarea
-                            className="flex-grow rounded-lg border-2 border-gray-200 p-3 focus:border-blue-500 transition-all resize-none"
-                            placeholder="Write your answer..."
-                            value={answerText}
-                            onChange={(e) => setAnswerText(e.target.value)}
-                            rows={3}
-                          />
+  className="flex-grow rounded-lg border-2 border-gray-200 p-3 focus:border-blue-500 transition-all resize-none"
+  placeholder="Write your answer..."
+  value={answerText}
+  onChange={(e) => setAnswerText(e.target.value)}
+  rows={3}
+  style={{ resize: "none" }} // Add this inline style or define it in CSS
+/>
+
                           <button
                             type="submit"
                             className={`${theme.components.button.base} ${theme.components.button.primary} bg-blue-500 text-white rounded-full p-3 hover:bg-blue-600 transition-colors`}
