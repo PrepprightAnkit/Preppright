@@ -23,10 +23,12 @@ import UploadCourse from "./components/UploadCourse";
 import UploadCourseApproval from "./components/UploadCourseApproval";
 import { AuthProvider } from "./contexts/AuthContext";
 import PrivacyPolicy from "./components/Policy";
+import ChatBot from "./components/chatbot";
 
 function App() {
   return (
     <>
+    <ChatBot/>
       <AuthProvider>
         <BrowserRouter>
           <Routes>
