@@ -44,9 +44,8 @@ const LoginPageProp = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-teal-500 to-green-500 p-4 sm:p-6">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-teal-400 to-green-400 p-4 sm:p-6">
             <div className="w-full max-w-5xl bg-white/10 backdrop-blur-md rounded-3xl shadow-lg border border-gray-200/20 flex flex-wrap md:flex-nowrap overflow-hidden">
-
                 {/* Left Panel */}
                 <div className="w-full md:w-1/2 p-6 sm:p-10 space-y-6 bg-white/20 backdrop-blur-md">
                     <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
@@ -120,7 +119,7 @@ const LoginPageProp = () => {
                 </div>
 
                 {/* Right Panel */}
-                <div className="w-full md:w-1/2 p-6 sm:p-10 space-y-6 bg-gradient-to-br from-teal-400 to-green-400 rounded-3xl">
+                <div className="w-full md:w-1/2 p-6 sm:p-10 space-y-6 bg-white/20 backdrop-blur-md">
                     <div className="bg-white/60 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-md">
                         <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4">Customer Testimonial</h2>
                         <p className="text-gray-700 mb-3 sm:mb-4">
