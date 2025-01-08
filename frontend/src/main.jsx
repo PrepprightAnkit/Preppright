@@ -7,7 +7,7 @@ import './index.css';
 import { persistor, store } from './store';
 
 const RootComponent = () => {
-  const hardcodedDate = '2025-01-06'; 
+  const hardcodedDate = '2025-01-08'; 
   const [opacity, setOpacity] = useState(1);
 
   useEffect(() => {
