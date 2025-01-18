@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { BookOpen, ChevronRight, TrendingUp } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import theme from '../theme';
 
@@ -8,26 +8,27 @@ const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_BASE_URL;
-    fetch(`${apiUrl}/api/v1/users/cat`, { method: 'get' })
-      .then(response => response.json())
-      .then(data => {
-        const mappedCategories = data.data.map(category => ({
-          imageUrl: category.image,
-          name: category.title,
-          description: category.description,
-        })).slice(0, 4);
-        setCategories(mappedCategories);
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching categories:', error);
-        setIsLoading(false);
-      });
-  }, []);
+  // Memoize the API URL to prevent recreating it on every render
+  const apiUrl = useMemo(() => import.meta.env.VITE_API_BASE_URL, []);
 
-  const cardVariants = {
+  // Memoize the fetch function
+  const fetchCategories = useMemo(() => async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/v1/users/cat`, { method: 'get' });
+      const data = await response.json();
+      return data.data.map(category => ({
+        imageUrl: category.image,
+        name: category.title,
+        description: category.description,
+      })).slice(0, 4);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      return [];
+    }
+  }, [apiUrl]);
+
+  // Memoize card variants to prevent recreating the object on every render
+  const cardVariants = useMemo(() => ({
     hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
@@ -46,7 +47,45 @@ const Categories = () => {
         stiffness: 300
       }
     }
-  };
+  }), []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCategories = async () => {
+      const fetchedCategories = await fetchCategories();
+      if (isMounted) {
+        setCategories(fetchedCategories);
+        setIsLoading(false);
+      }
+    };
+
+    loadCategories();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchCategories]);
+
+  // Memoize the empty state component
+  const EmptyState = useMemo(() => (
+    <div className="col-span-full text-center text-gray-500 py-12">
+      <BookOpen className={`mx-auto mb-4 text-${theme.colors.primary.main}`} size={64} />
+      <p className="text-xl">No categories available</p>
+    </div>
+  ), []);
+
+  // Memoize the loading skeleton
+  const LoadingSkeleton = useMemo(() => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 animate-pulse">
+      {[...Array(4)].map((_, index) => (
+        <div 
+          key={index} 
+          className={`bg-${theme.colors.gray[200]} rounded-2xl h-80 w-full`}
+        />
+      ))}
+    </div>
+  ), []);
 
   return (
     <section className={`bg-gradient-to-br from-${theme.colors.primary.light} to-white min-h-auto py-16 px-4`}>
@@ -57,10 +96,9 @@ const Categories = () => {
           className="flex flex-col md:flex-row justify-between items-center mb-12 space-y-4 md:space-y-0"
         >
           <div>
-          <h2 className={`text-3xl md:text-5xl font-extrabold overflow-visible ${theme.typography.hero} ${theme.typography.gradient} mb-2 tracking-tight`}>
-  Top Categories
-</h2>
-
+            <h2 className={`text-3xl md:text-5xl font-extrabold overflow-visible ${theme.typography.hero} ${theme.typography.gradient} mb-2 tracking-tight`}>
+              Top Categories
+            </h2>
             <p className="text-xl text-gray-600 flex items-center">
               <TrendingUp className={`mr-2 text-${theme.colors.primary.main}`} size={24} />
               Explore Learning Paths Tailored to Your Goals
@@ -79,18 +117,7 @@ const Categories = () => {
           </Link>
         </motion.div>
 
-        {isLoading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 animate-pulse">
-            {[...Array(4)].map((_, index) => (
-              <div 
-                key={index} 
-                className={`bg-${theme.colors.gray[200]} rounded-2xl h-80 w-full`}
-              />
-            ))}
-          </div>
-        )}
-
-        {!isLoading && (
+        {isLoading ? LoadingSkeleton : (
           <motion.div 
             initial="hidden"
             animate="visible"
@@ -104,12 +131,7 @@ const Categories = () => {
             }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
           >
-            {categories.length === 0 ? (
-              <div className="col-span-full text-center text-gray-500 py-12">
-                <BookOpen className={`mx-auto mb-4 text-${theme.colors.primary.main}`} size={64} />
-                <p className="text-xl">No categories available</p>
-              </div>
-            ) : (
+            {categories.length === 0 ? EmptyState : (
               categories.map((category, index) => (
                 <motion.div
                   key={index}

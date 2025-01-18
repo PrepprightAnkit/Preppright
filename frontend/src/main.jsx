@@ -7,21 +7,10 @@ import './index.css';
 import { persistor, store } from './store';
 
 const RootComponent = () => {
-  const hardcodedDate = '2025-01-16'; 
-  const [opacity, setOpacity] = useState(1);
-
-  useEffect(() => {
-    const currentDate = new Date();
-    const selectedDate = new Date(hardcodedDate);
-    const diffInDays = Math.max(0, Math.floor((currentDate - selectedDate) / (1000 * 60 * 60 * 24)));
-
-    
-    const calculatedOpacity = Math.max(0, Math.min(1, 1 - diffInDays / 10));
-    setOpacity(calculatedOpacity);
-  }, []);
+  
 
   return (
-    <div style={{ opacity }}>
+    <div>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <App />
