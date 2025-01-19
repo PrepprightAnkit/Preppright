@@ -1,34 +1,82 @@
 import { motion } from 'framer-motion';
 import { BookOpen, ChevronRight, TrendingUp } from 'lucide-react';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import theme from '../theme';
+
+// Simple cache implementation
+const cache = {
+  data: null,
+  timestamp: null,
+  CACHE_DURATION: 5 * 60 * 1000, // 5 minutes in milliseconds
+  
+  isValid() {
+    return (
+      this.data !== null &&
+      this.timestamp !== null &&
+      Date.now() - this.timestamp < this.CACHE_DURATION
+    );
+  },
+  
+  set(data) {
+    this.data = data;
+    this.timestamp = Date.now();
+  },
+  
+  get() {
+    return this.isValid() ? this.data : null;
+  },
+  
+  clear() {
+    this.data = null;
+    this.timestamp = null;
+  }
+};
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Memoize the API URL to prevent recreating it on every render
-  const apiUrl = useMemo(() => import.meta.env.VITE_API_BASE_URL, []);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-  // Memoize the fetch function
-  const fetchCategories = useMemo(() => async () => {
-    try {
-      const response = await fetch(`${apiUrl}/api/v1/users/cat`, { method: 'get' });
-      const data = await response.json();
-      return data.data.map(category => ({
-        imageUrl: category.image,
-        name: category.title,
-        description: category.description,
-      })).slice(0, 4);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      return [];
-    }
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        // Check cache first
+        const cachedData = cache.get();
+        if (cachedData) {
+          setCategories(cachedData);
+          setIsLoading(false);
+          return;
+        }
+
+        // If no cache, fetch from API
+        const response = await fetch(`${apiUrl}/api/v1/users/cat`, { method: 'get' });
+        const data = await response.json();
+        const processedData = data.data
+          .map(category => ({
+            imageUrl: category.image,
+            name: category.title,
+            description: category.description,
+          }))
+          .slice(0, 4);
+
+        // Update cache and state
+        cache.set(processedData);
+        setCategories(processedData);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        setCategories([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCategories();
   }, [apiUrl]);
 
-  // Memoize card variants to prevent recreating the object on every render
-  const cardVariants = useMemo(() => ({
+  // Card animation variants
+  const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
@@ -47,36 +95,16 @@ const Categories = () => {
         stiffness: 300
       }
     }
-  }), []);
+  };
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadCategories = async () => {
-      const fetchedCategories = await fetchCategories();
-      if (isMounted) {
-        setCategories(fetchedCategories);
-        setIsLoading(false);
-      }
-    };
-
-    loadCategories();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [fetchCategories]);
-
-  // Memoize the empty state component
-  const EmptyState = useMemo(() => (
+  const EmptyState = (
     <div className="col-span-full text-center text-gray-500 py-12">
       <BookOpen className={`mx-auto mb-4 text-${theme.colors.primary.main}`} size={64} />
       <p className="text-xl">No categories available</p>
     </div>
-  ), []);
+  );
 
-  // Memoize the loading skeleton
-  const LoadingSkeleton = useMemo(() => (
+  const LoadingSkeleton = (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 animate-pulse">
       {[...Array(4)].map((_, index) => (
         <div 
@@ -85,7 +113,7 @@ const Categories = () => {
         />
       ))}
     </div>
-  ), []);
+  );
 
   return (
     <section className={`bg-gradient-to-br from-${theme.colors.primary.light} to-white min-h-auto py-16 px-4`}>

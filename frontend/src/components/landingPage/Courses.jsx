@@ -6,56 +6,84 @@ import {
   Star,
   TrendingUp
 } from 'lucide-react';
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import theme from '../theme';
+
+// Cache implementation
+const cache = {
+  data: null,
+  timestamp: null,
+  CACHE_DURATION: 5 * 60 * 1000, // 5 minutes in milliseconds
+  
+  isValid() {
+    return (
+      this.data !== null &&
+      this.timestamp !== null &&
+      Date.now() - this.timestamp < this.CACHE_DURATION
+    );
+  },
+  
+  set(data) {
+    this.data = data;
+    this.timestamp = Date.now();
+  },
+  
+  get() {
+    return this.isValid() ? this.data : null;
+  },
+  
+  clear() {
+    this.data = null;
+    this.timestamp = null;
+  }
+};
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Memoize the API URL
-  const apiUrl = useMemo(() => import.meta.env.VITE_API_BASE_URL, []);
-
-  // Memoize the fetch function
-  const fetchCourses = useCallback(async () => {
-    try {
-      const response = await fetch(`${apiUrl}/api/v1/users/courses`);
-      
-      if (response.ok) {
-        const data = await response.json();
-        return Array.isArray(data) 
-          ? data.filter(course => course.isApproved).slice(0, 4) 
-          : (data[0] && data[0].filter(course => course.isApproved).slice(0, 4)) || [];
-      }
-      console.error('Failed to fetch courses');
-      return [];
-    } catch (error) {
-      console.error('Error fetching courses:', error);
-      return [];
-    }
-  }, [apiUrl]);
+  
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    let isMounted = true;
+    const fetchCourses = async () => {
+      try {
+        // Check cache first
+        const cachedData = cache.get();
+        if (cachedData) {
+          setCourses(cachedData);
+          setIsLoading(false);
+          return;
+        }
 
-    const loadCourses = async () => {
-      const fetchedCourses = await fetchCourses();
-      if (isMounted) {
-        setCourses(fetchedCourses);
+        // If no cache, fetch from API
+        const response = await fetch(`${apiUrl}/api/v1/users/courses`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          const processedData = Array.isArray(data) 
+            ? data.filter(course => course.isApproved).slice(0, 4) 
+            : (data[0] && data[0].filter(course => course.isApproved).slice(0, 4)) || [];
+          
+          // Update cache and state
+          cache.set(processedData);
+          setCourses(processedData);
+        } else {
+          console.error('Failed to fetch courses');
+          setCourses([]);
+        }
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+        setCourses([]);
+      } finally {
         setIsLoading(false);
       }
     };
 
-    loadCourses();
+    fetchCourses();
+  }, [apiUrl]);
 
-    return () => {
-      isMounted = false;
-    };
-  }, [fetchCourses]);
-
-  // Memoize the course card variants
-  const courseCardVariants = useMemo(() => ({
+  const courseCardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
@@ -74,10 +102,9 @@ const Courses = () => {
         stiffness: 300
       }
     }
-  }), []);
+  };
 
-  // Memoize the star rating renderer
-  const renderStarRating = useCallback((rating) => {
+  const renderStarRating = (rating) => {
     return [...Array(5)].map((_, index) => (
       <Star 
         key={index} 
@@ -86,18 +113,16 @@ const Courses = () => {
         fill={index < Math.floor(rating) ? '#FFC107' : 'none'}
       />
     ));
-  }, []);
+  };
 
-  // Memoize the empty state component
-  const EmptyState = useMemo(() => (
+  const EmptyState = (
     <div className="col-span-full text-center text-gray-500 py-12">
       <Book className={`mx-auto mb-4 text-${theme.colors.primary.main}`} size={64} />
       <p className="text-xl">No approved courses available</p>
     </div>
-  ), []);
+  );
 
-  // Memoize the loading skeleton
-  const LoadingSkeleton = useMemo(() => (
+  const LoadingSkeleton = (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-pulse">
       {[...Array(4)].map((_, index) => (
         <div 
@@ -106,10 +131,9 @@ const Courses = () => {
         />
       ))}
     </div>
-  ), []);
+  );
 
-  // Memoize the header section
-  const HeaderSection = useMemo(() => (
+  const HeaderSection = (
     <motion.div 
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
@@ -136,10 +160,9 @@ const Courses = () => {
         </motion.button>
       </Link>
     </motion.div>
-  ), []);
+  );
 
-  // Memoize the course card component
-  const CourseCard = useCallback(({ course }) => (
+  const CourseCard = ({ course }) => (
     <motion.div
       variants={courseCardVariants}
       whileHover="hover"
@@ -179,7 +202,7 @@ const Courses = () => {
         </div>
       </Link>
     </motion.div>
-  ), [courseCardVariants, renderStarRating]);
+  );
 
   return (
     <section className={`bg-gradient-to-br from-${theme.colors.primary.light} to-white min-h-auto py-16 px-4`}>
