@@ -106,19 +106,19 @@ const ReviewCarousel = ({ reviews }) => {
 const HomeReviews = () => {
   const reviews = [
     {
-      image: 'https://img.freepik.com/premium-photo/portrait-young-indian-teenage-boy-relaxing-park_251136-11008.jpg?semt=ais_hybrid',
+      image: 'https://neural.love/cdn/thumbnails/1ee77f35-8291-6be4-9553-7f74779eda3f/e37de949-2505-5b20-9ad1-f6356ca65357.webp?Expires=1798761599&Signature=xU7~Erip2rC4GmVBaQZLzt0gZfwXGS-bMEZ0dwGeZDeecybbqzk7OnkMFhD-3W5LOaFgCDvXeCaIYXbGwObEHLcrFFM477rnY0VdtK5gOsajAWyOtk-YC945LEkx8USx2dleXdzGLpZK~qEFR9JMj-XIBzMs6adwkBCG-yfKdqqfx5ZfROMW8ExRAUq1RbV~BRmUksIZ7iY0Jngojn2~sksf~KsXju4Qqb9cLqO4i5zk~xqECaN1vIk0u0C27sveLyxdbxw6PQFXzc9GKsd7y0PF~-~rMgoVNIxiizy1p6lIOpbyrXBovWNMDajzmSldjSGCRVXKtkjqGfNsEXenHA__&Key-Pair-Id=K2RFTOXRBNSROX',
       name: 'Sanjay L.',
       rating: 4.5,
       review: "The courses on this platform have been incredibly helpful for improving my skills. Highly recommended!"
     },
     {
-      image: 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/202208/Option_1_-_Aryan_JAIN_x.jpeg?VersionId=iT6pvrs3MzZV9itpfqLODfKPS.FvzW58',
+      image: 'https://file.aiquickdraw.com/imgcompressed/img/compressed_80d61a4373829fd2e25533021d51c5f9.webp',
       name: 'Rahul T.',
       rating: 4.8,
       review: "I'm amazed by the quality of the content and the engaging way it's presented. Definitely worth the investment."
     },
     {
-      image: 'https://rubuen.weebly.com/uploads/6/1/2/5/61257037/s715340680631163983_p1_i1_w262.jpeg',
+      image: 'https://r2.erweima.ai/imgcompressed/img/compressed_bd04350e7b6b57642107a49ee6a00269.webp',
       name: 'Vignesh S.',
       rating: 5,
       review: "This is the best online learning experience I've had. The instructors are knowledgeable and the platform is user-friendly."
