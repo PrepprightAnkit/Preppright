@@ -1,28 +1,27 @@
 
 import {
-  Award,
-  Book,
-  CheckCircle,
-  CheckCircle2,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Code,
-  Download,
-  Globe,
-  Layout,
-  Link,
-  LogOut,
-  Menu,
-  Plus,
-  Send,
-  Server,
-  Star,
-  Trophy,
-  Users,
-  X,
-  XCircle,
-  Zap
+    Award,
+    Book,
+    CheckCircle,
+    CheckCircle2,
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight,
+    Code,
+    Globe,
+    Layout,
+    Link,
+    LogOut,
+    Menu,
+    Plus,
+    Send,
+    Server,
+    Star,
+    Trophy,
+    Users,
+    X,
+    XCircle,
+    Zap
 } from 'lucide-react';
 import { default as React, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -196,7 +195,7 @@ const handleLogout = async () => {
                     <img 
                         src={bg} 
                         alt="Preep Logo" 
-                        className="h-20 w-auto md:ml-10"
+                        className="h-16 sm:h-10 md:h-20 w-auto md:ml-10"
                     />
 
                     {/* Desktop Navigation */}

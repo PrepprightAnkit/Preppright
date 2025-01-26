@@ -1,9 +1,9 @@
-import React,{useState} from 'react';
-import bg from '../assets/PreepPright.png';
-import SearchComponent from './Search';
+import { LogOut, Menu } from 'lucide-react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { User,LogOut,Menu } from 'lucide-react';
+import bg from '../assets/PreepPright.png';
+import SearchComponent from './Search';
 const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -25,10 +25,10 @@ const Navbar = () => {
                 <div className="container mx-auto px-4 py-3 flex justify-between items-center">
                     {/* Logo */}
                     <img 
-                        src={bg} 
-                        alt="Preep Logo" 
-                        className="h-20 w-auto md:ml-10"
-                    />
+                    src={bg} 
+                    alt="Preep Logo" 
+                    className="h-8 sm:h-10 md:h-16 sm:h-10 md:h-20 w-auto md:ml-10"
+                />
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-6">

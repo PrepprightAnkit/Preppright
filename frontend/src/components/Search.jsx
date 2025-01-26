@@ -88,7 +88,7 @@ const SearchComponent = () => {
     return (
         <div 
             ref={searchRef} 
-            className="relative w-full max-w-md mx-auto"
+            className="relative w-full max-w-md mx-auto px-10"
         >
             <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

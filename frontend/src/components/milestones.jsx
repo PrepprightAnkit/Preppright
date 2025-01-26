@@ -36,7 +36,7 @@ const LeverageEdu = () => {
             },
             {
               icon: LaptopIcon,
-              title: "Courses starting at ₹8 Lakhs*",
+              title: "Courses available at EMI Offers",
               description: "Affordable world-class education",
               gradient: "from-indigo-500 to-indigo-600"
             }

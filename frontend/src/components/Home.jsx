@@ -1,23 +1,23 @@
-import { LogOut, Menu, Upload, User, X, MapPin } from 'lucide-react';
+import { LogOut, MapPin, Menu, Upload, User, X } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logoutUser } from '../actions/authActions';
 import theme from './theme';
 // All imports remain exactly the same
+import bg from '../assets/PreepPright.png';
+import HomeReviews from './HomeReviews';
 import companiesHero from './landingPage/assets/companiesHero.png';
 import heroBg from './landingPage/assets/heroBg.png';
 import Categories from "./landingPage/Categories";
 import Courses from './landingPage/Courses';
 import Discuss from './landingPage/Discuss';
 import Hero from "./landingPage/Hero";
+import MentorSupport from './landingPage/mentor';
 import Platform from './landingPage/Platform';
-import bg from '../assets/PreepPright.png';
-import HomeReviews from './HomeReviews';
+import ReferAndWin from './landingPage/refer';
 import LeverageEdu from './milestones';
 import SearchComponent from './Search';
-import ReferAndWin from './landingPage/refer';
-import MentorSupport from './landingPage/mentor';
 const companies = [
     { name: 'Acuity', logo: 'https://cdn.worldvectorlogo.com/logos/acuity-1.svg' },
     { name: 'KPMG', logo: 'https://cdn.worldvectorlogo.com/logos/kpmg-1.svg' },
@@ -91,7 +91,7 @@ const Home = () => {
                     <img 
                         src={bg} 
                         alt="Preep Logo" 
-                        className="h-20 w-auto md:ml-10"
+                        className="h-16 sm:h-10 md:h-20 w-auto md:ml-10"
                     />
 
                     <div className="hidden md:flex items-center space-x-6">

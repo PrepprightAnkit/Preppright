@@ -74,7 +74,7 @@ return (
                     <img 
                         src={bg} 
                         alt="Preep Logo" 
-                        className="h-20 w-auto md:ml-10"
+                        className="h-16 sm:h-10 md:h-20 w-auto md:ml-10"
                     />
 
                     {/* Desktop Navigation */}
