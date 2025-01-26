@@ -16,6 +16,8 @@ import bg from '../assets/PreepPright.png';
 import HomeReviews from './HomeReviews';
 import LeverageEdu from './milestones';
 import SearchComponent from './Search';
+import ReferAndWin from './landingPage/refer';
+import MentorSupport from './landingPage/mentor';
 const companies = [
     { name: 'Acuity', logo: 'https://cdn.worldvectorlogo.com/logos/acuity-1.svg' },
     { name: 'KPMG', logo: 'https://cdn.worldvectorlogo.com/logos/kpmg-1.svg' },
@@ -259,11 +261,17 @@ const Home = () => {
                 <div id="platform" className="pt-6">
                     <Platform />
                 </div>
+                <div id="platform" className="pt-6">
+                    <MentorSupport/>
+                </div>
                 <div id="World map" className="pt-6">
                     <WorldMapSection />
                 </div>
                 <div id="reviews" className="pt-6">
                     <HomeReviews/>
+                </div>
+                <div id="reviews" className="pt-6">
+                    <ReferAndWin/>
                 </div>
                 <div id="discuss" className="pt-6">
                     <Discuss />
