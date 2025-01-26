@@ -1,6 +1,7 @@
 import React from "react";
 import { Gift, Smartphone, Laptop, Watch, DollarSign } from "lucide-react";
-import theme from '../theme'; // Assuming the theme is imported similarly to the original component
+import theme from '../theme';
+import earn from "../../../public/earn.png";
 
 const ReferAndWin = () => {
   const handleButtonClick = () => {
@@ -10,39 +11,64 @@ const ReferAndWin = () => {
   return (
     <div className="bg-gradient-to-br from-primary-light to-white py-16 px-4 sm:px-6 lg:px-8">
       <div className="container mx-auto max-w-7xl">
-        <div className="bg-white shadow-lg rounded-2xl p-8">
-          <h2 className={`text-3xl md:text-5xl font-bold text-center ${theme.typography.gradient} mb-6`}>
-            Refer & Win Amazing Rewards
-          </h2>
-          <p className="text-center text-gray-600 text-xl mb-8">
-            Invite your friends to join and unlock exclusive rewards like MacBooks,
-            iPhones, Apple Watches, AirPods, and cash prizes. The more you refer,
-            the more you win!
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="flex justify-center">
-              <button
-                onClick={handleButtonClick}
-                className={`bg-primary-main ${theme.components.button.base} ${theme.components.button.primary} hover:bg-${theme.colors.primary.hover} transition-all  text-white font-semibold py-3 px-6 rounded-lg text-lg shadow-lg transition-transform transform hover:scale-105`}
-              >
-                Get Started
-              </button>
+        <div className="bg-white shadow-2xl rounded-3xl overflow-hidden relative">
+          {/* Decorative Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-light/30 to-transparent opacity-50 pointer-events-none z-0"></div>
+          
+          {/* Main Content Container */}
+          <div className="relative z-10 grid md:grid-cols-2 items-center">
+            {/* Left Side - Image */}
+            <div className="hidden md:block relative">
+              <img 
+                src={earn} 
+                alt="Refer and Win" 
+                className="w-full h-full object-cover transform transition-transform duration-500 hover:scale-105"
+              />
+              {/* Subtle Overlay */}
+              <div className="absolute inset-0 bg-primary-main/10 hover:bg-transparent transition-colors duration-500"></div>
             </div>
-
-            <div className="grid grid-cols-3 gap-4 md:gap-6">
-              {[
-                { Icon: Laptop, label: "MacBook" },
-                { Icon: Smartphone, label: "iPhone" },
-                { Icon: Gift, label: "AirPods" },
-                { Icon: Watch, label: "Apple Watch" },
-                { Icon: DollarSign, label: "Cash Rewards" }
-              ].map(({ Icon, label }) => (
-                <div key={label} className="flex flex-col items-center text-center">
-                  <Icon className="w-12 h-12 text-primary-main mb-2" />
-                  <span className="text-primary-dark font-medium">{label}</span>
-                </div>
-              ))}
+            
+            {/* Right Side - Content */}
+            <div className="pl-0 -ml-36 p-12 space-y-6 text-center md:text-left">
+              <h2 className={`text-4xl font-extrabold ${theme.typography.gradient} mb-4 leading-tight`}>
+                Refer & Win 
+                <br />
+                Amazing Rewards
+              </h2>
+              
+              <p className="text-xl text-gray-700 mb-8 leading-relaxed">
+                Unlock exclusive rewards by inviting friends! 
+                From MacBooks to iPhones, Apple Watches, AirPods, 
+                and exciting cash prizes – the more you refer, 
+                the more incredible rewards you can win!
+              </p>
+              
+              <div className="flex justify-center md:justify-start">
+                <button
+                  onClick={handleButtonClick}
+                  className={`
+                    ${theme.components.button.base} 
+                    ${theme.components.button.primary} 
+                    bg-primary-main 
+                    text-white 
+                    font-bold 
+                    py-4 px-8 
+                    rounded-xl 
+                    text-lg 
+                    shadow-xl 
+                    hover:shadow-2xl 
+                    transition-all 
+                    transform 
+                    hover:-translate-y-1 
+                    hover:scale-105 
+                    focus:outline-none 
+                    focus:ring-4 
+                    focus:ring-primary-light
+                  `}
+                >
+                  Start Referring Now
+                </button>
+              </div>
             </div>
           </div>
         </div>
