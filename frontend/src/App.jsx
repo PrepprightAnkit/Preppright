@@ -26,6 +26,8 @@ import PrivacyPolicy from "./components/Policy";
 import ChatBot from "./components/chatbot";
 import CreateQuiz from "./components/CreateQuiz";
 import AboutSection from "./components/About";
+import RefundPolicy from "./components/Refund";
+import Terms from "./components/terms";
 
 function App() {
   return (
@@ -62,6 +64,8 @@ function App() {
               <Route path="placements" element={<PlacementPage />} />
               <Route path="techlab" element={<Techlab />} />
               <Route path="privacypolicy" element={<PrivacyPolicy />} />
+              <Route path="refundpolicy" element={<RefundPolicy/>} />
+              <Route path="terms" element={<Terms/>} />
               <Route path="about" element={<AboutSection />} />
             </Route>
           </Routes>

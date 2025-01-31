@@ -77,9 +77,9 @@ export default function Footer () {
             <div>
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Support</h3>
               <ul className="space-y-3">
-                <li><a href="#contact" className="text-gray-600 hover:text-indigo-600 transition-colors">Help Center</a></li>
+                <li><a href="/terms" className="text-gray-600 hover:text-indigo-600 transition-colors">Terms and conditions</a></li>
                 <li><Link to="/privacypolicy" className='text-gray-600 hover:text-blue-600 transition-colors'>Privacy Policy</Link></li>
-                <li><Link to="/techlab" className='text-gray-600 hover:text-blue-600 transition-colors'>TechLab</Link></li>
+                <li><Link to="/refundpolicy" className='text-gray-600 hover:text-blue-600 transition-colors'>Refund Policy</Link></li>
                 <li><a href="#contact" className="text-gray-600 hover:text-indigo-600 transition-colors">Contact Us</a></li>
               </ul>
               </div>
