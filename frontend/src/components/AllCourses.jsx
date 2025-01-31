@@ -1,13 +1,14 @@
 import { ArrowLeft, Award, Clock, Eye, Globe, Handshake, Phone, Send, TrendingUp, Users } from 'lucide-react';
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import theme from './theme';
 
 import { Book, CheckCircle, Target } from 'lucide-react';
+import Footer from './Footer';
 
 const AboutSection = () => {
   return (
-    <section className={`${theme.spacing.section} bg-${theme.colors.primary.light}`}>
+    <section className={`${theme.spacing.section} bg-${theme.colors.primary.light}`} >
       <div className={theme.spacing.container}>
         <div className="text-center mb-12">
           <h2 className={`${theme.typography.hero} ${theme.typography.gradient}`}>About PreppRight</h2>
@@ -148,7 +149,7 @@ const ContactFooter = () => {
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Quick Links</h3>
                 <ul className="space-y-3">
-                  <li><a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors">About Us</a></li>
+                  <li><Link to="/about" className='text-gray-600 hover:text-blue-600 transition-colors'>About us</Link></li>
                   <li><a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors">Courses</a></li>
                   <li><a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors">Success Stories</a></li>
                   <li><a href="#" className="text-gray-600 hover:text-indigo-600 transition-colors">Blog</a></li>
@@ -279,9 +280,18 @@ const AllCourses = () => {
   const handleCourseClick = (courseId) => {
     navigate(`/courses/${courseId}`);
   };
+  const location = useLocation();
 
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.getElementById(location.hash.substring(1));
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]);
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" id='courses'>
       {/* Header */}
       <header className={`bg-gradient-to-r ${theme.colors.primary.gradient} text-white p-6 shadow-lg`}>
         <div className="container mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between">
@@ -299,7 +309,7 @@ const AllCourses = () => {
         </div>
       </header>
 
-      <main className="container mx-auto max-w-7xl flex-grow flex flex-col md:flex-row gap-6 p-6">
+      <main className="container mx-auto max-w-7xl flex-grow flex flex-col md:flex-row gap-6 p-6"  >
         <aside className="w-full md:w-64 bg-white rounded-xl shadow-lg p-6">
           <h2 className={`text-xl font-bold text-${theme.colors.primary.main} mb-4 flex items-center`}>
             Course Categories
@@ -376,7 +386,7 @@ const AllCourses = () => {
       </main>
       <AboutSection/>
       <LearnerBenefits/>
-      <ContactFooter/>
+      <Footer/>
     </div>
   );
 };

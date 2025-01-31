@@ -18,6 +18,7 @@ import Platform from './landingPage/Platform';
 import ReferAndWin from './landingPage/refer';
 import LeverageEdu from './milestones';
 import SearchComponent from './Search';
+import Footer from './Footer';
 const companies = [
     { name: 'Acuity', logo: 'https://cdn.worldvectorlogo.com/logos/acuity-1.svg' },
     { name: 'KPMG', logo: 'https://cdn.worldvectorlogo.com/logos/kpmg-1.svg' },
@@ -275,6 +276,9 @@ const Home = () => {
                 </div>
                 <div id="discuss" className="pt-6">
                     <Discuss />
+                </div>
+                <div id="footer" className="pt-6">
+                    <Footer/>
                 </div>
             </main>
         </div>

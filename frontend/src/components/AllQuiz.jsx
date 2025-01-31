@@ -3,6 +3,7 @@ import {
     ClipboardList,
     LogOut,
     Menu,
+    PlusCircle,
     Search,
     Upload,
     User,
@@ -41,6 +42,7 @@ const AllQuizzes = () => {
         try {
             const response = await fetch(`${apiUrl}/api/v1/quiz/quizzes`);
             const data = await response.json();
+            console.log(data.data)
             setQuizzes(data.data);
         } catch (error) {
             console.error('Error fetching quizzes:', error);
@@ -331,6 +333,7 @@ const AllQuizzes = () => {
                     <h2 className="text-3xl font-bold text-blue-800 flex items-center">
                         <ClipboardList className="mr-3" size={32} /> All Quizzes
                     </h2>
+                    
                     <div className="md:hidden relative w-1/2">
                         <input
                             type="text"
@@ -343,7 +346,14 @@ const AllQuizzes = () => {
                             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
                             size={20} 
                         />
+                        
                     </div>
+                    <Link
+                                to="/createQuiz"
+                                className="flex items-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
+                            >
+                                <PlusCircle className="mr-2" size={18} /> Create Quiz
+                            </Link>
                 </div>
 
                 {/* Quizzes Grid */}

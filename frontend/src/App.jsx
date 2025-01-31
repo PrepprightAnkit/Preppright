@@ -24,6 +24,8 @@ import UploadCourseApproval from "./components/UploadCourseApproval";
 import { AuthProvider } from "./contexts/AuthContext";
 import PrivacyPolicy from "./components/Policy";
 import ChatBot from "./components/chatbot";
+import CreateQuiz from "./components/CreateQuiz";
+import AboutSection from "./components/About";
 
 function App() {
   return (
@@ -50,6 +52,7 @@ function App() {
               <Route path="company-register" element={<RegisterCompany />} />
               <Route path="uploadContent" element={<UploadContent />} />
               <Route path="takeQuiz" element={<TakeQuiz />} />
+              <Route path="createQuiz" element={<CreateQuiz />} />
               <Route path="allQuiz" element={<AllQuiz />} />
               <Route path="allCat" element={<AllCat />} />
               <Route path="allCourses" element={<AllCourses />} />
@@ -59,6 +62,7 @@ function App() {
               <Route path="placements" element={<PlacementPage />} />
               <Route path="techlab" element={<Techlab />} />
               <Route path="privacypolicy" element={<PrivacyPolicy />} />
+              <Route path="about" element={<AboutSection />} />
             </Route>
           </Routes>
         </BrowserRouter>
