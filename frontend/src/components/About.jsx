@@ -1,11 +1,109 @@
-import { Users } from 'lucide-react';
-import React from "react";
+import { Award, Clock, Globe, Handshake, TrendingUp, Users } from 'lucide-react';
+import { default as React } from "react";
 import theme from './theme';
 
 import { Book, CheckCircle, Target } from 'lucide-react';
+import Footer from './Footer';
+import Navbar from './Navbar';
 
+
+const LearnerBenefits = () => {
+  const benefits = [
+    {
+      title: "World Class Pedagogy",
+      items: [
+        "Learn from the World's Best Faculty & Industry Experts",
+        "Learn with fun Hands-on Exercises & Assignments",
+        "Participate in Hackathons & Group Activities"
+      ],
+      image: "https://lapgadgets.in/wp-content/uploads/2024/04/Firefly-happy-student-working-on-laptop-27248-1024x1024.jpg",
+      stats: [
+        { icon: <Award />, text: "4.8/5 Rating" },
+        { icon: <Users />, text: "Gamified Learning" }
+      ]
+    },
+    {
+      title: "Personalized Guidance with 24×7 Support",
+      items: [
+        "Dedicated Learning Managers",
+        "24/7 Learning Support",
+        "Network with Peers & Interact with Industry Leaders"
+      ],
+      image: "https://media.istockphoto.com/id/1465651473/photo/happy-hispanic-woman-working-inside-office-businesswoman-with-video-call-headset-talking-and.jpg?s=612x612&w=0&k=20&c=4DBmVlj5l8fVA6Vxnfax3_OKfmwJzSkVzMMrilD_AoU=",
+      stats: [
+        { icon: <Clock />, text: "24 x 7 Support" },
+        { icon: <Handshake />, text: "1:1 Mentorship" }
+      ]
+    },
+    {
+      title: "Career Assistance",
+      items: [
+        "Resume Building & Mock Interview Prep",
+        "Exclusive access to PreppRight Job Portal",
+        "400+ Hiring Partners"
+      ],
+      image: "https://thumbs.dreamstime.com/b/woman-hiring-manager-intake-meeting-hr-recruiting-team-member-young-indian-having-job-qualifications-office-350435810.jpg",
+      stats: [
+        { icon: <TrendingUp />, text: "85,000 Career Transition" },
+        { icon: <Globe />, text: "400+ Hiring Partners" }
+      ]
+    }
+  ];
+
+  return (
+    <div className="bg-gray-50 py-16">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <h2 className={`text-3xl font-bold text-center mb-12 bg-gradient-to-r ${theme.colors.primary.gradient} bg-clip-text text-transparent`}>
+          Learner Benefits
+        </h2>
+        
+        <div className="space-y-12">
+          {benefits.map((benefit, index) => (
+            <div key={index} className="h-full flex flex-col md:flex-row items-center gap-8 bg-white rounded-xl p-6 shadow-lg">
+              <div className="w-full h-full flex justify-center items-center md:w-1/3">
+                <img
+                  src={benefit.image}
+                  alt={benefit.title}
+                  className="rounded-lg shadow-lg"
+                />
+              </div>
+              
+              <div className="w-full md:w-2/3">
+                <h3 className={`text-2xl font-semibold mb-4 text-${theme.colors.primary.main}`}>
+                  {benefit.title}
+                </h3>
+                <ul className="space-y-3 mb-8">
+                  {benefit.items.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className={`text-${theme.colors.primary.main} mt-1`}>•</span>
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  {benefit.stats.map((stat, idx) => (
+                    <div key={idx} className={`bg-${theme.colors.primary.light} p-4 rounded-lg shadow flex flex-col items-center justify-center text-center`}>
+                      <span className={`text-${theme.colors.primary.main} mb-2`}>
+                        {stat.icon}
+                      </span>
+                      <span className="text-sm font-medium text-gray-800">{stat.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 export default function AboutSection () {
   return (
+    <>
+    <Navbar/>
+    
     <section className={`${theme.spacing.section} bg-${theme.colors.primary.light}`}>
       <div className={theme.spacing.container}>
         <div className="text-center mb-12">
@@ -85,7 +183,10 @@ export default function AboutSection () {
           </p>
         </div>
       </div>
+      <LearnerBenefits/>
+      <Footer/>
     </section>
+    </>
   );
 };
 

@@ -429,7 +429,7 @@ const LearnerBenefits = () => {
         "Learn with fun Hands-on Exercises & Assignments",
         "Participate in Hackathons & Group Activities"
       ],
-      image: "https://intellipaat.com/course-image/2021/10/learner-pic-1.png",
+      image: "https://lapgadgets.in/wp-content/uploads/2024/04/Firefly-happy-student-working-on-laptop-27248-1024x1024.jpg",
       stats: [
         { icon: <Award />, text: "4.8/5 Rating" },
         { icon: <Users />, text: "Gamified Learning" }
@@ -442,7 +442,7 @@ const LearnerBenefits = () => {
         "24/7 Learning Support",
         "Network with Peers & Interact with Industry Leaders"
       ],
-      image: "https://intellipaat.com/course-image/2021/10/learner-pic-2.png",
+      image: "https://media.istockphoto.com/id/1465651473/photo/happy-hispanic-woman-working-inside-office-businesswoman-with-video-call-headset-talking-and.jpg?s=612x612&w=0&k=20&c=4DBmVlj5l8fVA6Vxnfax3_OKfmwJzSkVzMMrilD_AoU=",
       stats: [
         { icon: <Clock />, text: "24 x 7 Support" },
         { icon: <Handshake />, text: "1:1 Mentorship" }
@@ -455,7 +455,7 @@ const LearnerBenefits = () => {
         "Exclusive access to PreppRight Job Portal",
         "400+ Hiring Partners"
       ],
-      image: "https://intellipaat.com/course-image/2021/10/learner-pic-3.png",
+      image: "https://thumbs.dreamstime.com/b/woman-hiring-manager-intake-meeting-hr-recruiting-team-member-young-indian-having-job-qualifications-office-350435810.jpg",
       stats: [
         { icon: <TrendingUp />, text: "85,000 Career Transition" },
         { icon: <Globe />, text: "400+ Hiring Partners" }
@@ -477,7 +477,7 @@ const LearnerBenefits = () => {
                 <img
                   src={benefit.image}
                   alt={benefit.title}
-                  className="rounded-lg shadow-lg w-1/2"
+                  className="rounded-lg shadow-lg"
                 />
               </div>
               
