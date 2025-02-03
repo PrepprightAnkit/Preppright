@@ -34,9 +34,9 @@ const quizSchema = new Schema(
       required: true
     },
     questions: [questionSchema],
-    score:{
-      type:Number,
-      default:0
+    score: {
+      type: Number,
+      default: 0
     }
   },
   { timestamps: true }
