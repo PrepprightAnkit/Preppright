@@ -337,45 +337,45 @@ const AllCourses = () => {
           </h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCourses.map((course) => (
-              <div
-                key={course._id}
-                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
-              >
-                <div className="relative">
-                  <img
-                    src={course.aboutImgUrl || "/api/placeholder/400/250"}
-                    alt={course.title}
-                    className="w-full h-48 object-cover transition-transform group-hover:scale-105"
-                  />
-                  <div className={`absolute top-2 right-2 bg-${theme.colors.primary.main} text-white px-3 py-1 rounded-full text-sm`}>
-                    {course.duration} Months
-                  </div>
-                </div>
-                
-                <div className="p-4">
-                  <h3 className={`text-lg font-semibold text-${theme.colors.primary.main} mb-2`}>
-                    {course.title}
-                  </h3>
-                  <p className="text-gray-600 line-clamp-2 mb-4">
-                    {course.tagline}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <button
-                      onClick={() => navigate(`/courses/${course._id}`)}
-                      className={`flex items-center bg-gradient-to-r ${theme.colors.primary.gradient} text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity`}
-                    >
-                      <Eye className="mr-2 w-4 h-4" /> View Course
-                    </button>
-                    <div className="flex items-center">
-                      <span className="font-bold text-yellow-500">{course.rating}</span>
-                      <span className="text-yellow-500 ml-1">★</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+  {filteredCourses.map((course) => (
+    <div
+      key={course._id}
+      className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
+    >
+      <div className="relative">
+        <img
+          src={course.aboutImgUrl || "/api/placeholder/400/250"}
+          alt={course.title}
+          className="w-full h-48 object-cover transition-transform group-hover:scale-105"
+        />
+        <div className={`absolute top-2 right-2 bg-${theme.colors.primary.main} text-white px-3 py-1 rounded-full text-sm`}>
+          {course.duration} Months
+        </div>
+      </div>
+      
+      <div className="p-4 flex flex-col flex-grow">
+        <h3 className={`text-lg font-semibold text-${theme.colors.primary.main} mb-2`}>
+          {course.title}
+        </h3>
+        <p className="text-gray-600 line-clamp-2 mb-4 flex-grow">
+          {course.tagline}
+        </p>
+        <div className="flex justify-between items-center mt-auto">
+          <button
+            onClick={() => navigate(`/courses/${course._id}`)}
+            className={`flex items-center bg-gradient-to-r ${theme.colors.primary.gradient} text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity`}
+          >
+            <Eye className="mr-2 w-4 h-4" /> View Course
+          </button>
+          <div className="flex items-center">
+            <span className="font-bold text-yellow-500">{course.rating}</span>
+            <span className="text-yellow-500 ml-1">★</span>
           </div>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
           
           {filteredCourses.length === 0 && !loading && (
             <div className="text-center py-10 text-gray-500">
