@@ -20,26 +20,26 @@ const testimonials = [
   {
     name: 'Darshan T Patil',
     date: '12-Dec-24',
-    course: 'Pre TWSS: CFA Level 1',
+    course: 'PreppRight : Full Stack Course',
     placement: 'Square Analytics - Business Analyst',
     image: 'https://static.vecteezy.com/system/resources/previews/039/334/804/non_2x/ai-generated-indian-female-student-free-photo.jpg',
-    testimonial: 'Being a part of Batch 243 at TWSS FMVA Program has been an incredible experience. As a CFA candid...'
+    testimonial: 'Being a part of Batch 243 at PreppRight Program has been an incredible experience. As a CFA candid...'
   },
   {
     name: 'Pratik Srivastava',
     date: '03-Dec-24',
-    course: 'Pre TWSS: B.com',
+    course: 'PreppRight : Business Analyst',
     placement: 'Daloopa',
     image: 'https://img.freepik.com/premium-photo/indian-college-boy-happy-smiling-college_437792-723.jpg',
-    testimonial: 'I had a great learning experience at The Wall Street School. With each class I gained more and mo...'
+    testimonial: 'I had a great learning experience at PreppRight. With each class I gained more and mo...'
   },
   {
     name: 'Sheenam Shah',
     date: '03-Dec-24',
-    course: 'Pre TWSS: CFA Level 1',
+    course: 'PreppRight: Python for Finance',
     placement: 'Oxane partners as senior analyst',
     image: 'https://img.freepik.com/premium-photo/indian-college-boy-happy-smiling-college_437792-725.jpg',
-    testimonial: 'It was a wonderful journey with TWSS. Before Twss I was not getting job and they encourage me and...'
+    testimonial: 'It was a wonderful journey with PreppRight. Before PreppRight I was not getting job and they encourage me and...'
   }
 ];
 
