@@ -28,6 +28,7 @@ import CreateQuiz from "./components/CreateQuiz";
 import AboutSection from "./components/About";
 import RefundPolicy from "./components/Refund";
 import Terms from "./components/terms";
+import OasisQuiz from "./components/AllQuiz";
 
 function App() {
   return (
@@ -55,7 +56,7 @@ function App() {
               <Route path="uploadContent" element={<UploadContent />} />
               <Route path="takeQuiz" element={<TakeQuiz />} />
               <Route path="createQuiz" element={<CreateQuiz />} />
-              <Route path="allQuiz" element={<AllQuiz />} />
+              <Route path="allQuiz" element={<OasisQuiz />} />
               <Route path="allCat" element={<AllCat />} />
               <Route path="allCourses" element={<AllCourses />} />
               <Route path="approveCourse" element={<CourseApprovalPage />} />

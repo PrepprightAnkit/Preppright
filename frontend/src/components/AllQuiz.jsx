@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from 'react';
 import {
-  BookOpen,
-  ClipboardList,
-  LogOut,
-  Menu,
-  PlusCircle,
-  Search,
-  Upload,
-  User,
-  X
+    BookOpen,
+    ClipboardList,
+    LogOut,
+    Menu,
+    PlusCircle,
+    Search,
+    Upload,
+    X
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { default as React, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import { logoutUser } from '../actions/authActions';
+import { default as bg, default as logo } from '../assets/PreepPright.png';
+import SearchComponent from './Search';
 
-// Import your logo and any creative background images
-import logo from '../assets/PreepPright.png';// A creative background image for the header
 
 const OasisQuiz = () => {
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -73,36 +72,38 @@ const OasisQuiz = () => {
     }
   };
 
-  const calculateScore = () => {
+  // New function to submit quiz answers to backend
+  const handleSubmitQuiz = async () => {
     if (selectedQuiz) {
-      const total = selectedQuiz.questions.length;
-      let correct = 0;
-      selectedQuiz.questions.forEach((question) => {
-        const selectedId = selectedAnswers[question._id];
-        const correctOption = question.options.find((option) => option.isCorrect);
-        if (correctOption && correctOption._id === selectedId) {
-          correct++;
+      // Build answers array from the selectedAnswers state
+      const answers = selectedQuiz.questions.map((question) => ({
+        questionId: question._id,
+        selectedOptionId: selectedAnswers[question._id] || null
+      }));
+
+      try {
+        console.log(selectedQuiz,user)
+        const response = await fetch(`${apiUrl}/api/v1/quiz/quizzes/submit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            quizId: selectedQuiz._id,
+            userId: user._id,
+            answers
+          })
+        });
+        const data = await response.json();
+        if (data.success) {
+          setScore(data.score);
+          setIsSubmitted(true);
+        } else {
+          console.error("Submission error:", data.message);
         }
-      });
-      const calculatedScore = (correct / total) * 100;
-      setScore(calculatedScore);
-      setIsSubmitted(true);
+      } catch (err) {
+        console.error('Error submitting quiz:', err);
+      }
 
-      // Update backend score
-      fetch(`${apiUrl}/api/v1/users/updateQuiz`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user._id,
-          quizId: selectedQuiz._id,
-          score: calculatedScore.toFixed(2)
-        })
-      })
-        .then((res) => res.json())
-        .then((data) => console.log('Score updated:', data))
-        .catch((err) => console.error('Error updating score:', err));
-
-      // Auto close quiz modal after 2 seconds
+      // Auto close quiz modal after 2 seconds (optional)
       setTimeout(() => {
         setSelectedQuiz(null);
         setSelectedAnswers({});
@@ -123,185 +124,182 @@ const OasisQuiz = () => {
 
   return (
     <div className="min-h-screen relative">
-        {/* Navigation */}
-      <nav className="bg-white shadow sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden text-orange-500 hover:text-orange-600 transition-colors"
-            >
-              {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
-            <div className="hidden md:flex items-center space-x-6">
-              {['Home', 'Explore', 'Courses', 'Forum', 'Quiz'].map((item) => (
-                <button
-                  key={item}
-                  onClick={() =>
-                    item === 'Quiz'
-                      ? navigate('/allQuiz')
-                      : navigate(`/${item.toLowerCase()}`)
-                  }
-                  className="text-orange-600 font-semibold hover:text-orange-500 transition-colors"
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
-          </div>
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 bg-white shadow-md">
+                <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+                    {/* Logo */}
+                    <img 
+                        src={bg} 
+                        alt="Preep Logo" 
+                        className="h-16 sm:h-10 md:h-20 w-auto md:ml-10"
+                    />
 
-          {/* Search Bar */}
-          <div className="relative hidden md:block w-1/3">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={handleSearch}
-              placeholder="Search quizzes..."
-              className="w-full pl-10 pr-4 py-2 border border-orange-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400"
-            />
-            <Search
-              size={20}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500"
-            />
-            {filteredQuizzes.length > 0 && (
-              <div className="absolute w-full bg-white shadow rounded-lg mt-2 max-h-60 overflow-y-auto">
-                {filteredQuizzes.map((quiz) => (
-                  <div
-                    key={quiz._id}
-                    className="px-4 py-2 hover:bg-orange-50 cursor-pointer"
-                    onClick={() => {
-                      handleSelectQuiz(quiz);
-                      setSearchTerm('');
-                      setFilteredQuizzes([]);
-                    }}
-                  >
-                    {quiz.title}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+                    {/* Desktop Navigation */}
+                    <div className="hidden md:flex items-center space-x-6">
+                        {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
+                            <button
+                             className="text-blue-800 hover:text-blue-600 transition-colors font-semibold"
+    key={item}
+    onClick={() => {
+      switch (item) {
+        case 'Home':
+          navigate('/');
+          break;
+        case 'Categories':
+          navigate('/allCat');
+          break;
+        case 'Courses':
+          navigate('/allCourses');
+          break;
+        case 'Quiz':
+          navigate('/allQuiz');
+          break;
+        default:
+          scrollToSection(item.toLowerCase());
+      }
+    }}
+  >
+    {item}
+  </button>
+                        ))}
+                    </div>
 
-          {/* Authentication Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            {isAuthenticated ? (
-              <>
-                {user.isAdmin && (
-                  <Link
-                    to="/uploadContent"
-                    className="flex items-center bg-orange-100 hover:bg-orange-200 px-3 py-2 rounded-full transition-colors"
-                  >
-                    <Upload size={18} className="mr-2" /> Upload
-                  </Link>
-                )}
-                <Link
-                  to="/userProfile"
-                  className="flex items-center bg-orange-50 hover:bg-orange-100 px-3 py-2 rounded-full transition-colors"
-                >
-                  <User size={18} className="mr-2" /> Profile
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center bg-red-100 hover:bg-red-200 px-3 py-2 rounded-full transition-colors"
-                >
-                  <LogOut size={18} className="mr-2" /> Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full transition-colors"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/reg"
-                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
-                >
-                  Register
-                </Link>
-              </>
-            )}
-          </div>
+                    {/* Search */}
+                    <div className="relative w-full md:w-1/3">
+            <div className="relative">
+                <SearchComponent/>
+
+        </div>
         </div>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-white shadow">
-            <div className="px-4 py-4 space-y-3">
-              {['Home', 'Explore', 'Courses', 'Quiz'].map((item) => (
-                <button
-                  key={item}
-                  onClick={() => {
-                    item === 'Quiz'
-                      ? navigate('/allQuiz')
-                      : navigate(`/${item.toLowerCase()}`);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="block w-full text-left py-2 text-orange-600 hover:bg-orange-50"
-                >
-                  {item}
-                </button>
-              ))}
-              <div className="relative mt-2">
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  placeholder="Search quizzes..."
-                  className="w-full pl-10 pr-4 py-2 border border-orange-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400"
-                />
-                <Search
-                  size={20}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500"
-                />
-              </div>
-              <div className="mt-4 space-y-2">
-                {isAuthenticated ? (
-                  <>
-                    {user.isAdmin && (
-                      <Link
-                        to="/uploadContent"
-                        className="block w-full text-center bg-orange-100 hover:bg-orange-200 px-4 py-2 rounded-full"
-                      >
-                        Upload
-                      </Link>
-                    )}
-                    <Link
-                      to="/userProfile"
-                      className="block w-full text-center bg-orange-50 hover:bg-orange-100 px-4 py-2 rounded-full"
-                    >
-                      Profile
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-center bg-red-100 hover:bg-red-200 px-4 py-2 rounded-full"
-                    >
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      to="/login"
-                      className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full"
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      to="/reg"
-                      className="block w-full text-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full"
-                    >
-                      Register
-                    </Link>
-                  </>
+
+                    {/* Auth Buttons */}
+                    <div className="hidden md:flex items-center space-x-4">
+                        {isAuthenticated ? (
+                            <div className="flex items-center space-x-3">
+                                {user.isAdmin && (
+                                    <Link
+                                        to="/uploadContent" 
+                                        className="flex items-center bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-full transition-colors"
+                                    >
+                                        <Upload size={18} className="mr-2" /> Upload
+                                    </Link>
+                                )}
+                               {/* <Link 
+                                    to="/userProfile" 
+                                    className="flex items-center bg-blue-100 hover:bg-blue-200 px-3 py-2 rounded-full transition-colors"
+                                >
+                                    <User size={18} className="mr-2" /> Profile
+                                </Link> */}
+                                <button 
+                                    onClick={(e) => {navigate("/userProfile")}}
+                                    className="flex items-center bg-blue-100 hover:bg-blue-200 px-3 py-2 rounded-full transition-colors"
+                                >
+                                    <LogOut size={18} className="mr-2" /> Profile
+                                </button>
+                                <button 
+                                    onClick={handleLogout}
+                                    className="flex items-center bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded-full transition-colors"
+                                >
+                                    <LogOut size={18} className="mr-2" /> Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex space-x-3">
+                                <Link 
+                                    to="/login" 
+                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
+                                >
+                                    Login
+                                </Link>
+                                <Link 
+                                    to="/reg" 
+                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
+                                >
+                                    Register
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Mobile Menu Toggle */}
+                    <div className="md:hidden">
+                        <button 
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="text-blue-800 focus:outline-none"
+                        >
+                            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        </button>
+                    </div>
+                </div>
+
+                {/* Mobile Menu */}
+                {isMobileMenuOpen && (
+                    <div className="md:hidden bg-white absolute w-full shadow-lg">
+                        <div className="px-4 pt-2 pb-4 space-y-2">
+                            {/* Mobile Navigation Links */}
+                            {['Home', 'Categories', 'Courses', 'Discuss', 'Quiz'].map((item) => (
+                                <button 
+                                    key={item} 
+                                    onClick={() => item === 'Quiz' 
+                                        ? navigate('/allQuiz') 
+                                        : scrollToSection(item.toLowerCase())}
+                                    className="block w-full text-left py-2 text-blue-800 hover:bg-blue-50"
+                                >
+                                    {item}
+                                </button>
+                            ))}
+
+                            {/* Mobile Search */}
+                            <div className="relative w-full mt-2">
+                                <SearchComponent/>
+                            </div>
+
+                            {/* Mobile Auth Buttons */}
+                            {isAuthenticated ? (
+                                <div className="space-y-2 mt-2">
+                                    {user.isAdmin && (
+                                        <Link 
+                                            to="/uploadContent" 
+                                            className="block w-full text-center bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full transition-colors"
+                                        >
+                                            Upload Content
+                                        </Link>
+                                    )}
+                                    <Link 
+                                        to="/userProfile" 
+                                        className="block w-full text-center bg-blue-100 hover:bg-blue-200 px-4 py-2 rounded-full transition-colors"
+                                    >
+                                        My Profile
+                                    </Link>
+                                    <button 
+                                        onClick={handleLogout}
+                                        className="block w-full text-center bg-red-100 hover:bg-red-200 text-red-800 px-4 py-2 rounded-full transition-colors"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="space-y-2 mt-2">
+                                    <Link 
+                                        to="/login" 
+                                        className="block w-full text-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors"
+                                    >
+                                        Login
+                                    </Link>
+                                    <Link 
+                                        to="/reg" 
+                                        className="block w-full text-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors"
+                                    >
+                                        Register
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 )}
-              </div>
-            </div>
-          </div>
-        )}
-      </nav>
+            </nav>
+
       {/* Header with Oasis Vibe */}
       <header
         className="relative h-64 flex items-center justify-center bg-cover bg-center"
@@ -315,16 +313,12 @@ const OasisQuiz = () => {
             className="w-20 mx-auto mb-4 cursor-pointer hover:scale-105 transition-transform"
             onClick={() => navigate('/')}
           />
-          <h1 className="text-4xl font-bold drop-shadow-lg">
-            Quiz
-          </h1>
+          <h1 className="text-4xl font-bold drop-shadow-lg">Quiz</h1>
           <p className="mt-2 text-lg font-medium">
             Discover Your Hidden Knowledge Treasure!
           </p>
         </div>
       </header>
-
-      
 
       {/* Main Content Area */}
       <main className="container mx-auto px-4 py-8">
@@ -434,7 +428,7 @@ const OasisQuiz = () => {
 
                 {!isSubmitted ? (
                   <button
-                    onClick={calculateScore}
+                    onClick={handleSubmitQuiz}
                     disabled={Object.keys(selectedAnswers).length !== selectedQuiz.questions.length}
                     className={`w-full py-3 rounded-full transition-colors ${
                       Object.keys(selectedAnswers).length === selectedQuiz.questions.length

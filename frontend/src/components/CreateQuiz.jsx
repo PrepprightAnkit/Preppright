@@ -21,40 +21,41 @@ const CreateQuiz = () => {
 
     const handleCreateQuiz = async () => {
         try {
-            // Create Quiz
-            const quizResponse = await fetch(`${apiUrl}/api/v1/quiz/quizzes`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ title: quizTitle })
+          // Create Quiz with only the title
+          const quizResponse = await fetch(`${apiUrl}/api/v1/quiz/quizzes`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: quizTitle })
+          });
+          
+          
+          const quizData = await quizResponse.json();
+          console.log(quizData);
+          const quizId = quizData.data._id;
+          
+          // Create Questions for the quiz
+          for (const question of questions) {
+            await fetch(`${apiUrl}/api/v1/quiz/quizzes/questions`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                quizId,
+                identifier: question.identifier,
+                question: question.question,
+                options: question.options
+              })
             });
-            const quizData = await quizResponse.json();
-            const quizId = quizData.data._id;
-    
-            // Create Questions
-            for (const question of questions) {
-                await fetch(`${apiUrl}/api/v1/quiz/questions`, {  // Updated route
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        quizId,
-                        identifier: question.identifier,
-                        question: question.question,
-                        options: question.options
-                    })
-                });
-            }
-    
-            alert('Quiz created successfully!');
-            navigate('/allQuiz');
+          }
+          
+          
+          alert('Quiz created successfully!');
+          navigate('/allQuiz');
         } catch (error) {
-            console.error('Error creating quiz:', error);
-            alert('Failed to create quiz');
+          console.error('Error creating quiz:', error);
+          alert('Failed to create quiz');
         }
-    };
+      };
+      
 
     const addQuestion = () => {
         if (!currentQuestion.question.trim()) {

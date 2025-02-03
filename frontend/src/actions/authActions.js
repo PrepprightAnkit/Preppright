@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { loginSuccess, logout } from '../reducers/authReducer';
+import { loginSuccess, logout,loginFail } from '../reducers/authReducer';
 
 // Login Action
 
