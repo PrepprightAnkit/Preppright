@@ -288,8 +288,7 @@ const PlacementPage = () => {
                       </div>
                       
                       <div className="text-center text-gray-500 text-sm pt-8 border-t border-gray-200">
-                        <p>© {new Date().getFullYear()} PreppRight. All Rights Reserved.</p>
-                        
+                                  
                       </div>
                     </div>
                   </div>
