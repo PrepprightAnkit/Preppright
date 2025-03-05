@@ -1,12 +1,12 @@
 import {
-    BookOpen,
-    ClipboardList,
-    LogOut,
-    Menu,
-    PlusCircle,
-    Search,
-    Upload,
-    X
+  BookOpen,
+  ClipboardList,
+  LogOut,
+  Menu,
+  PlusCircle,
+  Search,
+  Upload,
+  X
 } from 'lucide-react';
 import { default as React, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -72,44 +72,52 @@ const OasisQuiz = () => {
     }
   };
 
-  // New function to submit quiz answers to backend
   const handleSubmitQuiz = async () => {
     if (selectedQuiz) {
-      // Build answers array from the selectedAnswers state
-      const answers = selectedQuiz.questions.map((question) => ({
-        questionId: question._id,
-        selectedOptionId: selectedAnswers[question._id] || null
-      }));
-
       try {
-        console.log(selectedQuiz,user)
+        // Ensure we have the user object and it has an _id
+        if (!user || !user._id) {
+          alert('Please log in to submit the quiz');
+          return;
+        }
+
+        // Build answers array from the selectedAnswers state
+        const answersArray = selectedQuiz.questions.map(question => ({
+          questionId: question._id,
+          selectedOptionId: selectedAnswers[question._id] || null
+        }));
+
+        // Validate that all questions are answered
+        const unansweredQuestions = answersArray.filter(answer => !answer.selectedOptionId);
+        if (unansweredQuestions.length > 0) {
+          alert('Please answer all questions before submitting');
+          return;
+        }
+
         const response = await fetch(`${apiUrl}/api/v1/quiz/quizzes/submit`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
             quizId: selectedQuiz._id,
             userId: user._id,
-            answers
+            answers: answersArray
           })
         });
+
         const data = await response.json();
+        
         if (data.success) {
           setScore(data.score);
           setIsSubmitted(true);
         } else {
-          console.error("Submission error:", data.message);
+          throw new Error(data.message || 'Failed to submit quiz');
         }
-      } catch (err) {
-        console.error('Error submitting quiz:', err);
+      } catch (error) {
+        console.error('Error submitting quiz:', error);
+        alert('Failed to submit quiz. Please try again.');
       }
-
-      // Auto close quiz modal after 2 seconds (optional)
-      setTimeout(() => {
-        setSelectedQuiz(null);
-        setSelectedAnswers({});
-        setScore(null);
-        setIsSubmitted(false);
-      }, 2000);
     }
   };
 

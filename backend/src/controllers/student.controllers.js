@@ -1,10 +1,9 @@
-import { asynchandler } from "../utils/asynchandler.js";
-import { ApiError } from "../utils/ApiError.js";
-import { User } from "../models/student.models.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
+import { User } from "../models/student.models.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asynchandler } from "../utils/asynchandler.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 // Utility function to generate access and refresh tokens
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -18,6 +17,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
         return { accessToken, refreshToken };
     } catch (error) {
+        console.error("Error generating tokens:", error);
         throw new ApiError(500, "Something went wrong while generating refresh and access token");
     }
 };
@@ -133,45 +133,59 @@ const updateQuizScore = asynchandler(async (req, res) => {
   
 // Login User
 const loginUser = asynchandler(async (req, res) => {
-    const { email,  password } = req.body;
+    try {
+        const { email, password } = req.body;
+        console.log("Received login request", { email, password: "******" });
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Email and password are required"
+            });
+        }
 
-    if (!email) {
+        const user = await User.findOne({ email });
+        if (!user) {
+            console.log("User not found for email: " + email);
+            return res.status(404).json({
+                success: false,
+                message: "User does not exist"
+            });
+        }
 
-        throw new ApiError(400, "username or email is required");
+        const isPasswordValid = await user.isPasswordCorrect(password);
+        if (!isPasswordValid) {
+            console.log("Invalid password for user", email);
+            return res.status(401).json({
+                success: false,
+                message: "Invalid credentials"
+            });
+        }
+
+        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+        console.log("Generated tokens for user", email);
+        const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+
+        const options = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production"
+        };
+
+        return res
+            .status(200)
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .json({
+                success: true,
+                user: loggedInUser,
+                accessToken
+            });
+    } catch (error) {
+        console.error("Login error:", error);
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Something went wrong during login"
+        });
     }
-
-    const user = await User.findOne({
-        email 
-
-        
-    });
-
-    if (!user) {
-        throw new ApiError(404, "User does not exist");
-    }
-
-    const isPasswordValid = await user.isPasswordCorrect(password);
-
-    if (!isPasswordValid) {
-        throw new ApiError(401, "Invalid user credentials");
-    }
-
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
-
-    const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
-
-    const options = {
-        httpOnly: true,
-        secure: true
-    };
-    console.log(loggedInUser);
-    
-
-    return res
-        .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
-        .json(  loggedInUser      );
 });
 
 // Logout User
@@ -383,15 +397,13 @@ const getAllUsers = asynchandler(async (req, res) => {
 });
 
 export {
-    registerUser,
-    loginUser,
+    changeCurrentPassword, getAllUsers // Add this line to export the new controller
+    ,
+
+
+    getCurrentUser, loginUser,
     logoutUser,
-    refreshAccessToken,
-    changeCurrentPassword,
-    getCurrentUser,
-    updateAccountDetails,
-    updateUserAvatar,
-    updateUserCoverImage,
-    updateQuizScore,
-    getAllUsers // Add this line to export the new controller
+    refreshAccessToken, registerUser, updateAccountDetails, updateQuizScore, updateUserAvatar,
+    updateUserCoverImage
 };
+

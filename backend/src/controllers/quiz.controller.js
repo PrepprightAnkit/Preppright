@@ -1,6 +1,6 @@
-import { Quiz } from "../models/quiz.model.js";
 import mongoose from "mongoose";
-import { User } from "../models/student.models.js"; // Ensure your User model exists
+import { Quiz } from "../models/quiz.model.js";
+import { User } from "../models/student.models.js";
 
 // Create an option
 export const createOption = async (req, res) => {
@@ -39,18 +39,49 @@ export const createQuestion = async (req, res) => {
   }
 };
 
-
-
-
 // Create a quiz
 export const createQuiz = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    const { title } = req.body;
-    const quiz = new Quiz({ title, questions: [] });
-    await quiz.save();
-    res.status(201).json({ success: true, data: quiz });
+    const { title, questions, description, duration, difficultyLevel } = req.body;
+    
+    // Validate that each question has one correct answer
+    const questionsValid = questions.every(question => 
+      question.options.filter(option => option.isCorrect).length === 1
+    );
+
+    if (!questionsValid) {
+      throw new Error("Each question must have exactly one correct answer");
+    }
+
+    const quiz = new Quiz({
+      title,
+      questions,
+      description,
+      duration,
+      difficultyLevel,
+      createdBy: req.user._id, // Assuming you have user info in request
+      isPublished: true
+    });
+
+    const savedQuiz = await quiz.save({ session });
+
+    await session.commitTransaction();
+    
+    return res.status(201).json({
+      success: true,
+      data: savedQuiz
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    await session.abortTransaction();
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  } finally {
+    session.endSession();
   }
 };
 
@@ -133,57 +164,93 @@ export const getAllQuestions = async (req, res) => {
   }
 };
 
-// Submit a quiz: the client sends the quizId, userId, and answers array.
-// The backend calculates the score and updates the user's record.
 export const submitQuiz = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    const { quizId, userId, answers } = req.body; 
-    // answers: [{ questionId, selectedOptionId }, ...]
-    
-    // Find the quiz by its ID
-    const quiz = await Quiz.findById(quizId);
+    const { quizId, userId, answers } = req.body;
+
+    // Validate required fields
+    if (!quizId || !userId || !answers || !Array.isArray(answers)) {
+      throw new Error('Missing required fields');
+    }
+
+    // Find quiz and user
+    const [quiz, user] = await Promise.all([
+      Quiz.findById(quizId),
+      User.findById(userId)
+    ]);
+
     if (!quiz) {
-      return res.status(404).json({ success: false, message: "Quiz not found" });
+      throw new Error('Quiz not found');
     }
-    
-    // Calculate score by iterating through each answer
-    let correctCount = 0;
-    quiz.questions.forEach((question) => {
-      const answer = answers.find(
-        (a) => a.questionId === question._id.toString()
-      );
-      if (answer) {
-        const selectedOption = question.options.find(
-          (opt) => opt._id.toString() === answer.selectedOptionId
-        );
-        if (selectedOption && selectedOption.isCorrect) {
-          correctCount += 1;
-        }
-      }
-    });
-    const score = (correctCount / quiz.questions.length) * 100;
-    
-    // Update the user record with the quiz attempt
-    const user = await User.findById(userId);
+
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      throw new Error('User not found');
     }
-    
-    // Assume user.quizzesTaken is an array of objects: { quiz: ObjectId, score: Number, takenAt: Date }
-    const existingQuizRecord = user.quizzesTaken.find(
-      (record) => record.quiz.toString() === quizId
+
+    // Calculate score
+    let correctCount = 0;
+    const results = quiz.questions.map(question => {
+      const answer = answers.find(a => a.questionId === question._id.toString());
+      const selectedOption = question.options.find(
+        opt => opt._id.toString() === answer?.selectedOptionId
+      );
+      
+      const isCorrect = selectedOption?.isCorrect || false;
+      if (isCorrect) correctCount++;
+
+      return {
+        questionId: question._id,
+        correct: isCorrect,
+        selectedAnswer: answer?.selectedOptionId
+      };
+    });
+
+    const finalScore = (correctCount / quiz.questions.length) * 100;
+
+    // Update user's quiz history
+    const quizAttempt = {
+      quiz: quizId,
+      score: finalScore,
+      takenAt: new Date(),
+      answers: results
+    };
+
+    // Update or add quiz attempt to user's history
+    if (!user.quizzes) {
+      user.quizzes = [];
+    }
+
+    const existingAttemptIndex = user.quizzes.findIndex(
+      q => q.quiz.toString() === quizId
     );
-    if (existingQuizRecord) {
-      existingQuizRecord.score = score;
-      existingQuizRecord.takenAt = new Date();
+
+    if (existingAttemptIndex >= 0) {
+      user.quizzes[existingAttemptIndex] = quizAttempt;
     } else {
-      user.quizzesTaken.push({ quiz: quizId, score, takenAt: new Date() });
+      user.quizzes.push(quizAttempt);
     }
-    
-    await user.save();
-    res.status(200).json({ success: true, score });
+
+    // Save changes
+    await user.save({ session });
+    await session.commitTransaction();
+
+    return res.status(200).json({
+      success: true,
+      score: finalScore,
+      results
+    });
+
   } catch (error) {
-    console.error("Error submitting quiz:", error);
-    res.status(500).json({ success: false, message: "Server error" });
+    await session.abortTransaction();
+    console.error('Quiz submission error:', error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to submit quiz'
+    });
+  } finally {
+    session.endSession();
   }
 };

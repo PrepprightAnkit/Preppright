@@ -1,32 +1,30 @@
 import axios from 'axios';
-import { loginSuccess, logout,loginFail } from '../reducers/authReducer';
+import { loginFail, loginSuccess, logout } from '../reducers/authReducer';
 
 // Login Action
-
 
 export const login = (credentials) => async (dispatch) => {
     try {
         const apiUrl = import.meta.env.VITE_API_BASE_URL;
-        const response = await axios.post(`${apiUrl}/api/v1/users/login`, credentials);
+        const response = await axios.post(`${apiUrl}/api/v1/users/login`, credentials, {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         
-        // Directly use the response.data as the user object
-        const userData = response.data;
-        
-        // Since there's no token in the response, you might need to handle this differently
-        // If your backend doesn't return a token, you might need to generate or handle authentication differently
-        
-        if (userData && userData._id) {
+        if (response.data && response.data.success) {
+            const userData = response.data.user;
             dispatch(loginSuccess({
                 user: userData,
-                token: userData._id // Temporary fallback, not recommended for real authentication
+                token: response.data.accessToken
             }));
 
             localStorage.setItem('user', JSON.stringify(userData));
-            // Note: You'll need to handle token storage separately
-
-            return response.data;
+            localStorage.setItem('token', response.data.accessToken);
+            return userData;
         } else {
-            throw new Error('Invalid login response: Missing user ID');
+            throw new Error(response.data.message || 'Login failed');
         }
     } catch (error) {
         const errorMessage = error.response?.data?.message || error.message || 'Login failed';

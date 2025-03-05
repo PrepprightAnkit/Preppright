@@ -1,6 +1,6 @@
-import mongoose, { Schema } from "mongoose";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import mongoose, { Schema } from "mongoose";
 
 const quizScoreSchema = new Schema({
   quiz: {
@@ -87,6 +87,9 @@ const userSchema = new Schema(
     profilePicture: {
       type: String
     },
+    refreshToken: {
+      type: String
+    },
     preferredContactMethod: {
       type: String,
       required: true,
@@ -102,6 +105,19 @@ const userSchema = new Schema(
         lessons: [courseLessonProgressSchema] // Array to track lesson progress
       }
     ],
+    quizzes: [{
+      quiz: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Quiz'
+      },
+      score: Number,
+      takenAt: Date,
+      answers: [{
+        questionId: mongoose.Schema.Types.ObjectId,
+        correct: Boolean,
+        selectedAnswer: mongoose.Schema.Types.ObjectId
+      }]
+    }],
     quizes: [quizScoreSchema],
     progress: {
       type: Number,
@@ -123,11 +139,13 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 };
 
 userSchema.methods.generateAccessToken = function () {
+  if (!process.env.ACCESS_TOKEN_SECRET) {
+    throw new Error("ACCESS_TOKEN_SECRET environment variable is not set.");
+  }
   return jwt.sign(
     {
       _id: this._id,
       email: this.email,
-      username: this.username,
       fullName: this.fullName,
     },
     process.env.ACCESS_TOKEN_SECRET,
@@ -138,6 +156,9 @@ userSchema.methods.generateAccessToken = function () {
 };
 
 userSchema.methods.generateRefreshToken = function () {
+  if (!process.env.REFRESH_TOKEN_SECRET) {
+    throw new Error("REFRESH_TOKEN_SECRET environment variable is not set.");
+  }
   return jwt.sign(
     {
       _id: this._id,
@@ -148,7 +169,5 @@ userSchema.methods.generateRefreshToken = function () {
     }
   );
 };
-
-
 
 export const User = mongoose.model("User", userSchema);
