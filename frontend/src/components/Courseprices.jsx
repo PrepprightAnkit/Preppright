@@ -1,22 +1,22 @@
 import {
-    Award,
-    BarChart,
-    BookOpen,
-    Bot,
-    Brain,
-    ClipboardCheck,
-    FileCheck,
-    FileText,
-    Globe,
-    Layout,
-    MessageSquare,
-    UserCheck,
-    Users,
-    Video
+  Award,
+  BarChart,
+  BookOpen,
+  Bot,
+  Brain,
+  ClipboardCheck,
+  FileCheck,
+  FileText,
+  Globe,
+  Layout,
+  MessageSquare,
+  UserCheck,
+  Users,
+  Video
 } from 'lucide-react';
 import React from 'react';
 
-const PricingCard = ({ title, price, icon: Icon, features, isPrimary }) => (
+const PricingCard = ({ title, price, icon: Icon, features, isPrimary, link }) => (
   <div className={`rounded-3xl p-6 ${isPrimary ? 'bg-gradient-to-br from-blue-900 to-indigo-800 text-white' : 'bg-white'} 
                    shadow-lg flex flex-col h-full`}>
     <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-violet-100 mb-4">
@@ -39,21 +39,24 @@ const PricingCard = ({ title, price, icon: Icon, features, isPrimary }) => (
       ))}
     </ul>
     
-    <button className={`mt-6 py-3 px-6 rounded-full text-center font-medium
-                      ${isPrimary 
-                        ? 'bg-white text-blue-900 hover:bg-gray-100' 
-                        : 'bg-gradient-to-br from-blue-900 to-indigo-800 text-white hover:bg-violet-700'}`}>
-      Start Learning
-    </button>
+    <a href={link} target="_blank" rel="noopener noreferrer">
+      <button className={`mt-6 py-3 px-6 rounded-full text-center font-medium
+                        ${isPrimary 
+                          ? 'bg-white text-blue-900 hover:bg-gray-100' 
+                          : 'bg-gradient-to-br from-blue-900 to-indigo-800 text-white hover:bg-violet-700'}`}>
+        Start Learning
+      </button>
+    </a>
   </div>
 );
 
-const CoursePrices = ({course}) => {
+const CoursePrices = ({ course }) => {
   const plans = [
     {
       title: "Self-Paced Program",
       price: "3,000",
       icon: BookOpen,
+      link: "https://rzp.io/rzp/6BQ2aXI",
       features: [
         { icon: Video, text: "Recorded Video Lectures" },
         { icon: ClipboardCheck, text: "Quiz & Assessments" },
@@ -66,6 +69,7 @@ const CoursePrices = ({course}) => {
       title: "Mentor-Led Program",
       price: "6,000",
       icon: Users,
+      link: "https://rzp.io/rzp/yYSUi0lY",
       features: [
         { icon: Users, text: "Live Mentorship" },
         { icon: FileCheck, text: "Project-Based Learning" },
@@ -80,6 +84,7 @@ const CoursePrices = ({course}) => {
       title: "Professional Program",
       price: "9,000",
       icon: Award,
+      link: "https://rzp.io/rzp/bsR6gZtR",
       features: [
         { icon: Brain, text: "Aptitude Grooming" },
         { icon: FileText, text: "Specific Resume Building" },
@@ -113,6 +118,7 @@ const CoursePrices = ({course}) => {
             icon={plan.icon}
             features={plan.features}
             isPrimary={index === 1}
+            link={plan.link}
           />
         ))}
       </div>
