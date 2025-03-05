@@ -202,7 +202,7 @@ const ContactFooter = () => {
             
             <div className="text-center text-gray-500 text-sm pt-8 border-t border-gray-200">
               <p>© {new Date().getFullYear()} PreppRight. All Rights Reserved.</p>
-              <p className="mt-2">Designed with ❤️ for aspiring students</p>
+              
             </div>
           </div>
         </div>
