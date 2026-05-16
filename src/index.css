@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Lexend:wght@300;400;500;600;700;800;900&display=swap');
+
+@theme {
+  --color-snow-white: #ffffff;
+  --color-charcoal: #0f172a;
+  --color-indigo-primary: #4f46e5;
+  --color-indigo-accent: #818cf8;
+  
+  --font-inter: "Inter", sans-serif;
+  --font-lexend: "Lexend", sans-serif;
+
+  --animate-fade-in: fade-in 0.8s ease-out;
+  --animate-slide-up: slide-up 0.6s ease-out;
+
+  /* Standardized Vertical Spacing Variables */
+  --section-gap-desktop: 24px;
+  --section-gap-mobile: 16px;
+}
+
+/* Global Section Rhythm */
+section {
+  --padding-y: var(--section-gap-desktop);
+  padding-top: var(--padding-top, var(--padding-y));
+  padding-bottom: var(--padding-bottom, var(--padding-y));
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 768px) {
+  section {
+    --padding-y: var(--section-gap-mobile);
+  }
+}
+
+/* Clearance for Fixed Navbar + Banner */
+.hero-section-fix {
+  --padding-top: 180px;
+}
+
+@media (max-width: 768px) {
+  .hero-section-fix {
+    --padding-top: 160px;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-snow-white);
+    color: var(--color-charcoal);
+    font-family: var(--font-inter);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  /* Touch-friendly targets */
+  button, a {
+    @apply cursor-pointer;
+  }
+}
+
+@layer utilities {
+  .animate-bounce-slow {
+    animation: bounce-slow 3s infinite;
+  }
+
+  .shadow-premium {
+    box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.12);
+  }
+
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.gradient-text {
+  background: linear-gradient(to right, #4f46e5, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
