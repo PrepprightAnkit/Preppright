@@ -18,22 +18,22 @@ const CATEGORIES = [
 const FILTERS = ["All", "Most Popular", "Trending", "High Demand", "Hot"];
 
 const ALL_COURSES = [
-  { id: "java-programming", title: "Java Programming Mastery", category: "Development", img: "/images/courses/java_programming.png", price: "₹3,000", rating: 4.9 },
-  { id: "full-stack-web-development", title: "Full Stack Web Development", category: "Development", img: "/images/courses/web_development.png", price: "₹5,000", rating: 4.8 },
-  { id: "financial-management", title: "Financial Management & Analysis", category: "Finance", img: "/images/courses/financial_management.png", price: "₹3,000", rating: 4.9 },
-  { id: "data-science-roadmap", title: "Data Science Roadmap", category: "Data Science", img: "/images/courses/data_science.png", price: "₹4,000", rating: 4.8 },
-  { id: "python-mastery", title: "Python Mastery", category: "Development", img: "/images/courses/python_mastery.png", price: "₹3,000", rating: 4.8 },
-  { id: "ai-ml-python", title: "AI & Machine Learning with Python", category: "Data Science", img: "/images/courses/ai_ml.png", price: "₹6,000", rating: 4.8 },
-  { id: "digital-marketing", title: "Digital Marketing Mastery", category: "Marketing", img: "/images/courses/digital_marketing.png", price: "₹3,000", rating: 4.8 },
-  { id: "hr-management", title: "Human Resource Management", category: "Business", img: "/images/courses/hr_management.png", price: "₹3,000", rating: 4.7 },
-  { id: "cybersecurity-fundamentals", title: "Cybersecurity Fundamentals", category: "IT & Software", img: "/images/courses/cybersecurity.png", price: "₹4,000", rating: 4.8 },
-  { id: "cloud-computing", title: "Cloud Computing Mastery", category: "IT & Software", img: "/images/courses/cloud_computing.png", price: "₹5,000", rating: 4.8 },
-  { id: "iot", title: "Internet of Things (IoT)", category: "IoT & Robotics", img: "/images/courses/electronics_iot.png", price: "₹3,000", rating: 4.5 },
-  { id: "embedded-systems", title: "Embedded Systems & Robotics", category: "IoT & Robotics", img: "/images/courses/embedded_systems.png", price: "₹4,000", rating: 4.5 },
-  { id: "hybrid-ev", title: "Hybrid & Electric Vehicles", category: "IT & Software", img: "/images/courses/web_development.png", price: "₹5,000", rating: 4.5 },
-  { id: "autocad", title: "AutoCAD Training Program", category: "Design", img: "/images/courses/business_analytics.png", price: "₹3,000", rating: 4.5 },
-  { id: "drone-engineering", title: "Drone Engineering & Aviation", category: "Drone Tech", img: "/images/courses/electronics_iot.png", price: "₹6,000", rating: 4.8 },
-  { id: "metaverse", title: "Metaverse / AR / VR Development", category: "IT & Software", img: "/images/courses/web_development.png", price: "₹7,000", rating: 4.9 },
+  { id: "java-programming", title: "Java Programming Mastery", category: "Development", img: "/images/courses/java_programming.png", price: "₹6,000", rating: 4.9 },
+  { id: "full-stack-web-development", title: "Full Stack Web Development", category: "Development", img: "/images/courses/web_development.png", price: "₹9,000", rating: 4.8 },
+  { id: "financial-management", title: "Financial Management & Analysis", category: "Finance", img: "/images/courses/financial_management.png", price: "₹6,000", rating: 4.9 },
+  { id: "data-science-roadmap", title: "Data Science Roadmap", category: "Data Science", img: "/images/courses/data_science.png", price: "₹7,000", rating: 4.8 },
+  { id: "python-mastery", title: "Python Mastery", category: "Development", img: "/images/courses/python_mastery.png", price: "₹6,000", rating: 4.8 },
+  { id: "ai-ml-python", title: "AI & Machine Learning with Python", category: "Data Science", img: "/images/courses/ai_ml.png", price: "₹9,000", rating: 4.8 },
+  { id: "digital-marketing", title: "Digital Marketing Mastery", category: "Marketing", img: "/images/courses/digital_marketing.png", price: "₹6,000", rating: 4.8 },
+  { id: "hr-management", title: "Human Resource Management", category: "Business", img: "/images/courses/hr_management.png", price: "₹6,000", rating: 4.7 },
+  { id: "cybersecurity-fundamentals", title: "Cybersecurity Fundamentals", category: "IT & Software", img: "/images/courses/cybersecurity.png", price: "₹7,000", rating: 4.8 },
+  { id: "cloud-computing", title: "Cloud Computing Mastery", category: "IT & Software", img: "/images/courses/cloud_computing.png", price: "₹9,000", rating: 4.8 },
+  { id: "iot", title: "Internet of Things (IoT)", category: "IoT & Robotics", img: "/images/courses/electronics_iot.png", price: "₹6,000", rating: 4.5 },
+  { id: "embedded-systems", title: "Embedded Systems & Robotics", category: "IoT & Robotics", img: "/images/courses/embedded_systems.png", price: "₹7,000", rating: 4.5 },
+  { id: "hybrid-ev", title: "Hybrid & Electric Vehicles", category: "IT & Software", img: "/images/courses/web_development.png", price: "₹9,000", rating: 4.5 },
+  { id: "autocad", title: "AutoCAD Training Program", category: "Design", img: "/images/courses/business_analytics.png", price: "₹7,000", rating: 4.5 },
+  { id: "drone-engineering", title: "Drone Engineering & Aviation", category: "Drone Tech", img: "/images/courses/electronics_iot.png", price: "₹9,000", rating: 4.8 },
+  { id: "metaverse", title: "Metaverse / AR / VR Development", category: "IT & Software", img: "/images/courses/web_development.png", price: "₹10,000", rating: 4.9 },
 ];
 
 const CategoriesPage = () => {

@@ -63,7 +63,7 @@ const SEARCHABLE_COURSES = [
   {
     id: "java-programming",
     title: "Java Programming Mastery",
-    price: "₹3,000",
+    price: "₹6,000",
     duration: "3 Months",
     rating: "4.9",
     image: "/images/courses/abc/java.png",
@@ -71,7 +71,7 @@ const SEARCHABLE_COURSES = [
   {
     id: "full-stack-web-development",
     title: "Full Stack Web Development",
-    price: "₹5,000",
+    price: "₹9,000",
     duration: "6 Months",
     rating: "4.8",
     image: "/images/courses/abc/fullstack .png",
@@ -79,7 +79,7 @@ const SEARCHABLE_COURSES = [
   {
     id: "data-science-roadmap",
     title: "Data Science Roadmap",
-    price: "₹4,000",
+    price: "₹7,000",
     duration: "4 Months",
     rating: "4.8",
     image: "/images/courses/abc/datascience.png",
@@ -87,7 +87,7 @@ const SEARCHABLE_COURSES = [
   {
     id: "python-mastery",
     title: "Python Mastery Bootcamp",
-    price: "₹3,000",
+    price: "₹6,000",
     duration: "3 Months",
     rating: "4.8",
     image: "/images/courses/abc/pythonmystry.png",
@@ -95,7 +95,7 @@ const SEARCHABLE_COURSES = [
   {
     id: "ai-ml-python",
     title: "AI & Machine Learning with Python",
-    price: "₹6,000",
+    price: "₹9,000",
     duration: "4 Months",
     rating: "4.8",
     image: "/images/courses/ai_ml.png",
@@ -103,7 +103,7 @@ const SEARCHABLE_COURSES = [
   {
     id: "cybersecurity-fundamentals",
     title: "Cybersecurity Fundamentals",
-    price: "₹4,000",
+    price: "₹7,000",
     duration: "3 Months",
     rating: "4.8",
     image: "/images/courses/abc/cybersecurity.png",
@@ -111,7 +111,7 @@ const SEARCHABLE_COURSES = [
   {
     id: "cloud-computing",
     title: "Cloud Computing Training",
-    price: "₹5,000",
+    price: "₹9,000",
     duration: "2 Months",
     rating: "4.8",
     image: "/images/courses/abc/cloudcomputing.png",
@@ -119,7 +119,7 @@ const SEARCHABLE_COURSES = [
   {
     id: "hybrid-ev",
     title: "Hybrid Electric Vehicles",
-    price: "₹6,000",
+    price: "₹9,000",
     duration: "4 Months",
     rating: "4.9",
     image: "/images/courses/abc/hybried.png",
@@ -127,7 +127,7 @@ const SEARCHABLE_COURSES = [
   {
     id: "autocad",
     title: "AutoCAD Mastery",
-    price: "₹4,000",
+    price: "₹7,000",
     duration: "2 Months",
     rating: "4.7",
     image: "/images/courses/abc/AutoCAD.png",
@@ -135,7 +135,7 @@ const SEARCHABLE_COURSES = [
   {
     id: "digital-marketing",
     title: "Digital Marketing Masterclass",
-    price: "₹3,000",
+    price: "₹6,000",
     duration: "3 Months",
     rating: "4.8",
     image: "/images/courses/abc/digitalmarkerting.png",

@@ -84,7 +84,7 @@ const Chatbot = () => {
         botResponse = "We offer industry-leading programs. Which one would you like to explore?";
         suggestions = ["Web Development", "Data Science", "Java Programming", "Digital Marketing", "AI & ML"];
       } else if (lowerText.includes("price") || lowerText.includes("fee") || lowerText.includes("cost")) {
-        botResponse = "Our courses are very affordable, starting from ₹3,000. Want to see all of them?";
+        botResponse = "Our courses are very affordable, starting from ₹6,000. Want to see all of them?";
         suggestions = ["View All Courses", "Web Development", "Java Programming"];
       } else if (lowerText.includes("contact") || lowerText.includes("call") || lowerText.includes("support")) {
         botResponse = "You can reach us at +91 1234567890. Redirecting you to our contact page...";
