@@ -393,6 +393,13 @@ const CourseDetailsPage = () => {
   const [playVideo, setPlayVideo] = useState(false);
   const heroRef = useRef(null);
 
+  const [activeCert, setActiveCert] = useState(0);
+  const certImages = [
+    "/images/certificates/certificate2.png",
+    "/images/certificates/certificate3.png",
+    "/images/certificates/image copy.png"
+  ];
+
   const [timeLeft, setTimeLeft] = useState({
     hours: 14,
     minutes: 55,
@@ -2427,17 +2434,51 @@ const CourseDetailsPage = () => {
                   zIndex: -1,
                 }}
               />
-              <img
-                src="/images/certificates/certificate2.png"
-                alt="PreppRight Course Certificate"
-                style={{
-                  width: "100%",
-                  borderRadius: 12,
-                  boxShadow: "0 30px 60px rgba(0,0,0,.5)",
-                  border: "1px solid rgba(255,255,255,.1)",
-                  transform: "rotate(-2deg)",
-                }}
-              />
+              <div className="relative group rounded-xl">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activeCert}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    src={certImages[activeCert]}
+                    alt={`PreppRight Course Certificate ${activeCert + 1}`}
+                    style={{
+                      width: "100%",
+                      borderRadius: 12,
+                      boxShadow: "0 30px 60px rgba(0,0,0,.5)",
+                      border: "1px solid rgba(255,255,255,.1)",
+                      transform: "rotate(-2deg)",
+                    }}
+                  />
+                </AnimatePresence>
+                
+                {/* Navigation arrows */}
+                <button
+                  onClick={() => setActiveCert((prev) => (prev === 0 ? certImages.length - 1 : prev - 1))}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 text-indigo-600 shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-white hover:scale-110"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button
+                  onClick={() => setActiveCert((prev) => (prev === certImages.length - 1 ? 0 : prev + 1))}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 text-indigo-600 shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-white hover:scale-110"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+
+                {/* Dots indicator */}
+                <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
+                  {certImages.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveCert(idx)}
+                      className={`h-2.5 rounded-full transition-all duration-300 ${activeCert === idx ? "bg-indigo-600 w-8" : "bg-indigo-300 w-2.5 hover:bg-indigo-400"}`}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
             <div>
               <div

@@ -197,16 +197,17 @@ const Chatbot = () => {
               <div style={{
                 width: "36px", height: "36px",
                 borderRadius: "10px",
-                background: "rgba(255,255,255,0.05)",
+                background: "rgba(255,255,255,1)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 boxShadow: "0 4px 12px rgba(99,102,241,0.3)",
                 flexShrink: 0,
-                overflow: "hidden"
+                overflow: "hidden",
+                padding: "4px"
               }}>
                 <img 
-                  src="/images/courses/placement/image.png" 
+                  src="/images/PreepPright-Yv6Az5Se.png" 
                   alt="Assistant" 
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                  style={{ width: "100%", height: "100%", objectFit: "contain" }} 
                 />
               </div>
 
